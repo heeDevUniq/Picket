@@ -7,7 +7,7 @@ import java.util.Date;
 @Data
 public class UserDTO {
 
-    private enum Status {
+    public enum Status {
         DEFAULT, ADMIN, DELETED
     }
 
@@ -27,5 +27,14 @@ public class UserDTO {
     private boolean isWithDraw;
     private Status status;
     private Date updateTime;
+
+    public UserDTO() {
+    }
+
+    public static boolean hasNullDataBeforeRegister(UserDTO userDTO) {
+        return userDTO.getUserId() == null || userDTO.getPassword() == null || userDTO.getName() == null ||
+                userDTO.getBirth() == null || userDTO.getEmail() == null || userDTO.getPhoneNumber() == null ||
+                userDTO.getGender() == null;
+    }
 
 }

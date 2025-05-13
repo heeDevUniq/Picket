@@ -3,8 +3,50 @@
 
 <mapper namespace="com.heeji.picket.mapper.userProfileMapper">
 
-    <select id="getUserProfile" parameterType="String" resultMap="UserDTO">
-        SELECT * FROM user_profiles WHERE user_id = #{userId}
+    <select id="getUserProfile" resultMap="UserDTO">
+        /* userProfileMapper.getUserProfile */
+        SELECT *
+        FROM   T_USER_INFO
+        WHERE  1 = 1
+        AND   userId = #{id}
+    </select>
+
+    <insert id="insertUserProfile" parameterType="com.heeji.picket.dto.UserDTO" resultMap="int">
+        /* userProfileMapper.insertUserProfile */
+        INSERT INTO T_USER_INFO (userId, userName, userEmail, userPhone)
+        VALUES (#{userId}, #{userName}, #{userEmail}, #{userPhone})
+    </insert>
+
+    <update id="updateUserProfile" resultMap="int">
+        /* userProfileMapper.updateUserProfile */
+        UPDATE T_USER_INFO
+        SET    userName = #{userName},
+               userEmail = #{userEmail},
+               userPhone = #{userPhone}
+        WHERE  userId = #{userId}
+    </update>
+
+    <delete id="deleteUserProfile" resultMap="int">
+        /* userProfileMapper.deleteUserProfile */
+        DELETE FROM T_USER_INFO
+        WHERE  userId = #{id}
+        AND    userPassword = #{password}
+     </delete>
+
+    <select id="findByIdandPassword" resultType="com.heeji.picket.dto.UserDTO">
+        /* userProfileMapper.findByIdandPassword */
+        SELECT *
+        FROM   T_USER_INFO
+        WHERE  1 = 1
+        AND    userId = #{id}
+        AND    password = #{password}
+    </select>
+
+    <select id="idCheck" resultType="int">
+        /* userProfileMapper.idCheck */
+        SELECT COUNT(id)
+        FROM   T_USER_INFO
+        WHERE  userId = #{id}
     </select>
 
 </mapper>

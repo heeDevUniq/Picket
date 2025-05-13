@@ -1,19 +1,20 @@
 package com.heeji.picket.service;
 
 import com.heeji.picket.dto.UserDTO;
+import org.apache.ibatis.annotations.Param;
 
 public interface UserService {
 
-    void register(UserDTO userProfile);
+    void register(UserDTO userDTO);
 
-    UserDTO login(String id, String password);
+    UserDTO login(@Param("id") String id, @Param("password") String password);
 
-    boolean isDuplicatedId(String id);
+    boolean isDuplicatedId(@Param("id") String id);
 
-    UserDTO getUserInfo(String userId);
+    UserDTO getUserInfo(@Param("id") String id);
 
-    void updatePassword(String id, String beforePassword, String afterPassword);
+    void updatePassword(@Param("id") String id, @Param("beforePassword") String beforePassword, @Param("afterPassword") String afterPassword);
 
-    void deleteId(String id, String password);
+    void deleteId(@Param("id") String id, @Param("password") String password);
 
 }

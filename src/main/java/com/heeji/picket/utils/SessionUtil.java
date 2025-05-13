@@ -1,0 +1,35 @@
+package com.heeji.picket.utils;
+
+import jakarta.servlet.http.HttpSession;
+import jakarta.websocket.Session;
+
+public class SessionUtil {
+
+    private static final String LOGIN_MEMBER_ID = "LOGIN_MEMBER_ID";
+    private static final String LOGIN_ADMIN_ID = "LOGIN_ADMIN_ID";
+
+    private SessionUtil() {
+        // Prevent instantiation
+    }
+
+    public static String getLoginMemberId(HttpSession session) {
+        return (String) session.getAttribute(LOGIN_MEMBER_ID);
+    }
+
+    public static void setLoginMemberId(HttpSession session, String memberId) {
+        session.setAttribute(LOGIN_MEMBER_ID, memberId);
+    }
+
+    public static String getLoginAdminId(HttpSession session) {
+        return (String) session.getAttribute(LOGIN_ADMIN_ID);
+    }
+
+    public static void setLoginAdminId(HttpSession session, String adminId) {
+        session.setAttribute(LOGIN_ADMIN_ID, adminId);
+    }
+
+    public static void clearSession(HttpSession session) {
+        session.invalidate();
+    }
+
+}

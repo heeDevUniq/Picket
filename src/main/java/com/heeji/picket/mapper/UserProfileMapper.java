@@ -13,12 +13,12 @@ public interface UserProfileMapper {
 
     int insertUserProfile(UserDTO userDTO);
 
-    int deleteUserProfile(UserDTO userDTO);
-
     public UserDTO findByIdAndPassword(@Param("id") String id, @Param("password") String password);
 
     boolean isCheck(@Param("id") String id);
 
-    public int updateProfile(UserDTO userDTO);
+    public int updateProfile(@Param("id") String id, @Param("password") String password);
+
+    int deleteUserProfile(@Param("id") String id, @Param("password") String password);
 
 }
