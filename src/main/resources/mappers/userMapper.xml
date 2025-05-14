@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
 
-<mapper namespace="com.heeji.picket.mapper.userProfileMapper">
+<mapper namespace="com.heeji.picket.mapper.UserProfileMapper">
 
-    <select id="getUserProfile" resultMap="UserDTO">
+    <select id="getUserProfile" resultType="com.heeji.picket.dto.UserDTO">
         /* userProfileMapper.getUserProfile */
         SELECT *
         FROM   T_USER_INFO
@@ -11,29 +11,29 @@
         AND   userId = #{id}
     </select>
 
-    <insert id="insertUserProfile" parameterType="com.heeji.picket.dto.UserDTO" resultMap="int">
+    <insert id="insertUserProfile" parameterType="com.heeji.picket.dto.UserDTO">
         /* userProfileMapper.insertUserProfile */
-        INSERT INTO T_USER_INFO (userId, userName, userEmail, userPhone)
-        VALUES (#{userId}, #{userName}, #{userEmail}, #{userPhone})
+        INSERT INTO T_USER_INFO (userId, name, email, phonNumber)
+        VALUES (#{userId}, #{name}, #{email}, #{phonNumber})
     </insert>
 
-    <update id="updateUserProfile" resultMap="int">
+    <update id="updateUserProfile">
         /* userProfileMapper.updateUserProfile */
         UPDATE T_USER_INFO
-        SET    userName = #{userName},
-               userEmail = #{userEmail},
-               userPhone = #{userPhone}
+        SET    name = #{name},
+                email = #{email},
+                phonNumber = #{phonNumber}
         WHERE  userId = #{userId}
     </update>
 
-    <delete id="deleteUserProfile" resultMap="int">
+    <delete id="deleteUserProfile">
         /* userProfileMapper.deleteUserProfile */
         DELETE FROM T_USER_INFO
         WHERE  userId = #{id}
         AND    userPassword = #{password}
-     </delete>
+    </delete>
 
-    <select id="findByIdandPassword" resultType="com.heeji.picket.dto.UserDTO">
+    <select id="findByIdAndPassword" resultType="com.heeji.picket.dto.UserDTO">
         /* userProfileMapper.findByIdandPassword */
         SELECT *
         FROM   T_USER_INFO
