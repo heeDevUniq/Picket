@@ -37,12 +37,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO login(String id, String password) {
         String cryptoPassword = encryptSHA256(password);
-        return userProfileMapper.findByIdAndPassword(id, password);
+        return userProfileMapper.findByIdAndPassword(id, cryptoPassword);
     }
 
     @Override
     public boolean isDuplicatedId(String id) {
-        return userProfileMapper.isCheck(id);
+        return userProfileMapper.idCheck(id) == 1;
     }
 
     @Override
@@ -53,9 +53,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updatePassword(String id, String beforePassword, String afterPassword) {
         String cryptoPassword = encryptSHA256(beforePassword);
-        UserDTO userInfo = userProfileMapper.findByIdAndPassword(id, beforePassword);
+        UserDTO userInfo = userProfileMapper.findByIdAndPassword(id, cryptoPassword);
+
         if (userInfo != null) {
-            userProfileMapper.updateProfile(id, afterPassword);
+            UserDTO userDTO = new UserDTO();
+            userDTO.setUserId(id);
+            userDTO.setPassword(encryptSHA256(afterPassword));
+            userProfileMapper.updateUserProfile(userDTO);
         } else {
             log.error("// 비밀번호 변경 실패, params : {}", id, beforePassword, afterPassword);
             throw new RuntimeException("비밀번호 변경 실패, params : " + id + " / " + beforePassword + " / " + afterPassword);
@@ -65,12 +69,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteId(String id, String password) {
         String cryptoPassword = encryptSHA256(password);
-        UserDTO userInfo = userProfileMapper.findByIdAndPassword(id, password);
+        UserDTO userInfo = userProfileMapper.findByIdAndPassword(id, cryptoPassword);
         if (userInfo != null) {
-            userProfileMapper.deleteUserProfile(id, password);
+            userProfileMapper.deleteUserProfile(id, cryptoPassword);
         } else {
-            log.error("//회원 삭제 실패, params : {}", id, password);
-            throw new RuntimeException("회원정보 삭제 실패, params : " + id + " / " + password);
+            log.error("//회원 삭제 실패, params : {}", id, cryptoPassword);
+            throw new RuntimeException("회원정보 삭제 실패, params : " + id + " / " + cryptoPassword);
         }
     }
 }

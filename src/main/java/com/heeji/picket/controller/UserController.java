@@ -42,6 +42,9 @@ public class UserController {
 
     @PostMapping("/sign-in")
     public HttpStatus login(@RequestBody UserLoginRequest userLoginRequest, HttpSession session) {
+        System.out.println("진입!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!userLoginRequest: " + userLoginRequest);
+        System.out.println("userId: " + userLoginRequest.getUserId());
+        System.out.println("password: " + userLoginRequest.getPassword());
         ResponseEntity<UserLoginResponse> responseEntity = null;
         String userId = userLoginRequest.getUserId();
         String password = userLoginRequest.getPassword();
@@ -68,11 +71,11 @@ public class UserController {
 
     @GetMapping("/my-info")
     public UserInfoResponse memberInfo(HttpSession session) {
-        String id = SessionUtil.getLoginMemberId(session);
-        if (id == null) {
-            id = SessionUtil.getLoginAdminId(session);
+        String userId = SessionUtil.getLoginMemberId(session);
+        if (userId == null) {
+            userId = SessionUtil.getLoginAdminId(session);
         }
-        UserDTO memberInfo = userService.getUserInfo(id);
+        UserDTO memberInfo = userService.getUserInfo(userId);
         return new UserInfoResponse(memberInfo);
     }
 
@@ -85,15 +88,15 @@ public class UserController {
     public ResponseEntity<UserLoginResponse> updatePassword(@RequestBody UserUpdateRequest userUpdateRequest, HttpSession session) {
         ResponseEntity<UserLoginResponse> resposneEntity = null;
         UserLoginResponse UserLoginResponse = null;
-        String id = SessionUtil.getLoginMemberId(session);
+        String userId = SessionUtil.getLoginMemberId(session);
         String beforePassword = userUpdateRequest.getBeforePassword();
         String afterPassword = userUpdateRequest.getAfterPassword();
 
         try {
-            userService.updatePassword(id, beforePassword, afterPassword);
+            userService.updatePassword(userId, beforePassword, afterPassword);
             resposneEntity.ok(new ResponseEntity<UserLoginResponse>(UserLoginResponse, HttpStatus.OK));
         } catch(IllegalArgumentException e) {
-            log.error("updatePassword 실패, params : {}", id, beforePassword, afterPassword);
+            log.error("updatePassword 실패, params : {}", userId, beforePassword, afterPassword);
             resposneEntity = new ResponseEntity<UserLoginResponse>(HttpStatus.BAD_REQUEST);
         }
         return resposneEntity;
@@ -102,12 +105,12 @@ public class UserController {
     @DeleteMapping
     public ResponseEntity<UserLoginResponse> delete(@RequestBody UserDeleteRequest userDeleteRequest, HttpSession session) {
         ResponseEntity<UserLoginResponse> resposneEntity = null;
-        String id = SessionUtil.getLoginMemberId(session);
+        String userId = SessionUtil.getLoginMemberId(session);
         try {
-            userService.deleteId(id, userDeleteRequest.getPassword());
+            userService.deleteId(userId, userDeleteRequest.getPassword());
             resposneEntity = new ResponseEntity<UserLoginResponse>(userLoginResponse, HttpStatus.OK);
         } catch(RuntimeException e) {
-            log.error("회원 삭제 실패, params : {}", id, userDeleteRequest.getPassword());
+            log.error("회원 삭제 실패, params : {}", userId, userDeleteRequest.getPassword());
             resposneEntity = new ResponseEntity<UserLoginResponse>(HttpStatus.BAD_REQUEST);
         }
         SessionUtil.clearSession(session);

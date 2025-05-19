@@ -33,8 +33,7 @@ public class UserDTO {
 
     public static boolean hasNullDataBeforeRegister(UserDTO userDTO) {
         return userDTO.getUserId() == null || userDTO.getPassword() == null || userDTO.getName() == null ||
-                userDTO.getBirth() == null || userDTO.getEmail() == null || userDTO.getPhoneNumber() == null ||
-                userDTO.getGender() == null;
+                userDTO.getBirth() == null || userDTO.getEmail() == null || userDTO.getGender() == null;
     }
 
 }
