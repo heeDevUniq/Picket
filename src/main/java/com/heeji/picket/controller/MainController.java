@@ -19,10 +19,4 @@ public class MainController {
         return "index";
     }
 
-    @GetMapping("/login")
-    public String login() {
-        log.debug("login진입");
-        return "login";
-    }
-
 }
