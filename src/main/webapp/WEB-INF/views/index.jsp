@@ -1,11 +1,8 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-
 <html>
-<head>
-  <title>index테스트</title>
-</head>
+<%@include file="/WEB-INF/views/com/header.jsp"%>
 <body>
-  <h2>테스트</h2>
+    <h2>테스트</h2>
 </body>
 </html>

@@ -7,7 +7,7 @@ import lombok.NonNull;
 public class UserDeleteRequest {
 
     @NonNull
-    private String userId;
+    private String userEmail;
 
     @NonNull
     private String password;

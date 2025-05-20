@@ -1,31 +1,35 @@
 package com.heeji.picket.utils;
 
+import com.heeji.picket.domain.User;
 import jakarta.servlet.http.HttpSession;
 import jakarta.websocket.Session;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 public class SessionUtil {
 
-    private static final String LOGIN_MEMBER_ID = "LOGIN_MEMBER_ID";
-    private static final String LOGIN_ADMIN_ID = "LOGIN_ADMIN_ID";
+    private static final String ROLE = "user";
 
     private SessionUtil() {
         // Prevent instantiation
     }
 
-    public static String getLoginMemberId(HttpSession session) {
-        return (String) session.getAttribute(LOGIN_MEMBER_ID);
+    public static Map<String, Object> getLoginUser(HttpSession session) {
+        Map<String, Object> sessionMap = new HashMap<String, Object>();
+        sessionMap.put("LOGIN_EMAIL", session.getAttribute("LOGIN_EMAIL"));
+        sessionMap.put("LOGIN_ID", session.getAttribute("LOGIN_ID"));
+        sessionMap.put("LOGIN_ROLE", session.getAttribute("LOGIN_ROLE"));
+        sessionMap.put("LOGIN_TIME", session.getAttribute("LOGIN_TIME"));
+        return sessionMap;
     }
 
-    public static void setLoginMemberId(HttpSession session, String memberId) {
-        session.setAttribute(LOGIN_MEMBER_ID, memberId);
-    }
-
-    public static String getLoginAdminId(HttpSession session) {
-        return (String) session.getAttribute(LOGIN_ADMIN_ID);
-    }
-
-    public static void setLoginAdminId(HttpSession session, String adminId) {
-        session.setAttribute(LOGIN_ADMIN_ID, adminId);
+    public static void setLoginUser(HttpSession session, User user) {
+        session.setAttribute("LOGIN_EMAIL", user.getEmail());
+        session.setAttribute("LOGIN_ID", user.getId());
+        session.setAttribute("LOGIN_ROLE", user.getRole());
+        session.setAttribute("LOGIN_TIME", new Date());
     }
 
     public static void clearSession(HttpSession session) {

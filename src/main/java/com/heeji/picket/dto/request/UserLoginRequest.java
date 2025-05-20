@@ -9,7 +9,7 @@ import java.util.Date;
 public class UserLoginRequest {
 
     @NonNull
-    private String userId;
+    private String userEmail;
 
     @NonNull
     private String password;
