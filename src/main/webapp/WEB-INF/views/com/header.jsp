@@ -8,6 +8,6 @@
     <meta property="og:title" content="픽켓 : Pick! Your Ticket">
     <link rel="stylesheet" href="/css/style.css">
     <script src="/js/common.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="/js/user.js"></script>
 </head>
 <body>
