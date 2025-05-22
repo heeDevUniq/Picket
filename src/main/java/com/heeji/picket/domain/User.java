@@ -19,7 +19,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Comment("회원고유번호")
-    private int id;
+    private int userId;
 
     @Column(nullable = false, unique = true)
     @Comment("이메일")
@@ -48,10 +48,10 @@ public class User {
     private String detailAddress;
 
     @Comment("탈퇴여부")
-    private String isWithdraw;
+    private String isDeleted;
 
     @Comment("탈퇴일시")
-    private Timestamp withdrawDate;
+    private Timestamp deleteDate;
 
     @Comment("소셜로그인구분")
     private String providerType;

@@ -27,7 +27,7 @@ public class SessionUtil {
 
     public static void setLoginUser(HttpSession session, User user) {
         session.setAttribute("LOGIN_EMAIL", user.getEmail());
-        session.setAttribute("LOGIN_ID", user.getId());
+        session.setAttribute("LOGIN_ID", user.getUserId());
         session.setAttribute("LOGIN_ROLE", user.getRole());
         session.setAttribute("LOGIN_TIME", new Date());
     }

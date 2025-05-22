@@ -25,17 +25,17 @@ public class UserRestController {
         this.userService = userService;
     }
 
-    @PostMapping("/signup")
+    @PostMapping("/sign-up")
     @ResponseStatus(HttpStatus.CREATED)
     public void signUp(@RequestBody User user) {
         userService.register(user);
     }
 
-    @PostMapping("/signin")
+    @PostMapping("/sign-in")
     public HttpStatus login(@RequestBody UserLoginRequest userLoginRequest, HttpSession session) {
         System.out.println("진입!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!userLoginRequest: " + userLoginRequest);
         ResponseEntity<UserLoginResponse> responseEntity = null;
-        String userEmail = userLoginRequest.getUserEmail();
+        String userEmail = userLoginRequest.getEmail();
         String password = userLoginRequest.getPassword();
         User user = userService.login(userEmail, password);
         if (user != null) {
@@ -52,7 +52,7 @@ public class UserRestController {
         return HttpStatus.OK;
     }
 
-    @GetMapping("/myinfo")
+    @GetMapping("/my-info")
     public User memberInfo(HttpSession session) {
         String loginEmail = (String)SessionUtil.getLoginUser(session).get("LOGIN_EMAIL");
         return userService.findUser(loginEmail);

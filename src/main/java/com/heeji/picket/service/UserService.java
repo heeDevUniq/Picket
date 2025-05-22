@@ -35,6 +35,8 @@ public class UserService {
 
     public User login(String email, String password) {
         // email로 User 찾기
+        System.out.println("확인1 : " + email);
+        System.out.println("확인2 : " + password);
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 

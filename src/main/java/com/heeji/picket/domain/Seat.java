@@ -1,0 +1,57 @@
+package com.heeji.picket.domain;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.sql.Timestamp;
+
+@Entity
+@AllArgsConstructor
+@Data
+public class Seat {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Comment("좌석고유번호")
+    private int seatId;
+
+    @Column(nullable = false, unique = true)
+    @Comment("좌석등급고유번호")
+    private int seatGradeId;
+
+    @Column(nullable = false, unique = true)
+    @Comment("공연날짜고유번호")
+    private int showDateId;
+
+    @Column(nullable = false)
+    @Comment("공연정보고유번호")
+    private int showId;
+
+    @Column(nullable = false, unique = true)
+    @Comment("열")
+    private String rowName;
+
+    @Column(nullable = false, unique = true)
+    @Comment("좌석번호")
+    private int seatNumber;
+
+    @Column(nullable = false)
+    @Comment("예매상태")
+    @ColumnDefault("'available'")
+    private String seatStatus;
+
+    @Comment("예매번호")
+    private String bookedNumber;
+
+    @CreationTimestamp
+    @Comment("예매일시")
+    private Timestamp bookedDate;
+
+    @Comment("예매자id")
+    private int bookedId;
+
+}

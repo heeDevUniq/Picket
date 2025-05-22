@@ -2,10 +2,10 @@
 <%@include file="../com/header.jsp"%>
 <div>
     <h2>로긘페이지</h2>
-    <form method="post" action="/doLogin">
-        이메일 : <input type="email" name="email" />
+    <form name="form" id="form">
+        이메일 : <input type="email" name="email" /><br/>
         비밀번호 : <input type="password" name="password" />
-        <button type="submit">로그인</button>
+        <a href="#" onclick="user.login();">로그인</a>
     </form>
 </div>
 <%@include file="../com/footer.jsp"%>
