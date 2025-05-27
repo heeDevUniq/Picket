@@ -43,11 +43,9 @@ public class UserRestController {
             userLoginResponse = UserLoginResponse.success(user);
             log.info("로그인 성공, user: {}", user);
             responseEntity = new ResponseEntity<UserLoginResponse>(userLoginResponse, HttpStatus.OK);
-        } else if (user == null) {
+        } else {
             log.error("로그인 실패, user: {}", user);
             return HttpStatus.NOT_FOUND;
-        } else {
-            throw new RuntimeException("Login ERROR! 유저 정보 없거나 지원되지 않는 유저입니다.");
         }
         return HttpStatus.OK;
     }
