@@ -1,5 +1,7 @@
 package com.heeji.picket.controller.api;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.heeji.picket.domain.User;
 import com.heeji.picket.dto.request.UserDeleteRequest;
 import com.heeji.picket.dto.request.UserLoginRequest;
@@ -12,6 +14,13 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URLEncoder;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 
 @RestController
 @RequestMapping("/user/api")
@@ -90,6 +99,69 @@ public class UserRestController {
         }
         SessionUtil.clearSession(session);
         return resposneEntity;
+    }
+
+    @GetMapping("/kakaoLogin")
+    public String kakaoLogin(@RequestParam String code) throws Exception {
+        System.out.println("진입!!!!!!!!!!!!!!!!!! : " + code);
+
+        // 1. code 로 access_token 요청
+        String tokenUrl = "https://kauth.kakao.com/oauth/token";
+
+        HttpClient tokenClient = HttpClient.newHttpClient();
+
+        String form = "grant_type=authorization_code"
+                + "&client_id=" + URLEncoder.encode("0ed4893e99b41c7e2c03e73937596f51", "UTF-8")
+                + "&redirect_uri=" + URLEncoder.encode("http://localhost:8080/user/api/kakaoLogin", "UTF-8")
+                + "&code=" + URLEncoder.encode(code, "UTF-8");
+
+        HttpRequest tokenRequest = HttpRequest.newBuilder()
+                .uri(URI.create(tokenUrl))
+                .header("Content-Type", "application/x-www-form-urlencoded")
+                .POST(HttpRequest.BodyPublishers.ofString(form))
+                .build();
+
+        HttpResponse<String> tokenResponse = tokenClient.send(tokenRequest, HttpResponse.BodyHandlers.ofString());
+
+        String accessToken = "";
+
+        if (tokenResponse.statusCode() == 200) {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode jsonNode = mapper.readTree(tokenResponse.body());
+            accessToken = jsonNode.get("access_token").asText();
+            System.out.println("token : " + accessToken);
+        } else {
+            throw new RuntimeException("토큰 요청 실패: " + tokenResponse.body());
+        }
+        // 2. access_token 으로 사용자 정보 요청
+        String userInfoUrl = "https://kapi.kakao.com/v2/user/me";
+
+        HttpClient userClient = HttpClient.newHttpClient();
+
+        HttpRequest userRequest = HttpRequest.newBuilder()
+                .uri(URI.create(userInfoUrl))
+                .header("Authorization", "Bearer " + accessToken)
+                .GET()
+                .build();
+
+        HttpResponse<String> response = userClient.send(userRequest, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode jsonNode = mapper.readTree(response.body());
+
+            System.out.println("jsonNode : " + jsonNode.toString());
+
+            // 카카오 사용자 정보 파싱
+            long id = jsonNode.get("id").asLong();
+        } else {
+            throw new RuntimeException("사용자 정보 요청 실패: " + response.body());
+        }
+
+        // 3. DB 조회 후 로그인 or 회원가입
+        // 4. 세션 저장 or 토큰 발급
+        // 5. 리다이렉트
+        return "/index";
     }
 
 }

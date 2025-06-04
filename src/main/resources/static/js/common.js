@@ -16,5 +16,22 @@ const com = {
                 alert(msg);
             }
         });
+    },
+
+    locateUrl(url, obj) {
+        if(!url) {
+            alert("URL값은 필수입니다.");
+            return false;
+        }
+        if(!obj) obj = {};
+        let form = $("<form method='POST' action='" + url + "'>");
+        Object.keys(obj).map(key => {
+            form.append($("<input type='hidden'/>").attr({
+                "name": key,
+                "value": obj[value]
+            }));
+        });
+        form.append($("</form>"));
+        form.appendTo("body").submit().remove();
     }
 }
