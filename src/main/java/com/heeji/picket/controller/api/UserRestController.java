@@ -153,14 +153,22 @@ public class UserRestController {
             System.out.println("jsonNode : " + jsonNode.toString());
 
             // 카카오 사용자 정보 파싱
-            long id = jsonNode.get("id").asLong();
+            String email = jsonNode.get("account_email").toString();
+
+            // 3. DB 조회 후 로그인 or 회원가입
+            User user = userService.findUser(email);
+            if (user != null) {
+
+            } else {
+
+            }
+
+            // 4. 세션 저장 or 토큰 발급
+            // 5. 리다이렉트
         } else {
             throw new RuntimeException("사용자 정보 요청 실패: " + response.body());
         }
 
-        // 3. DB 조회 후 로그인 or 회원가입
-        // 4. 세션 저장 or 토큰 발급
-        // 5. 리다이렉트
         return "/index";
     }
 
