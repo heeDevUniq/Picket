@@ -102,8 +102,9 @@ public class UserRestController {
     }
 
     @GetMapping("/kakaoLogin")
-    public String kakaoLogin(@RequestParam String code) throws Exception {
+    public String kakaoLogin(@RequestParam String code, HttpSession session) throws Exception {
         System.out.println("진입!!!!!!!!!!!!!!!!!! : " + code);
+        String redirectUrl = "/index";
 
         // 1. code 로 access_token 요청
         String tokenUrl = "https://kauth.kakao.com/oauth/token";
@@ -153,23 +154,22 @@ public class UserRestController {
             System.out.println("jsonNode : " + jsonNode.toString());
 
             // 카카오 사용자 정보 파싱
-            String email = jsonNode.get("account_email").toString();
+            String email = jsonNode.get("kakao_account").get("email").toString();
 
             // 3. DB 조회 후 로그인 or 회원가입
             User user = userService.findUser(email);
             if (user != null) {
-
+                // 4. 세션 저장
+                SessionUtil.setLoginUser(session, user);
             } else {
-
+                redirectUrl = "/signup";
             }
-
-            // 4. 세션 저장 or 토큰 발급
-            // 5. 리다이렉트
         } else {
             throw new RuntimeException("사용자 정보 요청 실패: " + response.body());
         }
 
-        return "/index";
+        // 5. 리다이렉트
+        return redirectUrl;
     }
 
 }
