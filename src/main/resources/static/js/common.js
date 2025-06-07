@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function() {
    event.preventDefault();
 });
 const com = {
-    ajax(type, url, formId, msg) {
+    ajax(type, url, formId, msg, callback) {
         const form = document.querySelector(formId);
         const formData = new FormData(form);
         const json = Object.fromEntries(formData.entries());
@@ -14,7 +14,13 @@ const com = {
             success: function(result) {
                 console.log(result);
                 alert(msg);
-            }
+            },
+            done: function() {
+                console.log("AJAX 요청이 완료되었습니다.");
+                if (callback) {
+                    callback;
+                }
+            },
         });
     },
 

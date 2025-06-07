@@ -7,7 +7,7 @@
         비밀번호 : <input type="password" name="password" />
         <a href="#" onclick="user.login();">로그인</a>
         <a href="#" onclick="com.locateUrl('/signup');">회원가입</a>
-        <a href="#" onclick="user.kakaoLogin();"><img src="/images/kakao_login_medium_narrow.png"></a>
+        <a href="#" onclick="user.kakaoLogin();"><img src="/images/user/kakao_login_medium_narrow.png"></a>
     </form>
 </div>
 <%@include file="../com/footer.jsp"%>
