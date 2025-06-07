@@ -4,7 +4,7 @@
     <h2>회원가입</h2>
     <form name="form">
         <label for="email">이메일</label>
-        <input type="email" name="email" id="email" /><br/>
+        <input type="email" name="email" id="email" value="${session.LOGIN_EMAIL}" ${session.LOGIN_EMAIL != null? 'readonly':''} /><br/>
         <label for="password">비밀번호</label>
         <input type="password" name="password" id="password" /><br/>
         <label for="confPassword">비밀번호 확인</label>

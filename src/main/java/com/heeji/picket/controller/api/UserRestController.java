@@ -9,6 +9,7 @@ import com.heeji.picket.dto.request.UserUpdateRequest;
 import com.heeji.picket.dto.response.UserLoginResponse;
 import com.heeji.picket.service.UserService;
 import com.heeji.picket.utils.SessionUtil;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -102,9 +103,9 @@ public class UserRestController {
     }
 
     @GetMapping("/kakaoLogin")
-    public String kakaoLogin(@RequestParam String code, HttpSession session) throws Exception {
+    public void kakaoLogin(@RequestParam String code, HttpSession session, HttpServletResponse response) throws Exception {
         System.out.println("진입!!!!!!!!!!!!!!!!!! : " + code);
-        String redirectUrl = "/index";
+//        String redirectUrl = "redirect:/index";
 
         // 1. code 로 access_token 요청
         String tokenUrl = "https://kauth.kakao.com/oauth/token";
@@ -145,31 +146,41 @@ public class UserRestController {
                 .GET()
                 .build();
 
-        HttpResponse<String> response = userClient.send(userRequest, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> res = userClient.send(userRequest, HttpResponse.BodyHandlers.ofString());
 
-        if (response.statusCode() == 200) {
+        if (res.statusCode() == 200) {
             ObjectMapper mapper = new ObjectMapper();
-            JsonNode jsonNode = mapper.readTree(response.body());
+            JsonNode jsonNode = mapper.readTree(res.body());
 
             System.out.println("jsonNode : " + jsonNode.toString());
 
             // 카카오 사용자 정보 파싱
-            String email = jsonNode.get("kakao_account").get("email").toString();
+            String email = jsonNode.get("kakao_account").get("email").asText();
 
             // 3. DB 조회 후 로그인 or 회원가입
             User user = userService.findUser(email);
             if (user != null) {
                 // 4. 세션 저장
+                user = userService.findUser(email);
                 SessionUtil.setLoginUser(session, user);
+                System.out.println("!!!!!!!!!!!!!!!!!!!1 user 값 있음 성공: " + user);
+                System.out.println("!!!!!!!!!!!!!!!!!!!1 user 값 있음 성공: " + session);
+                response.sendRedirect("/index");
             } else {
-                redirectUrl = "/signup";
+                System.out.println("!!!!!!!!!!!!!!!!!!!1 user 값 없음 성공: " + user);
+                System.out.println("!!!!!!!!!!!!!!!!!!!1 user 값 없음 성공: " + session);
+                user = new User();
+                user.setEmail(email);
+                SessionUtil.setLoginUser(session, user);
+                response.sendRedirect("/signup");
+//                redirectUrl = "redirect:/signup";
             }
         } else {
-            throw new RuntimeException("사용자 정보 요청 실패: " + response.body());
+            throw new RuntimeException("사용자 정보 요청 실패: " + res.body());
         }
 
         // 5. 리다이렉트
-        return redirectUrl;
+//        return redirectUrl;
     }
 
 }
