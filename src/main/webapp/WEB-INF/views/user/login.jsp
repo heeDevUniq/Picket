@@ -1,6 +1,25 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@include file="../com/header.jsp"%>
 <meta name="google-signin-client_id" content="363711896074-5mb07i2qch83a1ob8qh0ce8lg8a5p43c.apps.googleusercontent.com">
+<script>
+    window.onload = function () {
+        // Kakao 초기화
+        Kakao.init('3f3d8ba12e822fd113873d2914be079f');
+        Kakao.isInitialized();
+
+        // GSI 초기화
+        google.accounts.id.initialize({
+            client_id: "363711896074-5mb07i2qch83a1ob8qh0ce8lg8a5p43c.apps.googleusercontent.com",
+            callback: user.googleLogin
+        });
+
+        // 로그인 버튼 렌더링
+        google.accounts.id.renderButton(
+            document.getElementById("googleLogin"),
+            { theme: "outline", size: "large" }
+        );
+    }
+</script>
 <div>
     <h2>로긘페이지</h2>
     <form name="form" id="form">

@@ -1,11 +1,5 @@
 package com.heeji.picket.controller.api;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.jackson2.JacksonFactory;
 import com.heeji.picket.domain.User;
 import com.heeji.picket.dto.request.UserDeleteRequest;
 import com.heeji.picket.dto.request.UserLoginRequest;
@@ -13,22 +7,11 @@ import com.heeji.picket.dto.request.UserUpdateRequest;
 import com.heeji.picket.dto.response.UserLoginResponse;
 import com.heeji.picket.service.UserService;
 import com.heeji.picket.utils.SessionUtil;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URLEncoder;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/user/api")
@@ -107,123 +90,6 @@ public class UserRestController {
         }
         SessionUtil.clearSession(session);
         return resposneEntity;
-    }
-
-    @PostMapping("/kakaoLogin")
-    public void kakaoLogin(@RequestParam String code, HttpSession session, HttpServletResponse response) throws Exception {
-        System.out.println("진입!!!!!!!!!!!!!!!!!! : " + code);
-
-        // 1. code 로 access_token 요청
-        String tokenUrl = "https://kauth.kakao.com/oauth/token";
-
-        HttpClient tokenClient = HttpClient.newHttpClient();
-
-        String form = "grant_type=authorization_code"
-                + "&client_id=" + URLEncoder.encode("0ed4893e99b41c7e2c03e73937596f51", "UTF-8")
-                + "&redirect_uri=" + URLEncoder.encode("http://localhost:8080/user/api/kakaoLogin", "UTF-8")
-                + "&code=" + URLEncoder.encode(code, "UTF-8");
-
-        HttpRequest tokenRequest = HttpRequest.newBuilder()
-                .uri(URI.create(tokenUrl))
-                .header("Content-Type", "application/x-www-form-urlencoded")
-                .POST(HttpRequest.BodyPublishers.ofString(form))
-                .build();
-
-        HttpResponse<String> tokenResponse = tokenClient.send(tokenRequest, HttpResponse.BodyHandlers.ofString());
-
-        String accessToken = "";
-
-        if (tokenResponse.statusCode() == 200) {
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode jsonNode = mapper.readTree(tokenResponse.body());
-            accessToken = jsonNode.get("access_token").asText();
-            System.out.println("token : " + accessToken);
-        } else {
-            throw new RuntimeException("토큰 요청 실패: " + tokenResponse.body());
-        }
-        // 2. access_token 으로 사용자 정보 요청
-        String userInfoUrl = "https://kapi.kakao.com/v2/user/me";
-
-        HttpClient userClient = HttpClient.newHttpClient();
-
-        HttpRequest userRequest = HttpRequest.newBuilder()
-                .uri(URI.create(userInfoUrl))
-                .header("Authorization", "Bearer " + accessToken)
-                .GET()
-                .build();
-
-        HttpResponse<String> res = userClient.send(userRequest, HttpResponse.BodyHandlers.ofString());
-
-        if (res.statusCode() == 200) {
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode jsonNode = mapper.readTree(res.body());
-
-            System.out.println("jsonNode : " + jsonNode.toString());
-
-            // 카카오 사용자 정보 파싱
-            String email = jsonNode.get("kakao_account").get("email").asText();
-
-            // 3. DB 조회 후 로그인 or 회원가입
-            User user = userService.findUser(email);
-            if (user != null) {
-                // 4. 세션 저장
-                user = userService.findUser(email);
-                SessionUtil.setLoginUser(session, user);
-                System.out.println("!!!!!!!!!!!!!!!!!!!1 user 값 있음 성공: " + user);
-                System.out.println("!!!!!!!!!!!!!!!!!!!1 user 값 있음 성공: " + session);
-                response.sendRedirect("/index");
-            } else {
-                System.out.println("!!!!!!!!!!!!!!!!!!!1 user 값 없음 성공: " + user);
-                System.out.println("!!!!!!!!!!!!!!!!!!!1 user 값 없음 성공: " + session);
-                user = new User();
-                user.setEmail(email);
-                SessionUtil.setLoginUser(session, user);
-                response.sendRedirect("/signup");
-            }
-        } else {
-            throw new RuntimeException("사용자 정보 요청 실패: " + res.body());
-        }
-    }
-
-    @PostMapping("/googleLogin")
-    public void googleLogin(@RequestBody Map<String, String> body, HttpSession session, HttpServletResponse response) throws Exception {
-        String credential = body.get("credential");
-        System.out.println("진입!!!!!!!!!!!!!!!!!! : " + credential);
-
-        try {
-            // 구글의 public key로 JWT를 검증
-            GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), JacksonFactory.getDefaultInstance())
-                    .setAudience(Collections.singletonList("363711896074-5mb07i2qch83a1ob8qh0ce8lg8a5p43c.apps.googleusercontent.com"))
-                    .build();
-
-            GoogleIdToken idToken = verifier.verify(credential);
-            System.out.println("진입!!!!!!!!!!!!!!!!!!2222222222222222 : " + idToken);
-
-            if (idToken != null) {
-                GoogleIdToken.Payload payload = idToken.getPayload();
-                System.out.println("진입!!!!!!!!!!!!!!!!!!3333333333333333333 : " + payload);
-
-                String email = payload.getEmail();
-                String name = (String) payload.get("name");
-                String picture = (String) payload.get("picture");
-
-                // TODO: 여기서 유저 존재 여부 확인 후, 없으면 회원가입 처리
-                // 이후 세션 생성 또는 JWT 발급 등 로그인 처리
-
-                Map<String, Object> result = new HashMap<>();
-                result.put("success", true);
-                result.put("email", email);
-                result.put("name", name);
-                result.put("picture", picture);
-
-            } else {
-//                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Collections.singletonMap("success", false));
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("success", false));
-        }
     }
 
 }

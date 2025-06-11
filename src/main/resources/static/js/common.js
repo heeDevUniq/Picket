@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function() {
    event.preventDefault();
 });
 const com = {
-    ajax(type, url, formId, msg, callback) {
+    ajaxForm(type, url, formId, callback) {
         const form = document.querySelector(formId);
         const formData = new FormData(form);
         const json = Object.fromEntries(formData.entries());
@@ -12,15 +12,20 @@ const com = {
             contentType: 'application/json',
             data: JSON.stringify(json),
             success: function(result) {
-                console.log(result);
-                alert(msg);
-            },
-            done: function() {
-                console.log("AJAX 요청이 완료되었습니다.");
-                if (callback) {
-                    callback;
-                }
-            },
+                if (callback) callback(result);
+            }
+        });
+    },
+
+    ajaxParams(type, url, params, callback) {
+        $.ajax({
+            url: url,
+            method: type,
+            contentType: 'application/json',
+            data: JSON.stringify(params),
+            success: function(result) {
+                if (callback) callback(result);
+            }
         });
     },
 

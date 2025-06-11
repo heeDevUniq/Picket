@@ -20,15 +20,11 @@ public class UserController {
     }
 
     @GetMapping("/signup")
-    public String register(HttpSession session, Model model) {
+    public String register(Model model) {
         log.debug("register진입");
-        System.out.println("///////// register진입 ////////// : " + session);
-        Map<String, Object> userMap = null;
-        if (session != null) {
-            userMap = SessionUtil.getLoginUser(session);
-            System.out.println("///////// userMap ////////// : " + userMap);
+        if(model.containsAttribute("email")) {
+            String email = (String) model.getAttribute("email"); // 직접 getAttribute()는 안 됨, 아래처럼 꺼내야 함
         }
-        model.addAttribute("session", userMap);
         return "user/signup";
     }
 
