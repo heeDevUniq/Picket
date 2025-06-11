@@ -2,6 +2,10 @@ package com.heeji.picket.controller.api;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.jackson2.JacksonFactory;
 import com.heeji.picket.domain.User;
 import com.heeji.picket.dto.request.UserDeleteRequest;
 import com.heeji.picket.dto.request.UserLoginRequest;
@@ -22,6 +26,9 @@ import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/user/api")
@@ -102,10 +109,9 @@ public class UserRestController {
         return resposneEntity;
     }
 
-    @GetMapping("/kakaoLogin")
+    @PostMapping("/kakaoLogin")
     public void kakaoLogin(@RequestParam String code, HttpSession session, HttpServletResponse response) throws Exception {
         System.out.println("진입!!!!!!!!!!!!!!!!!! : " + code);
-//        String redirectUrl = "redirect:/index";
 
         // 1. code 로 access_token 요청
         String tokenUrl = "https://kauth.kakao.com/oauth/token";
@@ -173,14 +179,51 @@ public class UserRestController {
                 user.setEmail(email);
                 SessionUtil.setLoginUser(session, user);
                 response.sendRedirect("/signup");
-//                redirectUrl = "redirect:/signup";
             }
         } else {
             throw new RuntimeException("사용자 정보 요청 실패: " + res.body());
         }
+    }
 
-        // 5. 리다이렉트
-//        return redirectUrl;
+    @PostMapping("/googleLogin")
+    public void googleLogin(@RequestBody Map<String, String> body, HttpSession session, HttpServletResponse response) throws Exception {
+        String credential = body.get("credential");
+        System.out.println("진입!!!!!!!!!!!!!!!!!! : " + credential);
+
+        try {
+            // 구글의 public key로 JWT를 검증
+            GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), JacksonFactory.getDefaultInstance())
+                    .setAudience(Collections.singletonList("363711896074-5mb07i2qch83a1ob8qh0ce8lg8a5p43c.apps.googleusercontent.com"))
+                    .build();
+
+            GoogleIdToken idToken = verifier.verify(credential);
+            System.out.println("진입!!!!!!!!!!!!!!!!!!2222222222222222 : " + idToken);
+
+            if (idToken != null) {
+                GoogleIdToken.Payload payload = idToken.getPayload();
+                System.out.println("진입!!!!!!!!!!!!!!!!!!3333333333333333333 : " + payload);
+
+                String email = payload.getEmail();
+                String name = (String) payload.get("name");
+                String picture = (String) payload.get("picture");
+
+                // TODO: 여기서 유저 존재 여부 확인 후, 없으면 회원가입 처리
+                // 이후 세션 생성 또는 JWT 발급 등 로그인 처리
+
+                Map<String, Object> result = new HashMap<>();
+                result.put("success", true);
+                result.put("email", email);
+                result.put("name", name);
+                result.put("picture", picture);
+
+            } else {
+//                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Collections.singletonMap("success", false));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("success", false));
+        }
     }
 
 }
