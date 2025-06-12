@@ -21,7 +21,7 @@ const user = {
 
     // 구글로그인
     googleLogin(response) {
-        const jwt = response.credential;
+        const jwt = response.access_token;
         com.ajaxParams('POST','/user/api/googleLogin',{ credential: jwt },function(result) {
             if (result.alertMsg != null) alert(result.alertMsg);
             sessionStorage.setItem('email', result.email);

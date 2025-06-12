@@ -1,23 +1,27 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ include file="../com/header.jsp" %>
+<%@ include file="../com/noheader.jsp" %>
 <meta name="google-signin-client_id" content="363711896074-5mb07i2qch83a1ob8qh0ce8lg8a5p43c.apps.googleusercontent.com">
 <script>
+    let tokenClient;
+
     window.onload = function () {
         // Kakao 초기화
         Kakao.init('3f3d8ba12e822fd113873d2914be079f');
         Kakao.isInitialized();
 
         // GSI 초기화
-        google.accounts.id.initialize({
-            client_id: "363711896074-5mb07i2qch83a1ob8qh0ce8lg8a5p43c.apps.googleusercontent.com",
-            callback: user.googleLogin
+        tokenClient = google.accounts.oauth2.initTokenClient({
+            client_id: '363711896074-5mb07i2qch83a1ob8qh0ce8lg8a5p43c.apps.googleusercontent.com',
+            scope: 'email',
+            callback: function (tokenResponse) {
+                console.log('Access Token:', tokenResponse.access_token);
+                user.googleLogin(tokenResponse);
+            }
         });
 
-        // 로그인 버튼 렌더링
-        google.accounts.id.renderButton(
-            document.getElementById("googleLogin"),
-            { theme: "outline", size: "large" }
-        );
+        $('#googleLogin').on('click', function () {
+            tokenClient.requestAccessToken(); // 팝업 로그인 창 열기
+        });
     }
 </script>
 <div class="login-box">
@@ -46,7 +50,7 @@
         </form>
 
         <div class="signup">
-            <p>계정이 없으신가요? <a href="#" onclick="com.locateUrl('/signup');">가입하기</a></p>
+            <p>계정이 없으신가요? <a href="/signup">가입하기</a></p>
         </div>
 
         <div class="min_login">
@@ -59,7 +63,7 @@
                 <i class="fa-solid fa-comment"></i> 카카오로 계속하기
                 </a>
 
-                <a href="#" class="btn google">
+                <a href="#" class="btn google" id="googleLogin">
                     <i class="fa-brands fa-google"></i> google로 계속하기
                 </a>
             </div>
