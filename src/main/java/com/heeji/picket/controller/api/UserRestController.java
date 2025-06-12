@@ -96,7 +96,7 @@ public class UserRestController {
 
     @PostMapping("/chkDupl")
     @ResponseBody
-    public int chkDupl(Map<String, Object> params) {
+    public int chkDupl(@RequestBody Map<String, Object> params) {
         int retNum = 0;
         User user = userService.findUser(params.get("email").toString());
         if (user != null) {

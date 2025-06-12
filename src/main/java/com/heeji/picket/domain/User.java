@@ -59,7 +59,10 @@ public class User {
     private String providerType;
 
     @Comment("카카오톡알림설정")
-    private String alarmYn;
+    private String kakaoOn;
+
+    @Comment("메일알림설정")
+    private String emailOn;
 
     @CreationTimestamp
     @Column(nullable = false)

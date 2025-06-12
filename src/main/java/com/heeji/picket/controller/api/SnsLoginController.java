@@ -108,26 +108,27 @@ public class SnsLoginController {
     @ResponseBody
     public Map<String, Object> googleLogin(@RequestBody Map<String, String> body, HttpSession session) throws Exception {
         Map<String, Object> returnMap = new HashMap<>();
-        String credential = body.get("credential");
+        String accessToken = body.get("credential");
 
-        // 구글의 public key로 JWT를 검증
-        GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), JacksonFactory.getDefaultInstance())
-                .setAudience(Collections.singletonList("363711896074-5mb07i2qch83a1ob8qh0ce8lg8a5p43c.apps.googleusercontent.com"))
+        // 1. access_token 으로 사용자 정보 요청
+        HttpRequest userInfoRequest = HttpRequest.newBuilder()
+                .uri(URI.create("https://www.googleapis.com/oauth2/v3/userinfo"))
+                .header("Authorization", "Bearer " + accessToken)
+                .GET()
                 .build();
 
-        // 1. code 로 access_token 요청
-        GoogleIdToken idToken = verifier.verify(credential);
+        HttpClient client = HttpClient.newHttpClient();
+        HttpResponse<String> response = client.send(userInfoRequest, HttpResponse.BodyHandlers.ofString());
 
-        if (idToken != null) {
-            // 2. access_token 으로 사용자 정보 요청
-            GoogleIdToken.Payload payload = idToken.getPayload();
+        if (response.statusCode() == 200) {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode userInfo = mapper.readTree(response.body());
+            String email = userInfo.get("email").asText();
 
-            String email = payload.getEmail();
-
-            // 3. DB 조회 후 로그인 or 회원가입
+            // 2. DB 조회 후 로그인 or 회원가입
             User user = userService.findUser(email);
             if (user != null) {
-                // 4. 세션 저장
+                // 3. 세션 저장
                 user = userService.findUser(email);
                 SessionUtil.setLoginUser(session, user);
                 returnMap.put("returnUrl", "/index");
@@ -139,7 +140,7 @@ public class SnsLoginController {
         } else {
             returnMap.put("alertMsg", "회원정보를 찾을 수 없어 회원가입 페이지로 이동합니다.");
             returnMap.put("returnUrl", "/signup");
-            throw new RuntimeException("사용자 정보 요청 실패: " + idToken);
+            throw new RuntimeException("사용자 정보 요청 실패: " + response.body());
         }
         return returnMap;
     }
