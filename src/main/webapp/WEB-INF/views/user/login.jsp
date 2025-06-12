@@ -39,7 +39,7 @@
             <label class="checkbox-group">
                 <input type="checkbox" />
                 <span class="checkmark"></span>
-                로그인 상태 유지
+                아이디 저장
             </label>
 
             <a href="#" onclick="user.login();" class="main_btn">로그인</a>
