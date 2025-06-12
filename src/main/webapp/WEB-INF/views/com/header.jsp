@@ -7,8 +7,11 @@
     <title>픽켓 : Pick! Your Ticket</title>
     <meta property="og:title" content="픽켓 : Pick! Your Ticket">
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="/js/common.js"></script>
     <script src="/js/user.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
+
 <body>

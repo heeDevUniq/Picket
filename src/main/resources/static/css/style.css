@@ -1,0 +1,240 @@
+/* 기본 설정 */
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  width: 100%;
+  margin: 0;
+  height: 100%;
+}
+
+li {
+  list-style-type: none;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+img {
+  vertical-align: top;
+  font-size: 0;
+  border: 0;
+}
+
+.clear:after {
+  content: '';
+  display: block;
+  clear: both;
+}
+
+/* 버튼 공통 */
+.btn {
+  display: block;
+  width: 400px;
+  text-align: center;
+  height: 50px;
+  color: #333;
+  font-size: 14px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+}
+
+.main_btn {
+  width: 400px;
+  text-align: center;
+  height: 50px;
+  background-color: #2875FF;
+  color: #fff;
+  display: block;
+  line-height: 46px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+}
+
+/* 들여쓰기 숨김 처리 */
+.indent {
+  display: block;
+  text-indent: -9999px;
+}
+
+/* 폼 */
+form {
+  margin: 0 auto;
+}
+
+/* 로그인 박스 */
+.login-box {
+  margin: 0 auto;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+/* 로고 */
+.logo {
+  width: 247px;
+  height: 51px;
+  margin: 0 auto 60px;
+  background-image: url("src/main/resources/static/css/image/logo.png");
+  background-size: cover;
+  background-position: center center;
+}
+
+/* 입력 그룹 */
+.input-group {
+  display: flex;
+  width: 380px;
+  border: 1px solid #DEDEDE;
+  padding: 12px 10px;
+  background-color: #fff;
+}
+
+.input-group input {
+  flex: 1;
+  border: none;
+  font-size: 14px;
+  outline: none;
+  color: #999;
+}
+
+input::placeholder {
+  color: #999;
+}
+
+.email {
+  border-bottom: 0;
+  border-radius: 4px 4px 0 0;
+}
+
+.pw {
+  border-radius: 0 0 4px 4px;
+}
+
+/* 아이콘 */
+.icon {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  opacity: 0.6;
+}
+
+.icon.user {
+  background-image: url('data:image/svg+xml;utf8,<svg fill="%23888" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z"/></svg>');
+}
+
+.icon.lock {
+  background-image: url('data:image/svg+xml;utf8,<svg fill="%23888" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2C9.79 2 8 3.79 8 6v4H6v12h12V10h-2V6c0-2.21-1.79-4-4-4zm2 8H10V6c0-1.1.9-2 2-2s2 .9 2 2v4z"/></svg>');
+}
+
+/* 체크박스 */
+input[type="checkbox"] {
+  display: none;
+}
+
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #666;
+  margin: 12px 0;
+  cursor: pointer;
+}
+
+.checkmark {
+  width: 14px;
+  height: 14px;
+  border: 1px solid #ccc;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 8px;
+  position: relative;
+}
+
+/* 체크되었을 때 스타일 */
+.checkbox-group input:checked + .checkmark::after {
+  content: "";
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: 8px;
+  height: 8px;
+  background: #2875FF;
+  border-radius: 50%;
+}
+
+/* 회원가입 안내 */
+.signup {
+  font-size: 12px;
+  color: #999;
+}
+
+.signup a {
+  color: #2875FF;
+}
+
+/* 간편 로그인 */
+.kakao {
+  background-color: #FEDD35;
+  line-height: 50px;
+  border: 1px solid #FEDD35;
+}
+
+.google {
+  background-color: #fff;
+  border: 1px solid #DEDEDE;
+  line-height: 50px;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: #999;
+  font-size: 12px;
+  margin: 20px 0;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  border-top: 1px solid #ddd;
+}
+
+.divider::before {
+  margin-right: 10px;
+}
+
+.divider::after {
+  margin-left: 10px;
+}
+
+.min_login p {
+  font-size: 12px;
+  color: #999;
+}
+
+/* 반응형 */
+@media screen and (max-width: 767px) {
+  .input-group {
+    width: 330px;
+  }
+
+  .btn {
+    width: 350px;
+  }
+
+  .main_btn {
+    width: 350px;
+  }
+}
