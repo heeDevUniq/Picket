@@ -7,6 +7,8 @@
     <title>픽켓 : Pick! Your Ticket</title>
     <meta property="og:title" content="픽켓 : Pick! Your Ticket">
     <link rel="stylesheet" href="/css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
     <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
     <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
@@ -17,22 +19,3 @@
 </head>
 <body>
 <!-- 상단 바 -->
-<header>
-    <div class="logo">
-        <a href="/index"><img src="/images/com/logo.png" alt="PICKET 로고"></a>
-    </div>
-    <nav>
-        <ul>
-            <li>카테고리</li>
-            <li>카테고리</li>
-            <li>카테고리</li>
-            <li>카테고리</li>
-            <li>카테고리</li>
-        </ul>
-    </nav>
-    <div class="user-actions">
-        <input type="text" placeholder="인기 공연 / 콘서트 혜택 모음">
-        <a href="/login">로그인</a>
-        <a href="/myTickets">예약</a>
-    </div>
-</header>
