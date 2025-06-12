@@ -23,7 +23,8 @@ public class UserController {
     public String register(Model model) {
         log.debug("register진입");
         if(model.containsAttribute("email")) {
-            String email = (String) model.getAttribute("email"); // 직접 getAttribute()는 안 됨, 아래처럼 꺼내야 함
+            String email = (String) model.getAttribute("email");
+            model.addAttribute("providerType", "kakao");
         }
         return "user/signup";
     }

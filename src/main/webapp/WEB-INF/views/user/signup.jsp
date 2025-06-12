@@ -6,6 +6,7 @@
         const email = sessionStorage.getItem("email");
         if (email) {
             $("#email").val(email);
+            $("#providerType").val("google");
             $("#email").attr("readonly", true);
             sessionStorage.removeItem("email");
         }
@@ -14,12 +15,15 @@
 <div>
     <h2>회원가입</h2>
     <form name="form">
+        <input type="hidden" name="providerType" value="" />
         <label for="email">이메일</label>
-        <input type="email" name="email" id="email" value="${email}" ${email != null? 'readonly':''} /><br/>
+        <input type="email" name="email" id="email" value="${email}" ${email != null? 'readonly':''} />
+        <a href="#" onclick="fnChkDuplId();"><br/>
         <label for="password">비밀번호</label>
-        <input type="password" name="password" id="password" /><br/>
+        <input type="password" name="password" id="password" oninput="fnChkConfPw();" /><br/>
         <label for="confPassword">비밀번호 확인</label>
-        <input type="password" name="confPassword" id="confPassword" /><br/>
+        <input type="password" name="confPassword" id="confPassword" oninput="fnChkConfPw();" /><br/>
+        <span id="pwText"></span>
         <label for="">구분</label>
         <label for="">일반</label>
         <input type="radio" name="role" id="role" value="user" />

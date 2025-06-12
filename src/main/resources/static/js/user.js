@@ -27,5 +27,22 @@ const user = {
             sessionStorage.setItem('email', result.email);
             location.href = result.returnUrl;
         });
-    }
+    },
+
+    // 이메일 중복 체크
+    fnChkDuplId() {
+        com.ajaxForm('POST','url','form',function(result) {
+            console.log('다녀옴', result);
+        });
+    },
+
+    // 비밀번호 일치 확인
+    fnChkConfPw() {
+        if ($('#password').val() == $('#confPassword').val()) {
+            $('#pwText').text('비밀번호 일치').css('color', 'green')
+        } else {
+            $('#pwText').text('비밀번호 불일치').css('color', 'red');
+        }
+    },
+
 }

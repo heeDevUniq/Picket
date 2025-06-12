@@ -58,9 +58,6 @@ public class User {
     @Comment("소셜로그인구분")
     private String providerType;
 
-    @Comment("소셜로그인아이디")
-    private String providerId;
-
     @CreationTimestamp
     @Column(nullable = false)
     @Comment("등록일시")
