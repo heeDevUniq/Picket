@@ -18,11 +18,11 @@
         <input type="hidden" name="providerType" value="" />
         <label for="email">이메일</label>
         <input type="email" name="email" id="email" value="${email}" ${email != null? 'readonly':''} />
-        <a href="#" onclick="fnChkDuplId();"><br/>
+        <a href="#" onclick="user.fnChkDupl();">중복체크</a><br/>
         <label for="password">비밀번호</label>
-        <input type="password" name="password" id="password" oninput="fnChkConfPw();" /><br/>
+        <input type="password" name="password" id="password" oninput="user.fnChkConfPw();" /><br/>
         <label for="confPassword">비밀번호 확인</label>
-        <input type="password" name="confPassword" id="confPassword" oninput="fnChkConfPw();" /><br/>
+        <input type="password" name="confPassword" id="confPassword" oninput="user.fnChkConfPw();" /><br/>
         <span id="pwText"></span>
         <label for="">구분</label>
         <label for="">일반</label>
@@ -31,6 +31,8 @@
         <input type="radio" name="role" id="role" value="seller" /><br/>
         <label for="name">이름</label>
         <input type="text" name="name" id="name" /><br/>
+        <label for="name">카카오톡 메시지 설정</label>
+        <input type="checkbox" name="alarmYn" id="alarmYn">
         <a href="#" onclick="user.join();">회원가입</a>
     </form>
 </div>

@@ -30,8 +30,8 @@ const user = {
     },
 
     // 이메일 중복 체크
-    fnChkDuplId() {
-        com.ajaxForm('POST','url','form',function(result) {
+    fnChkDupl() {
+        com.ajaxForm('POST','/user/api/chkDupl','form',function(result) {
             console.log('다녀옴', result);
         });
     },

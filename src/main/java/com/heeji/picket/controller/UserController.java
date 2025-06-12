@@ -29,4 +29,16 @@ public class UserController {
         return "user/signup";
     }
 
+    @GetMapping("/myTickets")
+    public String myTickets() {
+        log.debug("myTickets진입");
+        return "user/myTickets";
+    }
+
+    @GetMapping("/myInfo")
+    public String myInfo() {
+        log.debug("myInfo진입");
+        return "user/myInfo";
+    }
+
 }

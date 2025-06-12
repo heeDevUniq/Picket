@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/user/api")
 @Log4j2
@@ -92,5 +94,14 @@ public class UserRestController {
         return resposneEntity;
     }
 
-
+    @PostMapping("/chkDupl")
+    @ResponseBody
+    public int chkDupl(Map<String, Object> params) {
+        int retNum = 0;
+        User user = userService.findUser(params.get("email").toString());
+        if (user != null) {
+            retNum = 1;
+        }
+        return retNum;
+    }
 }

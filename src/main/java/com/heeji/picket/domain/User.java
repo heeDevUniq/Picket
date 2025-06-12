@@ -58,6 +58,9 @@ public class User {
     @Comment("소셜로그인구분")
     private String providerType;
 
+    @Comment("카카오톡알림설정")
+    private String alarmYn;
+
     @CreationTimestamp
     @Column(nullable = false)
     @Comment("등록일시")
