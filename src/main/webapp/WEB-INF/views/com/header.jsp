@@ -16,3 +16,23 @@
     <script src="/js/user.js"></script>
 </head>
 <body>
+<!-- 상단 바 -->
+<header>
+    <div class="logo">
+        <a href="/index"><img src="/images/com/logo.png" alt="PICKET 로고"></a>
+    </div>
+    <nav>
+        <ul>
+            <li>카테고리</li>
+            <li>카테고리</li>
+            <li>카테고리</li>
+            <li>카테고리</li>
+            <li>카테고리</li>
+        </ul>
+    </nav>
+    <div class="user-actions">
+        <input type="text" placeholder="인기 공연 / 콘서트 혜택 모음">
+        <a href="/login">로그인</a>
+        <a href="/myTickets">예약</a>
+    </div>
+</header>
