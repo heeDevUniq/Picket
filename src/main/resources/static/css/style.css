@@ -120,20 +120,19 @@ input::placeholder {
 /* 아이콘 */
 .icon {
   display: inline-block;
-  width: 20px;
-  height: 20px;
+  width: 30px;
+  height: 30px;
   margin-right: 10px;
   background-size: contain;
   background-repeat: no-repeat;
-  opacity: 0.6;
 }
 
 .icon.user {
-  background-image: url('data:image/svg+xml;utf8,<svg fill="%23888" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z"/></svg>');
+  background-image: url('/css/image/user.svg');
 }
 
 .icon.lock {
-  background-image: url('data:image/svg+xml;utf8,<svg fill="%23888" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2C9.79 2 8 3.79 8 6v4H6v12h12V10h-2V6c0-2.21-1.79-4-4-4zm2 8H10V6c0-1.1.9-2 2-2s2 .9 2 2v4z"/></svg>');
+  background-image: url('/css/image/pw.svg');
 }
 
 /* 체크박스 */
