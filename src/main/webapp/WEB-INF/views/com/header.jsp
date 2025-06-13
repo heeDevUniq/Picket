@@ -31,23 +31,28 @@
                 </button>
             </div>
             <div class="my-icon-box">
-                    <div class="my-login">
-                    <a href="#" class="login_off">
-                        <img src="/images/user2.svg" alt="로그인 아이콘">
-                        <span >로그인</span>
-                    </a>
-                     <a href="#" class="login_on">
-                         <img src="/images/user2.svg" alt="로그인 아이콘">
-                         <span >로그아웃</span>
-                     </a>
-
-                    </div>
-                    <div class="my-ticket">
-                     <a href="#">
+                <div class="my-login">
+                    <c:choose>
+                        <c:when test="${session.LOGIN_EMAIL != null}">
+                             <a href="/logout" class="login_on">
+                                 <img src="/images/user2.svg" alt="로그인 아이콘">
+                                 <span >로그아웃</span>
+                             </a>
+                        </c:when>
+                        <c:otherwise>
+                            <a href="/login" class="login_off">
+                                <img src="/images/user2.svg" alt="로그인 아이콘">
+                                <span >로그인</span>
+                            </a>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
+                <div class="my-ticket">
+                     <a href="/myTickets">
                         <img src="/images/ticket.svg" alt="예약 아이콘">
                         <span>예약</span>
-                      </a>
-                    </div>
+                     </a>
+                </div>
             </div>
         </div>
     </div>
