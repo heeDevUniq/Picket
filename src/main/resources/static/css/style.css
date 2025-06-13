@@ -292,10 +292,71 @@ nav ul li {
   margin: 10px;
 }
 
-/* 반응형 */
+
 .login_on {
   display: none;
 }
+
+.left-menu{
+margin:50px;}
+.user_name{
+    width: 240px;
+    height: 110px;
+    border: 1px solid #EBEBEB;
+    background-color: #F8F8F8;
+    border-bottom: 0;
+    border-radius: 16px 16px 0 0;
+}
+.user_name>p{
+    font-size: 20px;
+    font-weight: 600;
+    padding: 20px;
+    padding-bottom: 15px;
+}
+
+.user_name>span{
+font-size: 12px;
+color: #B9B9B9;
+padding: 0 20px;
+}
+
+.my-list{
+width:240px;
+height:400px;
+border:1px solid #EBEBEB;
+background-color:#F8F8F8;
+border-top:0;
+}
+
+.my-list>.line{
+width:200px;
+border:1px solid #E6E6E6;
+display:block;
+margin: 0 auto;
+}
+.left-menu-list{
+padding:20px;
+}
+
+.left-menu-list>li{
+    margin: 20px 0;
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;}
+
+.left-menu-list>li>img{
+    width:20px;}
+
+.my-list >span{
+    color:#B9B9B9;
+    font-size:12px;
+    text-decoration: underline;
+    margin-left: 20px;
+    border-radius:0 0 16px 16px;
+    }
+
 @media screen and (max-width: 767px) {
   .input-group {
     width: 330px;
