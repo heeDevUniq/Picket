@@ -18,3 +18,44 @@
     <script src="/js/user.js"></script>
 </head>
 <body>
+<header>
+    <div class="header">
+        <div class="header-logo">
+            <img src="/images/com/logo.png" alt="PICKET 로고">
+        </div>
+        <div class="my-box">
+            <div class="search-box">
+                <input type="text" placeholder="인기 공연 / 콘서트 혜택 모음">
+                <button class="search-btn">
+                    <img src="/images/search.svg" alt="검색">
+                </button>
+            </div>
+            <div class="my-icon-box">
+                    <div class="my-login">
+                    <a href="#">
+                        <img src="/images/user2.svg" alt="로그인 아이콘">
+                        <span class="login_off">로그인</span>
+                        <span class="login_on">로그아웃</span>
+                        </a>
+                    </div>
+                    <div class="my-ticket">
+                     <a href="#">
+                        <img src="/images/ticket.svg" alt="예약 아이콘">
+                        <span>예약</span>
+                        </a>
+                    </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<nav>
+    <ul>
+        <li><a href="#">뮤지컬/연극</a></li>
+        <li><a href="#">콘서트</a></li>
+        <li><a href="#">클래식/무용</a></li>
+        <li><a href="#">전시/행사</a></li>
+        <li><a href="#">페스티벌</a></li>
+    </ul>
+</nav>
+
