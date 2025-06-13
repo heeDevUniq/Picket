@@ -11,28 +11,20 @@ import java.sql.Timestamp;
 @Entity
 @AllArgsConstructor
 @Data
-public class ShowReviews {
+public class ShowLike {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Comment("공연정보고유번호")
-    private Long showReviewId;
+    @Comment("좋아요고유번호")
+    private Long postLikeId;
 
+    @Column(nullable = false, unique = true)
     @Comment("공연정보고유번호")
     private Long showId;
 
-    @Lob
-    @Column(columnDefinition = "TEXT")
-    @Comment("내용")
-    private String info;
-
     @CreationTimestamp
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     @Comment("등록일시")
     private Timestamp insertDate;
-
-    @Column(nullable = false)
-    @Comment("등록자id")
-    private int insertId;
 
 }
