@@ -32,17 +32,21 @@
             </div>
             <div class="my-icon-box">
                     <div class="my-login">
-                    <a href="#">
+                    <a href="#" class="login_off">
                         <img src="/images/user2.svg" alt="로그인 아이콘">
-                        <span class="login_off">로그인</span>
-                        <span class="login_on">로그아웃</span>
-                        </a>
+                        <span >로그인</span>
+                    </a>
+                     <a href="#" class="login_on">
+                         <img src="/images/user2.svg" alt="로그인 아이콘">
+                         <span >로그아웃</span>
+                     </a>
+
                     </div>
                     <div class="my-ticket">
                      <a href="#">
                         <img src="/images/ticket.svg" alt="예약 아이콘">
                         <span>예약</span>
-                        </a>
+                      </a>
                     </div>
             </div>
         </div>
