@@ -20,9 +20,9 @@
         <input type="email" name="email" id="email" value="${email}" ${email != null? 'readonly':''} />
         <a href="#" onclick="user.fnChkDupl();">중복체크</a><span id="duplText"></span><br/>
         <label for="password">비밀번호</label>
-        <input type="password" name="password" id="password" oninput="user.fnChkConfPw();" /><br/>
+        <input type="password" name="password" id="password" oninput="user.fnChkPw();" /><br/>
         <label for="confPassword">비밀번호 확인</label>
-        <input type="password" name="confPassword" id="confPassword" oninput="user.fnChkConfPw();" /><br/>
+        <input type="password" name="confPassword" id="confPassword" oninput="user.fnChkPw();" /><br/>
         <span id="pwText"></span>
         <label for="">구분</label>
         <label for="">일반</label>

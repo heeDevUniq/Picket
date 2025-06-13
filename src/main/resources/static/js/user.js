@@ -49,12 +49,21 @@ const user = {
         });
     },
 
-    // 비밀번호 일치 확인
-    fnChkConfPw() {
+    // 비밀번호 체크
+    fnChkPw() {
+        // 비밀번호 일치 확인
         if ($('#password').val() == $('#confPassword').val()) {
-            $('#pwText').text('비밀번호 일치').css('color', 'blue');
+            $('#pwText').text('비밀번호 일치합니다.').css('color', 'blue');
         } else {
-            $('#pwText').text('비밀번호 불일치').css('color', 'red');
+            $('#pwText').text('비밀번호가 일치하지 않습니다.').css('color', 'red');
+        }
+
+        // 비밀번호 유효성 검사 (8자이상 12자이하 영문, 숫자, 특수문자 조합)
+        const regex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()])[a-zA-Z\d!@#$%^&*()]{8,12}$/;
+        if (regex.test($('#password').val())) {
+            $('#pwText').text('비밀번호가 유효합니다.').css('color', 'blue');
+        } else {
+            $('#pwText').text('비밀번호가 유효하지 않습니다.').css('color', 'red');
         }
     },
 

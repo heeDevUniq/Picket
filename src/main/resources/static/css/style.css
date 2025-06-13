@@ -120,11 +120,11 @@ input::placeholder {
 }
 
 .icon.user {
-  background-image: url('/images/user.svg');
+  background-image: url('/images/user/user.svg');
 }
 
 .icon.lock {
-  background-image: url('/images/pw.svg');
+  background-image: url('/images/user/pw.svg');
 }
 
 /* 체크박스 */
