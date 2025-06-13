@@ -20,12 +20,12 @@ public class UserAlarm {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Comment("회원고유번호")
-    private int userId;
+    private Long userId;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Comment("공연정보고유번호")
-    private int showId;
+    private Long showId;
 
     @CreationTimestamp
     @Column(nullable = false)

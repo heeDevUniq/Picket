@@ -7,7 +7,6 @@ import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.sql.Clob;
 import java.sql.Timestamp;
 
 @Entity
@@ -18,7 +17,7 @@ public class Shows {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Comment("공연정보고유번호")
-    private int showId;
+    private Long showId;
 
     @Column(nullable = false)
     @Comment("공연명")
@@ -48,8 +47,10 @@ public class Shows {
     @Comment("취소마감일시")
     private Timestamp isDeleted;
 
+    @Lob
+    @Column(columnDefinition = "TEXT")
     @Comment("공연정보")
-    private Clob info;
+    private String info;
 
     @Column(nullable = false)
     @Comment("포스터링크")

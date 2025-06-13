@@ -18,11 +18,11 @@ public class PostLike {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Comment("좋아요고유번호")
-    private int postLikeId;
+    private Long postLikeId;
 
     @Column(nullable = false, unique = true)
     @Comment("게시물고유번호")
-    private int postId;
+    private Long postId;
 
     @CreationTimestamp
     @Column(nullable = false, unique = true)

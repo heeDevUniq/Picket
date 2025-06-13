@@ -5,9 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
-import java.sql.Clob;
 import java.sql.Timestamp;
 
 @Entity
@@ -18,13 +16,15 @@ public class ShowReviews {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Comment("공연정보고유번호")
-    private int showReviewId;
+    private Long showReviewId;
 
     @Comment("공연정보고유번호")
-    private int showId;
+    private Long showId;
 
+    @Lob
+    @Column(columnDefinition = "TEXT")
     @Comment("내용")
-    private Clob info;
+    private String info;
 
     @CreationTimestamp
     @Column(nullable = false)

@@ -17,11 +17,11 @@ public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Comment("알림고유번호")
-    private int noticeId;
+    private Long noticeId;
 
     @Column(nullable = false)
     @Comment("공연정보고유번호")
-    private int showId;
+    private Long showId;
 
     @Column(nullable = false)
     @Comment("알림유형")
