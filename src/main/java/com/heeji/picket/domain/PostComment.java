@@ -18,11 +18,11 @@ public class PostComment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Comment("댓글고유번호")
-    private int postCommentId;
+    private Long postCommentId;
 
     @Column(nullable = false)
     @Comment("게시물고유번호")
-    private int postId;
+    private Long postId;
 
     @Comment("내용")
     private String content;

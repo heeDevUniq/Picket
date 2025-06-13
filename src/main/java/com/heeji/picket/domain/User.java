@@ -21,7 +21,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Comment("회원고유번호")
-    private int userId;
+    private Long userId;
 
     @Column(nullable = false, unique = true)
     @Comment("이메일")

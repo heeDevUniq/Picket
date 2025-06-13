@@ -17,15 +17,15 @@ public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Comment("결제고유번호")
-    private int paymentId;
+    private Long paymentId;
 
     @Column(nullable = false)
     @Comment("좌석등급고유번호")
-    private int seatGradeId;
+    private Long seatGradeId;
 
     @Column(nullable = false)
     @Comment("공연정보고유번호")
-    private int showId;
+    private Long showId;
 
     @Column(nullable = false)
     @Comment("결제수단")
