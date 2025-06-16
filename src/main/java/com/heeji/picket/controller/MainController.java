@@ -12,14 +12,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class MainController {
 
     @GetMapping("/")
-    public String home(HttpSession session, Model model) {
-        return index(session, model);
+    public String home() {
+        return index();
     }
 
     @GetMapping("/index")
-    public String index(HttpSession session, Model model) {
+    public String index() {
         log.debug("index진입");
-        model.addAttribute("session", SessionUtil.getLoginUser(session));
         return "index";
     }
 

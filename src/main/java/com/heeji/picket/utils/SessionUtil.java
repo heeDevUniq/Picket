@@ -3,11 +3,14 @@ package com.heeji.picket.utils;
 import com.heeji.picket.domain.User;
 import jakarta.servlet.http.HttpSession;
 import jakarta.websocket.Session;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+@ControllerAdvice
 public class SessionUtil {
 
     private static final String ROLE = "user";
@@ -16,6 +19,7 @@ public class SessionUtil {
         // Prevent instantiation
     }
 
+    @ModelAttribute("session")
     public static Map<String, Object> getLoginUser(HttpSession session) {
         Map<String, Object> sessionMap = new HashMap<String, Object>();
         sessionMap.put("LOGIN_EMAIL", session.getAttribute("LOGIN_EMAIL"));
