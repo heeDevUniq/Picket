@@ -33,7 +33,7 @@
             <a href="#" onclick="user.login();" class="main_btn">로그인</a>
         </form>
 
-        <div class="signup">
+        <div class="signup_btn">
             <p>계정이 없으신가요? <a href="/signup">가입하기</a></p>
         </div>
 

@@ -12,30 +12,45 @@
         }
     }
 </script>
+<div class="login-box">
+<div class="signup">
+<div class="logo" alt="logo">
+       <img src="/images/com/logo.png" alt="PICKET 로고">
+       </div>
+       <div class="tabs-radio">
+               <input type="radio" name="role" id="tab1" value="user" class="tabs_btn" checked  />
+               <label for="tab1" class="tab_radio_label" >일반</label>
+               <input type="radio" name="role" id="tab2" value="seller" class="tabs_btn"  /><br/>
+               <label for="tab2"  class="tab_radio_label" >티켓셀러</label>
+       </div>
 <div>
-    <h2>회원가입</h2>
     <form name="form">
+
         <input type="hidden" name="providerType" value="" />
-        <label for="email">이메일</label>
-        <input type="email" name="email" id="email" value="${email}" ${email != null? 'readonly':''} />
-        <a href="#" onclick="user.fnChkDupl();">중복체크</a><span id="duplText"></span><br/>
-        <label for="password">비밀번호</label>
-        <input type="password" name="password" id="password" oninput="user.fnChkPw();" /><br/>
-        <label for="confPassword">비밀번호 확인</label>
-        <input type="password" name="confPassword" id="confPassword" oninput="user.fnChkPw();" /><br/>
+        <div class="input-group email">
+        <input type="text" name="name" id="name" placeholder="이름" /><br/>
+        </div>
+         <div class="input-group">
+        <input type="email" name="email" id="email" placeholder="이메일" value="${email}" ${email != null? 'readonly':''} />
+        <span id="duplText"></span>
+        <a href="#" onclick="user.fnChkDupl();" class="duplbtn">중복체크</a>
+        </div>
+         <div class="input-group">
+        <input type="password" name="password" id="password" placeholder="비밀번호" oninput="user.fnChkPw();" /><span class="icon lock"></span>
+        </div>
+         <div class="input-group pw">
+        <input type="password" name="confPassword" id="confPassword" placeholder="비밀번호 확인" oninput="user.fnChkPw();" /><br/>
         <span id="pwText"></span>
-        <label for="">구분</label>
-        <label for="">일반</label>
-        <input type="radio" name="role" id="role" value="user" />
-        <label for="">티켓셀러</label>
-        <input type="radio" name="role" id="role" value="seller" /><br/>
-        <label for="name">이름</label>
-        <input type="text" name="name" id="name" /><br/>
-        <label for="name">카카오톡</label>
-        <input type="checkbox" name="kakaoOn" id="kakaoOn"><br/>
-        <label for="name">메일</label>
+        </div>
+        <p style="text-align: left; margin: 5px; padding-top: 15px;"> 이벤트 알람 수신 동의</p>
+         <div class="checkbox">
+        <input type="checkbox" name="kakaoOn" id="kakaoOn">
+        <label for="checkbox">카카오톡</label>
         <input type="checkbox" name="emailOn" id="emailOn">
-        <a href="#" onclick="user.join();">회원가입</a>
+         <label for="checkbox">메일</label>
+        </div>
+        <a href="#" onclick="user.join();" class="main_btn">가입하기</a>
     </form>
+    </div>
 </div>
-<%@include file="../com/footer.jsp"%>
+</div>

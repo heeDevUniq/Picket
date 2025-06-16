@@ -6,19 +6,25 @@
     </aside>
 
     <main class="main-content">
+    <h2>예매 / 취소내역 </h2>
         <div class="tabs">
-            <button class="active">예매내역</button>
-            <button>취소내역</button>
+            <button class="tab_btn active">예매내역</button>
+            <button class="tab_btn">취소내역</button>
         </div>
 
         <form method="get" action="reservation.jsp" class="filter-form">
             <div class="filters">
-                <label><input type="radio" name="period" value="1" checked> 1개월</label>
-                <label><input type="radio" name="period" value="3"> 3개월</label>
-                <label><input type="radio" name="period" value="6"> 6개월</label>
+            <span>기간별 조회</span>
+            <div class=" radio-buttons">
+                <input type="radio" name="period" value="1" checked><label> 1개월</label>
+                <input type="radio" name="period" value="3"> <label> 3개월</label>
+                <input type="radio" name="period" value="6"><label> 6개월</label>
+            </div>
+            <span>관람일시</span>
                 <input type="date" name="viewDate">
+                <span>티켓명</span>
                 <input type="text" name="ticketName" placeholder="티켓명">
-                <button type="submit">조회</button>
+                <button type="submit" class="main_btn min_btn">조회</button>
             </div>
         </form>
 
