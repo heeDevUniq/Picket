@@ -27,7 +27,6 @@
                 <button type="submit" class="main_btn min_btn">조회</button>
             </div>
         </form>
-
         <table class="reservation-table">
             <thead>
                 <tr>

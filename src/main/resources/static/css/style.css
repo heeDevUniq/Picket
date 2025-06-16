@@ -136,6 +136,11 @@ input::placeholder {
   background-image: url('/images/user/pw.svg');
 }
 
+.icon.lock2{
+background-image: url('/images/user/pw_gray.svg');
+}
+
+
 /* 체크박스 */
 input[type="checkbox"] {
   display: none;
