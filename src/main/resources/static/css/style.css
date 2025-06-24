@@ -14,10 +14,25 @@ a {
   text-decoration: none;
   color: inherit;
 }
+
 img {
   vertical-align: top;
   font-size: 0;
   border: 0;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top:20px;
+}
+thead{
+background-color: #F9F9F9;
+border-bottom:1px solid #cecece;}
+
+th, td {
+border:0;
+padding:8px;
 }
 .clear::after {
   content: '';
@@ -46,9 +61,11 @@ img {
 }
 .min_btn {
   display: inline;
-  width: 49px;
+  min-width: 49px;
+  max-width:60px;
   height: 33px;
   line-height: 0;
+  text-align:center;
 }
 button {
   border: 0;
@@ -438,7 +455,7 @@ nav ul li {
   border-radius: 4px;
   overflow: hidden;
   width: 1000px;
-  margin: 16px 0;
+  margin: 25px 0;
 }
 .tabs .tab_btn {
   flex: 1;
@@ -508,29 +525,34 @@ display:none;
   padding-right: 10px;
 }
 .signup >.input-group > label{
-display: none;}
+  display: none;
+}
+
 #pwText,#duplText{
-    font-size: 12px;
-    padding: 7px 20px;}
+  font-size: 12px;
+  padding: 7px 20px;
+}
 
 .duplbtn{
-font-size:14px;
-line-height: 32px;
-color:#2875FF;}
+  font-size:14px;
+  line-height: 32px;
+  color:#2875FF;
+}
 
 .duplbtn:after{
-content:'';
-position:absolute;
-width:70px;
-height:59px;
-border-left:1px solid #DEDEDE;
-right:0;
-top:0;
+  content:'';
+  position:absolute;
+  width:70px;
+  height:59px;
+  border-left:1px solid #DEDEDE;
+  right:0;
+  top:0;
+  transition:0.5s;
 }
 .checkbox{
-display:flex;
-padding-left:20px;
-margin-bottom:55px;
+  display:flex;
+  padding-left:20px;
+  margin-bottom:55px;
 }
 /* 반응형 */
 @media screen and (max-width: 767px) {
@@ -542,3 +564,5 @@ margin-bottom:55px;
     width: 350px;
   }
 }
+
+

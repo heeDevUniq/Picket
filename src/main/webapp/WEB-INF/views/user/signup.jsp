@@ -20,7 +20,7 @@
     <div class="signup">
         <!-- 로고 -->
         <div class="logo">
-            <img src="/images/com/logo.png" alt="PICKET 로고">
+          <a href="index.jsp"><img src="/images/com/logo.png" alt="PICKET 로고"></a>
         </div>
 
         <!-- 회원 유형 선택 -->
@@ -53,6 +53,7 @@
             </div>
 
             <!-- 비밀번호 입력 -->
+
             <div class="input-group">
                 <input type="password" name="password" id="password"
                        placeholder="비밀번호"
@@ -83,3 +84,6 @@
         </form>
     </div>
 </div>
+
+
+
