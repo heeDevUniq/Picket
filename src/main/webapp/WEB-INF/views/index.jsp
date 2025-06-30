@@ -159,13 +159,15 @@
         <button>전시</button>
     </div>
     <div class="ranking-list">
-        <div class="ranking-item">
-            <span class="ranking-number">1</span>
-            <div class="ranking-img"></div>
-            <div class="ranking-title">콘서트 제목작성</div>
-            <div class="ranking-location">잠실종합운동장 내 빅탑</div>
-            <div class="ranking-date">2025.02.06</div>
-        </div>
+        <a href="/shows/view/1">
+            <div class="ranking-item">
+                <span class="ranking-number">1</span>
+                <div class="ranking-img"></div>
+                <div class="ranking-title">콘서트 제목작성</div>
+                <div class="ranking-location">잠실종합운동장 내 빅탑</div>
+                <div class="ranking-date">2025.02.06</div>
+            </div>
+        </a>
         <div class="ranking-item">
             <span class="ranking-number">2</span>
             <div class="ranking-img"></div>

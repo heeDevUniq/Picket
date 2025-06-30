@@ -40,7 +40,7 @@ public class PostController {
     @GetMapping("/{postType}/view/{postId}")
     public String view(Model model, @PathVariable String postType, @PathVariable Long postId) {
         log.debug("post view 진입");
-        model.addAttribute("posts", postService.findById(postId));
+        model.addAttribute("post", postService.findById(postId));
         model.addAttribute("postType", postType);
         return "post/view";
     }

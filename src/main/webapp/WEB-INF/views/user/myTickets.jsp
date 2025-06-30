@@ -17,7 +17,7 @@
             <span>기간별 조회</span>
             <div class=" radio-buttons">
                 <input type="radio" name="period" value="1" checked><label> 1개월</label>
-                <input type="radio" name="period" value="3"> <label> 3개월</label>
+                <input type="radio" name="period" value="3"><label> 3개월</label>
                 <input type="radio" name="period" value="6"><label> 6개월</label>
             </div>
             <span>관람일시</span>

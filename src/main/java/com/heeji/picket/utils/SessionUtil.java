@@ -23,6 +23,7 @@ public class SessionUtil {
     public static Map<String, Object> getLoginUser(HttpSession session) {
         Map<String, Object> sessionMap = new HashMap<String, Object>();
         sessionMap.put("LOGIN_EMAIL", session.getAttribute("LOGIN_EMAIL"));
+        sessionMap.put("LOGIN_NAME", session.getAttribute("LOGIN_NAME"));
         sessionMap.put("LOGIN_ID", session.getAttribute("LOGIN_ID"));
         sessionMap.put("LOGIN_ROLE", session.getAttribute("LOGIN_ROLE"));
         sessionMap.put("LOGIN_TIME", session.getAttribute("LOGIN_TIME"));
@@ -31,6 +32,7 @@ public class SessionUtil {
 
     public static void setLoginUser(HttpSession session, User user) {
         session.setAttribute("LOGIN_EMAIL", user.getEmail());
+        session.setAttribute("LOGIN_NAME", user.getName());
         session.setAttribute("LOGIN_ID", user.getUserId());
         session.setAttribute("LOGIN_ROLE", user.getRole());
         session.setAttribute("LOGIN_TIME", new Date());

@@ -1,5 +1,7 @@
-document.addEventListener('DOMContentLoaded', function() {
-   event.preventDefault();
+$(document).on('submit', '.vex-dialog-form', function(e){
+    console.log('vex 모달 form submit 막음!');
+    e.preventDefault();
+    return false;
 });
 const com = {
     ajaxForm(type, url, formId, callback) {
@@ -39,10 +41,9 @@ const com = {
         Object.keys(obj).map(key => {
             form.append($("<input type='hidden'/>").attr({
                 "name": key,
-                "value": obj[value]
+                "value": obj[key]
             }));
         });
-        form.append($("</form>"));
         form.appendTo("body").submit().remove();
     }
 }

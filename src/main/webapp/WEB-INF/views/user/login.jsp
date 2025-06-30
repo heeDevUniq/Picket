@@ -13,7 +13,7 @@
         <div class="logo" alt="logo">
        <img src="/images/com/logo.png" alt="PICKET 로고"></div>
 
-        <form name="form" id="form">
+        <form name="loginForm" id="loginForm">
             <div class="input-group email">
                 <span class="icon user"></span>
                 <input type="email" name="email" placeholder="이메일" />

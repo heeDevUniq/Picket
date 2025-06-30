@@ -33,7 +33,7 @@
         </div>
 
         <!-- 회원가입 폼 -->
-        <form name="form">
+        <form name="signupForm">
             <!-- SNS 가입 유형 hidden -->
             <input type="hidden" name="providerType" id="providerType" value="" />
 
