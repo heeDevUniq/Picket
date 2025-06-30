@@ -21,7 +21,7 @@
 <header>
     <div class="header">
         <div class="header-logo">
-            <img src="/images/com/logo.png" alt="PICKET 로고">
+            <a href="/index"><img src="/images/com/logo.png" alt="PICKET 로고"></a>
         </div>
         <div class="my-box">
             <div class="search-box">

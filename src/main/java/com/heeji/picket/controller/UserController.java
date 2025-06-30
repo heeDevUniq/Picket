@@ -30,15 +30,23 @@ public class UserController {
     }
 
     @GetMapping("/myTickets")
-    public String myTickets() {
+    public String myTickets(HttpSession session) {
         log.debug("myTickets진입");
-        return "user/myTickets";
+        return this.sessionCheck(session, "user/myTickets");
     }
 
     @GetMapping("/myInfo")
-    public String myInfo() {
+    public String myInfo(HttpSession session) {
         log.debug("myInfo진입");
-        return "user/myInfo";
+        return this.sessionCheck(session, "user/myInfo");
+    }
+
+    public String sessionCheck(HttpSession session, String returnUrl) {
+        if (SessionUtil.getLoginUser(session).get("LOGIN_EMAIL") == null || "".equals(SessionUtil.getLoginUser(session).get("LOGIN_EMAIL"))) {
+            return "user/login";
+        } else {
+            return returnUrl;
+        }
     }
 
 }
