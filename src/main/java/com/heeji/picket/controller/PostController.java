@@ -45,7 +45,7 @@ public class PostController {
         return "post/view";
     }
 
-    @GetMapping("/{boardType}/write/{postId}")
+    @GetMapping("/{postType}/write/{postId}")
     public String write(Model model, @PathVariable String postType, @PathVariable Long postId) {
         log.debug("post write 진입");
         model.addAttribute("postType", postType);

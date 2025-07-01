@@ -3,6 +3,7 @@ package com.heeji.picket.domain;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.CreationTimestamp;
@@ -11,6 +12,7 @@ import java.sql.Timestamp;
 
 @Entity
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class Seat {
 
@@ -37,7 +39,7 @@ public class Seat {
 
     @Column(nullable = false, unique = true)
     @Comment("좌석번호")
-    private int seatNumber;
+    private Integer seatNumber;
 
     @Column(nullable = false)
     @Comment("예매상태")
@@ -52,6 +54,6 @@ public class Seat {
     private Timestamp bookedDate;
 
     @Comment("예매자id")
-    private int bookedId;
+    private Integer bookedId;
 
 }

@@ -10,16 +10,12 @@
     <meta property="og:title" content="픽켓 : Pick! Your Ticket">
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <link rel="shortcut icon" href="/images/com/favicon.ico" type="image/x-icon">
     <link rel="icon" href="" type="image/x-icon">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vex-js@4.1.0/dist/css/vex.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vex-js@4.1.0/dist/css/vex-theme-default.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vex-js@4.1.0/dist/js/vex.combined.min.js"></script>
-    <script>
-        vex.defaultOptions.className = 'vex-theme-default';
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="/js/common.js"></script>
     <script src="/js/user.js"></script>
 </head>
@@ -42,13 +38,13 @@
                         <c:when test="${session.LOGIN_EMAIL != null}">
                              <a href="/logout" class="login_on">
                                  <img src="/images/user2.svg" alt="로그인 아이콘">
-                                 <span >로그아웃</span>
+                                 <span>로그아웃</span>
                              </a>
                         </c:when>
                         <c:otherwise>
                             <a href="/login" class="login_off">
                                 <img src="/images/user2.svg" alt="로그인 아이콘">
-                                <span >로그인</span>
+                                <span>로그인</span>
                             </a>
                         </c:otherwise>
                     </c:choose>
@@ -66,11 +62,11 @@
 
 <nav>
     <ul>
-        <li><a href="#">뮤지컬/연극</a></li>
-        <li><a href="#">콘서트</a></li>
-        <li><a href="#">클래식/무용</a></li>
-        <li><a href="#">전시/행사</a></li>
-        <li><a href="#">페스티벌</a></li>
+        <li><a href="/shows/list/musical">뮤지컬/연극</a></li>
+        <li><a href="/shows/list/concert">콘서트</a></li>
+        <li><a href="/shows/list/classic">클래식/무용</a></li>
+        <li><a href="/shows/list/exhibit">전시/행사</a></li>
+        <li><a href="/shows/list/festival">페스티벌</a></li>
     </ul>
 </nav>
 

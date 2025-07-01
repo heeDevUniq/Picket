@@ -126,11 +126,15 @@ const user = {
 //    },
 
     logout() {
-        vex.dialog.confirm({
-            message: '로그아웃 하시겠습니까?',
-            callback: function(value) {
-                if (value) location.href = "/logout";
-            }
+        Swal.fire({
+            title: '로그아웃',
+            text: '로그아웃 하시겠습니까?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: '확인',
+            cancelButtonText: '취소'
+        }).then((result) => {
+            if (result.isConfirmed) location.href = "/logout";
         });
     }
 

@@ -32,7 +32,6 @@ public class ShowsController {
         log.debug("shows index진입");
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "insertDate"));
         Page<Shows> shows = showsService.findAllByGenre(genre, pageable);
-
         model.addAttribute("shows", shows);
         return "shows/index";
     }

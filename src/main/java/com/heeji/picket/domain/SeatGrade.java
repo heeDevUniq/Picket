@@ -3,10 +3,12 @@ package com.heeji.picket.domain;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 
 @Entity
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class SeatGrade {
 
@@ -25,11 +27,11 @@ public class SeatGrade {
 
     @Column(nullable = false)
     @Comment("좌석개수")
-    private int seatCount;
+    private Integer seatCount;
 
     @Column(nullable = false)
     @Comment("가격")
-    private int price;
+    private Integer price;
 
     @Column(nullable = false, unique = true)
     @Comment("등급명")

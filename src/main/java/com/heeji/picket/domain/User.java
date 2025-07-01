@@ -41,7 +41,7 @@ public class User {
     private String name;
 
     @Comment("전화번호")
-    private int phoneNumber;
+    private Integer phoneNumber;
 
     @Comment("주소")
     private String address;
