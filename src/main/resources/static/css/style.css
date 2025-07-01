@@ -25,6 +25,7 @@ table {
     width: 100%;
     border-collapse: collapse;
     margin-top:20px;
+    font-size:13px;
 }
 thead{
 background-color: #F9F9F9;
@@ -99,7 +100,7 @@ form {
 /* 인풋 */
 input {
   min-width: 130px;
-  height: 34px;
+  height: 30px;
   padding: 6px;
   margin-right: 10px;
   color: #999;
@@ -280,8 +281,8 @@ header {
   align-items: center;
 }
 .header-logo img {
-  width: 120px;
-  height: 24px;
+  width: 100px;
+  height: 20px;
   margin-left: 50px;
 }
 .my-box {
@@ -293,7 +294,8 @@ header {
   display: flex;
   align-items: center;
   width: 220px;
-  height: 20px;
+  height: 15px;
+  margin-top:5px;
   padding: 8px 12px;
   background-color: #fff;
   border: 1px solid #ddd;
@@ -326,11 +328,13 @@ header {
   height: 20px;
   font-weight: 600;
   line-height: 30px;
+  font-size:12px;
 }
 .my-ticket a img,
 .my-login a img {
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
+  margin-top: 2px;
 }
 
 /* 내비게이션 */
@@ -345,7 +349,8 @@ nav ul {
   margin-left: 40px;
 }
 nav ul li {
-  margin: 10px;
+font-size:14px;
+  margin: 15px;
 }
 
 /* 왼쪽 메뉴 */
@@ -353,17 +358,17 @@ nav ul li {
   margin: 50px;
 }
 .user_name {
-  width: 240px;
-  height: 110px;
+  width: 200px;
+  height: 90px;
   background-color: #F8F8F8;
   border: 1px solid #EBEBEB;
   border-bottom: 0;
   border-radius: 16px 16px 0 0;
 }
 .user_name p {
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 600;
-  padding: 20px 20px 15px;
+    padding: 20px 15px 0px 15px;
 }
 .user_name span {
   font-size: 12px;
@@ -371,7 +376,7 @@ nav ul li {
   padding: 0 20px;
 }
 .my-list {
-  width: 240px;
+  width: 200px;
   height: 400px;
   background-color: #F8F8F8;
   border: 1px solid #EBEBEB;
@@ -407,9 +412,11 @@ nav ul li {
 
 /* 메인 콘텐츠 */
 .container {
-width:1800px;
+  max-width:1200px;
+  width:100%;
   display: flex;
   justify-content: center;
+  margin: 0 auto;
 }
 .main-content {
   width: 900px;
@@ -432,7 +439,7 @@ width:1800px;
   display: none;
 }
 .radio-buttons label {
-  padding: 6px 14px;
+    padding: 4px 12px;
   font-size: 14px;
   color: #888;
   background-color: #fff;
@@ -452,14 +459,14 @@ width:1800px;
 /* 탭 버튼 */
 .tabs{
   display: flex;
-  border: 1px solid #DEDEDE;
+ border:0;
   border-radius: 4px;
   overflow: hidden;
   margin: 25px 0;
 }
 .tabs .tab_btn {
   flex: 1;
-  padding: 10px 0;
+  padding: 7px 0;
   text-align: center;
   font-size: 14px;
   font-weight: 600;
@@ -469,15 +476,17 @@ width:1800px;
   outline: none;
 }
 .tabs .tab_btn.active {
-  border: 1px solid #2875FF;
-  background-color: #2875FF;
-  color: #fff;
+    border: 1px solid #2875FF;
+    background-color: #f4f8ff;
+    color: #2875ff;
+    border-radius: 4px 0 0 4px;
 }
 .tabs .tab_btn:last-child.active {
   border-right: none;
 }
 .tabs .tab_btn:not(.active) {
   background-color: #fff;
+   border: 1px solid #DEDEDE;
   color: #999;
 }
 .tabs-radio > input[radio]{
@@ -523,6 +532,7 @@ display:none;
 
 .filters > span {
   padding-right: 10px;
+  font-size:14px;
 }
 .signup >.input-group > label{
   display: none;

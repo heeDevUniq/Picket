@@ -17,7 +17,7 @@
 
     </div>
     </div>
-    <h2>예매 / 취소내역 </h2>
+    <h3>예매 / 취소내역 </h3>
         <div class="tabs">
             <button class="tab_btn active">예매내역</button>
             <button class="tab_btn">취소내역</button>
