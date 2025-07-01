@@ -5,7 +5,7 @@ $(document).on('submit', '.vex-dialog-form', function(e){
 });
 const com = {
     ajaxForm(type, url, formId, callback) {
-        const form = document.querySelector(formId);
+        const form = document.querySelector("#" + formId);
         const formData = new FormData(form);
         const json = Object.fromEntries(formData.entries());
         $.ajax({

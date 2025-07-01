@@ -1,7 +1,7 @@
 const user = {
     // 회원가입
     join() {
-        user.fnChkValidate('form');
+        //user.fnChkValidate('form');
         com.ajaxForm('POST','/user/api/sign-up','signupForm',function() {
             alert('회원가입이 완료되었습니다.');
             location.href = '/index';

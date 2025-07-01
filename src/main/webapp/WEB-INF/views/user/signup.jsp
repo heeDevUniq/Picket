@@ -22,6 +22,8 @@
         <div class="logo">
           <a href="index.jsp"><img src="/images/com/logo.png" alt="PICKET 로고"></a>
         </div>
+        <!-- 회원가입 폼 -->
+        <form name="signupForm" id="signupForm">
 
         <!-- 회원 유형 선택 -->
         <div class="tabs-radio">
@@ -32,8 +34,6 @@
             <label for="tab2" class="tab_radio_label">티켓셀러</label>
         </div>
 
-        <!-- 회원가입 폼 -->
-        <form name="signupForm">
             <!-- SNS 가입 유형 hidden -->
             <input type="hidden" name="providerType" id="providerType" value="" />
 
