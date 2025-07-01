@@ -6,6 +6,17 @@
     </aside>
 
     <main class="main-content">
+    <div class="qicon">
+    <div class="myticket">
+
+    </div>
+    <div class="love">
+
+    </div>
+    <div class="alarm">
+
+    </div>
+    </div>
     <h2>예매 / 취소내역 </h2>
         <div class="tabs">
             <button class="tab_btn active">예매내역</button>

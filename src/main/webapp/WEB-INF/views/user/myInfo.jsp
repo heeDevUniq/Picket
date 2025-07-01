@@ -13,7 +13,12 @@
           </div>
            <button type="submit" class="main_btn min_btn">저장하기</button>
            <span>기본정보</span>
-
+           <div class=""></div>
+           <span>전화번호 수정</span>
+            <div class=""></div>
+           <span>이벤트 알람</span>
+           <div class=""></div>
+          <a href=""><p>픽켓회원탈퇴하기</p></a>
 
  </mian>
 </div>
