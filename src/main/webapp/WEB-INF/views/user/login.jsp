@@ -11,7 +11,7 @@
 <div class="login-box">
     <div class="login">
         <div class="logo" alt="logo">
-       <img src="/images/com/logo.png" alt="PICKET 로고"></div>
+       <a href="/index"><img src="/images/com/logo.png" alt="PICKET 로고"></a></div>
 
         <form name="loginForm" id="loginForm">
             <div class="input-group email">

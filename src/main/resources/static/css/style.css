@@ -45,7 +45,7 @@ padding:8px;
 .btn,
 .main_btn {
   display: block;
-  width: 400px;
+  width: 370px;
   height: 50px;
   line-height: 46px;
   text-align: center;
@@ -94,9 +94,10 @@ form {
   text-align: center;
 }
 .logo {
-  margin-bottom: 40px;
+  margin: 40px auto;
 }
-
+.logo>a> img{
+width:200px;}
 /* 인풋 */
 input {
   min-width: 130px;
@@ -116,8 +117,8 @@ input::placeholder {
 /* 입력 그룹 */
 .input-group {
   display: flex;
-  width: 380px;
-  padding: 12px 10px;
+  width: 350px;
+  padding: 10px 8px;
   background-color: #fff;
   border: 1px solid #DEDEDE;
   border-bottom:0;
@@ -264,7 +265,7 @@ footer p:first-child {
   color:#333;
 }
 .footer_logo {
-  width: 150px;
+  width: 120px;
   margin: 30px 0;
 }
 
@@ -459,7 +460,7 @@ font-size:14px;
 /* 탭 버튼 */
 .tabs{
   display: flex;
- border:0;
+  border: 1px solid #DEDEDE;
   border-radius: 4px;
   overflow: hidden;
   margin: 25px 0;
@@ -486,8 +487,8 @@ font-size:14px;
 }
 .tabs .tab_btn:not(.active) {
   background-color: #fff;
-   border: 1px solid #DEDEDE;
   color: #999;
+  border-radius: 0 4px 4px 0;
 }
 .tabs-radio > input[radio]{
 display:none;
