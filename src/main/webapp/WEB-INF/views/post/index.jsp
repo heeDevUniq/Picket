@@ -11,9 +11,9 @@
             <tr><th>번호</th><th>제목</th><th>작성일</th><th>조회수</th></tr>
             <c:choose>
                 <c:when test="${fn:length(posts.content) > 0}">
-                    <c:forEach var="post" items="${posts.content}">
+                    <c:forEach var="post" items="${posts.content}" varStatus="status">
                         <tr>
-                            <td>${post.postId}</td>
+                            <td>${fn:length(posts.content) - status.index}</td>
                             <td><a href="/${postType}/view/${post.postId}">${post.title}</a></td>
                             <td><fmt:formatDate value="${post.insertDate}" pattern="yyyy-MM-dd" /></td>
                             <td>${post.hits}</td>

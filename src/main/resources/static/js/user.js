@@ -2,8 +2,9 @@ const user = {
     // 회원가입
     join() {
         //user.fnChkValidate('form');
-        com.ajaxForm('POST','/user/api/sign-up','signupForm',function() {
-            alert('회원가입이 완료되었습니다.');
+        com.ajaxForm('POST','/user/api/sign-up','signupForm',function(result) {
+            console.log('result : ' + result);
+            Swal.fire('회원가입이 완료되었습니다.');
             location.href = '/index';
         });
     },
@@ -29,7 +30,7 @@ const user = {
                const accessToken = tokenResponse.access_token;
 
                com.ajaxParams('POST', '/user/api/googleLogin', { credential: accessToken }, function(result) {
-                   if (result.alertMsg != null) alert(result.alertMsg);
+                   if (result.alertMsg != null) Swal.fire(result.alertMsg);
                    sessionStorage.setItem('email', result.email);
                    location.href = result.returnUrl;
                });

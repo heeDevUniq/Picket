@@ -13,10 +13,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <link rel="shortcut icon" href="/images/com/favicon.ico" type="image/x-icon">
+    <!-- Summernote Lite CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.css">
     <link rel="icon" href="" type="image/x-icon">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Summernote Lite JS -->
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.js"></script>
     <script src="/js/common.js"></script>
     <script src="/js/user.js"></script>
 </head>
@@ -37,8 +41,8 @@
                 <div class="my-login">
                     <c:choose>
                         <c:when test="${session.LOGIN_EMAIL != null}">
-                             <a href="/logout" class="login_on">
-                                 <img src="/images/user2.svg" alt="로그인 아이콘">
+                             <a href="#" onclick="user.logout();" class="login_on">
+                                 <img src="/images/user2.svg" alt="로그아웃 아이콘">
                                  <span>로그아웃</span>
                              </a>
                         </c:when>

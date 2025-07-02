@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ include file="../com/noheader.jsp" %>
-
 <script>
     window.onload = function () {
         if ("${alertMsg}" != null && "${alertMsg}" != "") {
@@ -15,7 +14,6 @@
         }
     }
 </script>
-
 <div class="login-box">
     <div class="signup">
         <!-- 로고 -->
