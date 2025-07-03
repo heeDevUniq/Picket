@@ -19,6 +19,11 @@ public class ShowsService {
     private ShowsRepository showsRepository;
 
     @Transactional(readOnly = true)
+    public Page<Shows> findAll(Pageable pageable) {
+        return showsRepository.findAll(pageable);
+    }
+
+    @Transactional(readOnly = true)
     public Page<Shows> findAllByGenre(String genre, Pageable pageable) {
         return showsRepository.findAllByGenre(genre, pageable);
     }

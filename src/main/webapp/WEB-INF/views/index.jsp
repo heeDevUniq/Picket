@@ -159,43 +159,17 @@
         <button>전시</button>
     </div>
     <div class="ranking-list">
-        <a href="/shows/view/1">
-            <div class="ranking-item">
-                <span class="ranking-number">1</span>
-                <div class="ranking-img"></div>
-                <div class="ranking-title">콘서트 제목작성</div>
-                <div class="ranking-location">잠실종합운동장 내 빅탑</div>
-                <div class="ranking-date">2025.02.06</div>
-            </div>
-        </a>
-        <div class="ranking-item">
-            <span class="ranking-number">2</span>
-            <div class="ranking-img"></div>
-            <div class="ranking-title">콘서트 제목작성</div>
-            <div class="ranking-location">잠실종합운동장 내 빅탑</div>
-            <div class="ranking-date">2025.02.06</div>
-        </div>
-        <div class="ranking-item">
-            <span class="ranking-number">3</span>
-            <div class="ranking-img"></div>
-            <div class="ranking-title">콘서트 제목작성</div>
-            <div class="ranking-location">잠실종합운동장 내 빅탑</div>
-            <div class="ranking-date">2025.02.06</div>
-        </div>
-        <div class="ranking-item">
-            <span class="ranking-number">4</span>
-            <div class="ranking-img"></div>
-            <div class="ranking-title">콘서트 제목작성</div>
-            <div class="ranking-location">잠실종합운동장 내 빅탑</div>
-            <div class="ranking-date">2025.02.06</div>
-        </div>
-        <div class="ranking-item">
-            <span class="ranking-number">5</span>
-            <div class="ranking-img"></div>
-            <div class="ranking-title">콘서트 제목작성</div>
-            <div class="ranking-location">잠실종합운동장 내 빅탑</div>
-            <div class="ranking-date">2025.02.06</div>
-        </div>
+        <c:forEach var="show" items="${shows.content}" varStatus="i">
+            <a href="/shows/view/${show.showId}">
+                <div class="ranking-item">
+                    <span class="ranking-number">${i.count}</span>
+                    <div class="ranking-img"></div>
+                    <div class="ranking-title">${show.title}</div>
+                    <div class="ranking-location">${show.place}</div>
+                    <div class="ranking-date">2025.02.06</div>
+                </div>
+            </a>
+        </c:forEach>
     </div>
 </section>
 
@@ -208,38 +182,16 @@
 <section class="open-soon">
     <h2>오픈예정</h2>
     <div class="open-list">
-        <div class="open-item">
-            <div class="open-img"></div>
-            <div class="open-info">
-                <span class="badge">오픈일시</span>
-                <span class="date">2025.02.06</span>
-                <p>콘서트 제목작성<br>잠실종합운동장 내 빅탑</p>
+        <c:forEach var="show" items="${shows.content}">
+            <div class="open-item">
+                <div class="open-img"></div>
+                <div class="open-info">
+                    <span class="badge">오픈일시</span>
+                    <span class="date">${show.openDate}</span>
+                    <p>${show.title}<br>${show.place}</p>
+                </div>
             </div>
-        </div>
-        <div class="open-item">
-            <div class="open-img"></div>
-            <div class="open-info">
-                <span class="badge">오픈일시</span>
-                <span class="date">2025.02.06</span>
-                <p>콘서트 제목작성<br>잠실종합운동장 내 빅탑</p>
-            </div>
-        </div>
-        <div class="open-item">
-            <div class="open-img"></div>
-            <div class="open-info">
-                <span class="badge">오픈일시</span>
-                <span class="date">2025.02.06</span>
-                <p>콘서트 제목작성<br>잠실종합운동장 내 빅탑</p>
-            </div>
-        </div>
-        <div class="open-item">
-            <div class="open-img"></div>
-            <div class="open-info">
-                <span class="badge">오픈일시</span>
-                <span class="date">2025.02.06</span>
-                <p>콘서트 제목작성<br>잠실종합운동장 내 빅탑</p>
-            </div>
-        </div>
+        </c:forEach>
     </div>
 </section>
 <%@include file="./com/footer.jsp"%>

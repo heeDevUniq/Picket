@@ -4,8 +4,9 @@ const user = {
         //user.fnChkValidate('form');
         com.ajaxForm('POST','/user/api/sign-up','signupForm',function(result) {
             console.log('result : ' + result);
-            Swal.fire('회원가입이 완료되었습니다.');
-            location.href = '/index';
+            com.confirm('가입완료','회원가입이 완료되었습니다.','info',function() {
+                location.href = '/index';
+            });
         });
     },
 
@@ -30,9 +31,14 @@ const user = {
                const accessToken = tokenResponse.access_token;
 
                com.ajaxParams('POST', '/user/api/googleLogin', { credential: accessToken }, function(result) {
-                   if (result.alertMsg != null) Swal.fire(result.alertMsg);
-                   sessionStorage.setItem('email', result.email);
-                   location.href = result.returnUrl;
+                   if (result.alertMsg != null) {
+                       com.confirm('안내',result.alertMsg,'info',function() {
+                           sessionStorage.setItem('email', result.email);
+                           location.href = result.returnUrl;
+                       });
+                   } else {
+                       location.href = result.returnUrl;
+                   }
                });
            }
        });
@@ -127,15 +133,8 @@ const user = {
 //    },
 
     logout() {
-        Swal.fire({
-            title: '로그아웃',
-            text: '로그아웃 하시겠습니까?',
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonText: '확인',
-            cancelButtonText: '취소'
-        }).then((result) => {
-            if (result.isConfirmed) location.href = "/logout";
+        com.confirm('로그아웃','로그아웃 하시겠습니까?','question',function() {
+            location.href = "/logout";
         });
     }
 

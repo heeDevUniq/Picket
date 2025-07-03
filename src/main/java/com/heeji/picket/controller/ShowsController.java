@@ -28,7 +28,7 @@ public class ShowsController {
     }
 
     @GetMapping("/list/{genre}")
-    public String index(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size,Model model, @PathVariable String genre) {
+    public String index(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, Model model, @PathVariable String genre) {
         log.debug("shows index진입");
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "insertDate"));
         Page<Shows> shows = showsService.findAllByGenre(genre, pageable);

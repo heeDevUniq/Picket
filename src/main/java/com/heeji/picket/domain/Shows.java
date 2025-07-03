@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
@@ -73,5 +74,11 @@ public class Shows {
 
     @Comment("수정자id")
     private Integer updateId;
+
+    @Formula("(SELECT DATE_FORMAT(MIN(sd.show_date), '%Y-%m-%d') FROM show_date sd WHERE sd.show_id = show_id)")
+    private String startDate;
+
+    @Formula("(SELECT DATE_FORMAT(MAX(sd.show_date), '%Y-%m-%d') FROM show_date sd WHERE sd.show_id = show_id)")
+    private String endDate;
 
 }

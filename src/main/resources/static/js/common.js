@@ -1,8 +1,3 @@
-$(document).on('submit', '.vex-dialog-form', function(e){
-    console.log('vex 모달 form submit 막음!');
-    e.preventDefault();
-    return false;
-});
 const com = {
     ajaxForm(type, url, formId, callback) {
         const form = document.querySelector("#" + formId);
@@ -45,5 +40,25 @@ const com = {
             }));
         });
         form.appendTo("body").submit().remove();
+    },
+
+    alert(msg) {
+        Swal.fire({
+            text: msg,
+            icon: "info"
+        });
+    },
+
+    confirm(title, msg, icon, callback) {
+        Swal.fire({
+            title: title,
+            text: msg,
+            icon: icon,
+            confirmButtonText: '확인',
+            allowOutsideClick: false,
+            allowEscapeKey: false
+        }).then(function(result) {
+            if (callback) callback();
+        });
     }
 }

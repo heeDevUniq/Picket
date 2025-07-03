@@ -30,6 +30,10 @@ public class PostService {
         return postRepository.findById(id).orElse(null);
     }
 
+    public void increaseViewCount(Long postId) {
+        postRepository.increaseViewCount(postId);
+    }
+
     public Post save(Post post) {
         if (post.getPostId() == null) {
             return postRepository.save(post);
@@ -47,8 +51,13 @@ public class PostService {
         }
     }
 
-    public void deleteById(Long id) {
-        postRepository.deleteById(id);
+    public int deleteById(Long id) {
+        int delNum = 0;
+        if (postRepository.existsById(id)) {
+            postRepository.deleteById(id);
+            delNum = 1;
+        }
+        return delNum;
     }
 
 }

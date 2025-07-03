@@ -25,7 +25,7 @@ public class ShowDate {
     private Long showId;
 
     @CreationTimestamp
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     @Comment("공연일시")
     private Timestamp showDate;
 

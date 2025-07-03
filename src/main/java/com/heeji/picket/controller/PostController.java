@@ -2,6 +2,8 @@ package com.heeji.picket.controller;
 
 import com.heeji.picket.domain.Post;
 import com.heeji.picket.service.PostService;
+import com.heeji.picket.utils.SessionUtil;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -37,8 +39,10 @@ public class PostController {
     }
 
     @GetMapping("/{postType}/view/{postId}")
-    public String view(Model model, @PathVariable String postType, @PathVariable Long postId) {
+    public String view(HttpSession session, Model model, @PathVariable String postType, @PathVariable Long postId) {
         log.debug("post view 진입");
+        // 조회수 증가
+        postService.increaseViewCount(postId);
         model.addAttribute("post", postService.findById(postId));
         model.addAttribute("postType", postType);
         return "post/view";
@@ -58,10 +62,10 @@ public class PostController {
         return postService.save(post);
     }
 
-//    @PostMapping("/{postType}/delete")
-//    @ResponseBody
-//    public Post delete(@RequestBody Post post, @PathVariable String postType) {
-//        return postService.delete(post);
-//    }
+    @PostMapping("/{postType}/delete")
+    @ResponseBody
+    public int delete(@RequestBody Post post, @PathVariable String postType) {
+        return postService.deleteById(post.getPostId());
+    }
 
 }

@@ -2,15 +2,16 @@
 <%@ include file="../com/noheader.jsp" %>
 <script>
     window.onload = function () {
-        if ("${alertMsg}" != null && "${alertMsg}" != "") {
-            alert("${alertMsg}");
+        if ('${alertMsg}' != null && '${alertMsg}' != '') {
+            com.alert('${alertMsg}');
+            return;
         }
-        const email = sessionStorage.getItem("email");
+        const email = sessionStorage.getItem('email');
         if (email) {
-            $("#email").val(email);
-            $("#providerType").val("google");
-            $("#email").attr("readonly", true);
-            sessionStorage.removeItem("email");
+            $('#email').val(email);
+            $('#providerType').val('google');
+            $('#email').attr('readonly', true);
+            sessionStorage.removeItem('email');
         }
     }
 </script>
