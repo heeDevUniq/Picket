@@ -14,7 +14,7 @@
             <p>${post.content}</p>
             <a href="/${post.type}">목록</a>
             <a href="/${post.type}/write/${post.postId}">수정</a>
-            <a href="#" onclick="post.delete('${post.type}');">삭제</a>
+            <a href="#" onclick="post.del('${post.type}');">삭제</a>
         </form>
     </main>
 </div>

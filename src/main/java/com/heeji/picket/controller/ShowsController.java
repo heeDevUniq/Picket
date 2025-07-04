@@ -1,9 +1,12 @@
 package com.heeji.picket.controller;
 
-import com.heeji.picket.domain.Post;
+import com.heeji.picket.domain.ShowLikes;
 import com.heeji.picket.domain.Shows;
-import com.heeji.picket.service.PostService;
+import com.heeji.picket.service.ShowLikesService;
 import com.heeji.picket.service.ShowsService;
+import com.heeji.picket.utils.SessionUtil;
+
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -11,10 +14,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @Controller
 @Log4j2
@@ -22,9 +24,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class ShowsController {
 
     private final ShowsService showsService;
+    private final ShowLikesService showLikesService;
 
-    public ShowsController(ShowsService showsService) {
+    public ShowsController(ShowsService showsService, ShowLikesService showLikesService) {
         this.showsService = showsService;
+        this.showLikesService = showLikesService;
     }
 
     @GetMapping("/list/{genre}")
@@ -40,13 +44,14 @@ public class ShowsController {
     public String view(Model model, @PathVariable Long showsId) {
         log.debug("shows view 진입");
         model.addAttribute("show", showsService.findById(showsId));
+        model.addAttribute("likeCount", showLikesService.countByShowId(showsId));
         return "shows/view";
     }
 
-    @GetMapping("/{step}/getTickets")
-    public String getTickets(Model model, @PathVariable String step) {
+    @GetMapping("/getTickets")
+    public String getTickets(Model model, @RequestBody Map<String, Object> params) {
         log.debug("getTickets 진입");
-        return "shows/popup/" + step;
+        return "shows/popup/step01";
     }
 
     @GetMapping("/my/list")
@@ -59,6 +64,14 @@ public class ShowsController {
     public String myWrite(Model model) {
         log.debug("myWrite 진입");
         return "myShows/write";
+    }
+
+    @PostMapping("/like")
+    @ResponseBody
+    public ShowLikes like(Model model, @RequestBody ShowLikes showLikes, HttpSession session) {
+        log.debug("like 진입");
+        showLikes.setUserId((Long)SessionUtil.getLoginUser(session).get("LOGIN_ID"));
+        return showLikesService.like(showLikes);
     }
 
 }

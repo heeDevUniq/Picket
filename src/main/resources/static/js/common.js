@@ -60,5 +60,14 @@ const com = {
         }).then(function(result) {
             if (callback) callback();
         });
+    },
+
+    chkLogin() {
+        const session = false;
+        if (session) {
+            com.confirm('로그인 안내','해당 기능은 로그인이 필요합니다.','warnning',function() {
+                location.href = "/login";
+            });
+        }
     }
 }

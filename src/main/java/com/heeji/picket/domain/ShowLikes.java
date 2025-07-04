@@ -24,6 +24,10 @@ public class ShowLikes {
     @Comment("공연정보고유번호")
     private Long showId;
 
+    @Column(nullable = false, unique = true)
+    @Comment("회원고유번호")
+    private Long userId;
+
     @CreationTimestamp
     @Column(nullable = false, unique = true)
     @Comment("등록일시")

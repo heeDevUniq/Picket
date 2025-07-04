@@ -1,8 +1,6 @@
 package com.heeji.picket.service;
 
-import com.heeji.picket.domain.Post;
 import com.heeji.picket.domain.Shows;
-import com.heeji.picket.repository.PostRepository;
 import com.heeji.picket.repository.ShowsRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,10 +29,6 @@ public class ShowsService {
     public Shows findById(Long id) {
         return showsRepository.findById(id).orElse(null);
     }
-
-//    public Shows save(Post post) {
-//        return showsRepository.save(post);
-//    }
 
 //    public void deleteById(Long id) {
 //        showsRepository.deleteById(id);
