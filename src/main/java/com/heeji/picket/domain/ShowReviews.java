@@ -15,16 +15,16 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class PostComment {
+public class ShowReviews {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Comment("댓글고유번호")
-    private Long postCommentId;
+    @Comment("리뷰고유번호")
+    private Long reviewId;
 
     @Column(nullable = false)
-    @Comment("게시물고유번호")
-    private Long postId;
+    @Comment("공연정보고유번호")
+    private Long showId;
 
     @Comment("내용")
     private String content;

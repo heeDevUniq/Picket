@@ -13,7 +13,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class ShowLike {
+public class ShowLikes {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
