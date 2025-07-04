@@ -277,6 +277,8 @@ header {
   border-bottom: 1px solid #F6F6F6;
 }
 .header {
+   width:1200px;
+   margin:0 auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -284,7 +286,6 @@ header {
 .header-logo img {
   width: 100px;
   height: 20px;
-  margin-left: 50px;
 }
 .my-box {
   width: 500px;
@@ -341,13 +342,14 @@ header {
 /* 내비게이션 */
 nav {
   width: 100%;
+  max-width:1200px;
+  margin:0 auto;
   height: 50px;
   color: #999;
   border-bottom: 1px solid #F6F6F6;
 }
 nav ul {
   display: flex;
-  margin-left: 40px;
 }
 nav ul li {
 font-size:14px;
