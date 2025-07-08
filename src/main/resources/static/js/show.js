@@ -8,7 +8,7 @@ const show = {
     // 좋아요
     like() {
         let cnt = parseInt($("#likeCount").text());
-        com.ajaxForm('POST','/shows/like','showForm',function(result) {
+        com.ajaxForm('POST','/shows/api/like','showForm',function(result) {
             if (result.postLikeId > 0) {
                 // 좋아요
                 // 하트 채우기 추가해야 함
@@ -28,10 +28,16 @@ const show = {
 
     // 리뷰 등록
     saveReview() {
+        com.ajaxForm('POST','/shows/api/saveReview','reviewForm',function(result) {
+            console.log('리뷰저장 : ' + result);
+        });
     },
 
     // 리뷰 삭제
     delReview() {
+        com.ajaxForm('POST','/shows/api/delReview','reviewForm',function(result) {
+            console.log('리뷰삭제 : ' + result);
+        });
     },
 
     // 상세정보 더보기

@@ -34,10 +34,6 @@ public class ShowReviews {
     @Comment("등록일시")
     private Timestamp insertDate;
 
-    @Column(nullable = false)
-    @Comment("등록자id")
-    private Integer insertId;
-
     @UpdateTimestamp
     @Comment("수정일시")
     private Timestamp updateDate;
@@ -45,4 +41,8 @@ public class ShowReviews {
     @Comment("수정자id")
     private Integer updateId;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "insert_id")
+    private User user;
+    
 }

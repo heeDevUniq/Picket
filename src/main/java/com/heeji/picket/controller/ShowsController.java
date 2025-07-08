@@ -3,6 +3,7 @@ package com.heeji.picket.controller;
 import com.heeji.picket.domain.ShowLikes;
 import com.heeji.picket.domain.Shows;
 import com.heeji.picket.service.ShowLikesService;
+import com.heeji.picket.service.ShowReviewsService;
 import com.heeji.picket.service.ShowsService;
 import com.heeji.picket.utils.SessionUtil;
 
@@ -25,26 +26,35 @@ public class ShowsController {
 
     private final ShowsService showsService;
     private final ShowLikesService showLikesService;
+    private final ShowReviewsService showReviewsService;
+    
 
-    public ShowsController(ShowsService showsService, ShowLikesService showLikesService) {
+    public ShowsController(ShowsService showsService, ShowLikesService showLikesService, ShowReviewsService showReviewsService) {
         this.showsService = showsService;
         this.showLikesService = showLikesService;
+        this.showReviewsService = showReviewsService;
     }
 
     @GetMapping("/list/{genre}")
     public String index(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, Model model, @PathVariable String genre) {
         log.debug("shows index진입");
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "insertDate"));
+        // 선택 장르별 공연 목록
         Page<Shows> shows = showsService.findAllByGenre(genre, pageable);
         model.addAttribute("shows", shows);
         return "shows/index";
     }
 
     @GetMapping("/view/{showsId}")
-    public String view(Model model, @PathVariable Long showsId) {
+    public String view(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, Model model, @PathVariable Long showsId) {
         log.debug("shows view 진입");
+        // 이 공연 상세정보
         model.addAttribute("show", showsService.findById(showsId));
+        // 이 공연에 대한 좋아요 총 개수
         model.addAttribute("likeCount", showLikesService.countByShowId(showsId));
+        // 이 공연에 대한 리뷰 목록
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "insertDate"));
+        model.addAttribute("reviews", showReviewsService.findAllByShowId(showsId, pageable));
         return "shows/view";
     }
 
@@ -64,14 +74,6 @@ public class ShowsController {
     public String myWrite(Model model) {
         log.debug("myWrite 진입");
         return "myShows/write";
-    }
-
-    @PostMapping("/like")
-    @ResponseBody
-    public ShowLikes like(Model model, @RequestBody ShowLikes showLikes, HttpSession session) {
-        log.debug("like 진입");
-        showLikes.setUserId((Long)SessionUtil.getLoginUser(session).get("LOGIN_ID"));
-        return showLikesService.like(showLikes);
     }
 
 }
