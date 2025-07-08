@@ -14,7 +14,7 @@ Pick! Your Ticket, Picket.
   - 예매 대기열 시스템
   - 결제 연동
   - 검색/알림 API
-* 박지영 : Design/Publishing
+* 박지영 : Design/Publishing 담당
   - 브랜드 아이덴티티 디자인
   - UI/UX 설계
   - 반응형 웹 퍼블리싱
