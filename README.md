@@ -61,6 +61,7 @@ Pick! Your Ticket, Picket.
   - 아임포트(I'mport) API
   - 카카오 알림톡 API
   - AWS
+  - Jenkins
 
 * Frontend
   - JavaScript/jQuery
