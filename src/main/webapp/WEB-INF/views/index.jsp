@@ -86,12 +86,6 @@
 
 /* Event Banner */
 .event-banner {
-    background: linear-gradient(90deg, #e0f7ff, #fbefff);
-    margin: 40px 0;
-    padding: 40px;
-    text-align: center;
-    font-size: 18px;
-    color: #333;
 }
 
 /* Open Soon */
@@ -140,6 +134,9 @@
     margin-top: 5px;
     color: #333;
 }
+.title_btn{
+
+}
 </style>
 <section class="main-banner">
         <div class="banner-text">
@@ -175,9 +172,7 @@
 </section>
 
 <section class="event-banner">
-    <div class="event-content">
-        <p>픽켓 이벤트<br>응모하고 선물 받아가세요!</p>
-    </div>
+        <img src="images/banner.png" alt="event Banner" style="display:block; margin:0 auto; width:70%;">
 </section>
 
 <section class="open-soon">

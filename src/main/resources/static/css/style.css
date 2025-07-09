@@ -26,6 +26,11 @@
 .mg30 { margin: 30px; }
 .mg40 { margin: 40px; }
 .mg50 { margin: 50px; }
+
+.flex{
+display: flex;
+justify-content: space-between;
+}
 /* 초기화 */
 * {
   margin: 0;
@@ -603,24 +608,64 @@ display:none;
   margin-bottom:55px;
 }
 .qicon{
+margin:20px 0;
   display: flex;
   align-items: center;
   justify-content: center;
   border-right:4px;
   border:1px solid #EBEBEB;
   width:100%;
-  height:100px;}
+  height:80px;
+  gap:120px;
+  }
+  .title_btn{
+      position: relative;
+      font-weight: 700;
+      font-size: 16px;
+      margin-bottom: 20px;
+  }
+.min_text{
+margin-left:5px;
+text-align:center;
+font-weight:800;
+}
+.min_text > p:nth-child(1){
+    font-weight: 500;
+    font-size: 14px;
+}
+.icons{
+display:flex;}
+
 
 .button-container {
-position:absolute;
-right:0;
+    position: absolute;
+    right: 0;
+    top: 0;
 }
 .banner-text{
 margin-left:80px;}
   .text-center{
       text-align: center;
       }
-      /*메인 css 임시*/
+.idbox{
+    border: 1px solid #DEDEDE;
+    border-radius: 4px 4px 0 0;
+    padding: 4px;
+    font-size:14px;
+    color: #999;
+    background-color: #eee;
+}
+.pwbox>input{
+    width: 100%;
+    border-top: 0;
+    border-bottom: 0;
+    border-bottom: 0;
+    border-radius: 0;
+}
+.pwckbox>input{
+    width: 100%;
+    border-radius: 0 0 4px 4px;
+}
 
 /* 반응형 */
 @media screen and (max-width: 767px) {

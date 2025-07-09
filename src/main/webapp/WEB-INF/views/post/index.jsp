@@ -5,7 +5,7 @@
         <%@ include file="/WEB-INF/views/com/leftmenu.jsp" %>
     </aside>
     <main class="main-content">
-        <h1>${postType eq 'notice'?'공지사항':'예매오픈안내'}</h1>
+        <h2>${postType eq 'notice'?'공지사항':'예매오픈안내'}</h2>
 
         <table class="reservation-table">
          <thead>

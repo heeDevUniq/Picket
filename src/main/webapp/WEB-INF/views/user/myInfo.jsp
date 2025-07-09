@@ -11,8 +11,12 @@
               <button class="tab_btn active">기본</button>
               <button class="tab_btn">티켓셀러</button>
           </div>
-           <button type="submit" class="main_btn min_btn">저장하기</button>
+          <div class="title_btn">
            <span>기본정보</span>
+           <div class="button-container">
+           <button type="submit" class="main_btn min_btn">저장하기</button>
+           </div>
+           </div>
            <div class="userbox1">
            <div class="idbox"><p>azxc1234</p></div>
            <div class="pwbox">
