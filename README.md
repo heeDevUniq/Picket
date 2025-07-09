@@ -11,7 +11,7 @@ Pick! Your Ticket, Picket.
 ## 👥 팀 역할
 * 엄희연 : Frontend/Backend 담당
   - 회원가입/로그인/소셜 로그인
-  - 예매 대기열 시스템
+  - 티켓 예매/예매 순번 대기열 시스템
   - 결제 연동
   - 검색/알림 API
 * 박지영 : Design/Publishing 담당
@@ -33,7 +33,7 @@ Pick! Your Ticket, Picket.
 
 3. 공연 등록 및 예매
   - 티켓셀러: 공연 등록/수정/삭제
-  - 일반 사용자: 공연 예매, 좋아요, 리뷰
+  - 일반 사용자: 공연 예매, 좋아요/리뷰 등록/삭제
 
 3-1. 접속자 대기열
   - Redis + WebFlux 기반 동시 접속 분산 처리
