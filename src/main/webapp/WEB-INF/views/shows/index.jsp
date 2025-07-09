@@ -77,7 +77,6 @@
                             <h3 class="title">${show.title}</h3>
                             <p class="venue">${show.place}</p>
                             <p class="date">${show.startDate} ~ ${show.endDate}</p>
-                            <span class="label">단독판매</span>
                         </div>
                     </div>
                 </a>

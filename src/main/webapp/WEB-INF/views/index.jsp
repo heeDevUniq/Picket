@@ -2,13 +2,14 @@
 <%@include file="./com/header.jsp"%>
 <style>
 .main-banner {
+    max-width: 1480px;
+    margin: 0 auto;
     display: flex;
     justify-content: space-between;
     align-items: center;
     background: #000;
     color: #fff;
-    height: 400px;
-    padding: 40px;
+    height: 500px;
 }
 .main-banner .banner-text h1 {
     font-size: 36px;
@@ -20,7 +21,7 @@
     color: #aaa;
 }
 .main-banner .banner-image img {
-    height: 300px;
+    height: 500px;
     object-fit: cover;
 }
 
@@ -146,7 +147,7 @@
             <p>예술의전당<br>2025.05.09 - 06.09</p>
         </div>
         <div class="banner-image">
-            <img src="images/banner.jpg" alt="Karsten Winegeart Banner">
+            <img src="images/main_view.png" alt="Karsten Winegeart Banner">
         </div>
     </section>
 
