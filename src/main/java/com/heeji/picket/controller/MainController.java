@@ -2,8 +2,6 @@ package com.heeji.picket.controller;
 
 import com.heeji.picket.domain.Shows;
 import com.heeji.picket.service.ShowsService;
-import com.heeji.picket.utils.SessionUtil;
-import jakarta.servlet.http.HttpSession;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
