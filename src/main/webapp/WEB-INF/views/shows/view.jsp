@@ -20,7 +20,7 @@
     <input type="text" name="content" placholder="리뷰를 등록하세요."><a href="#" onclick="show.saveReview();">등록</a>
 <br/>
     <c:forEach var="review" items="${reviews.content}">
-        ${review.content} <c:if test="${review.user.userId eq session.LOGIN_ID}"><a href="#" onclick="show.delReview();">삭제</a></c:if><br/>
+        ${review.content} <c:if test="${review.user.userId eq session.LOGIN_ID}"><a href="#" onclick="show.delReview('${review.reviewId}');">삭제</a></c:if><br/>
     </c:forEach>
 </form>
 <%@include file="../com/footer.jsp"%>

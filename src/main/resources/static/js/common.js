@@ -42,10 +42,12 @@ const com = {
         form.appendTo("body").submit().remove();
     },
 
-    alert(msg) {
+    alert(msg, callback) {
         Swal.fire({
             text: msg,
             icon: "info"
+        }).then(function() {
+            if (callback) callback();
         });
     },
 

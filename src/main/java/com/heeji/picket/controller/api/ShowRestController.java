@@ -2,6 +2,7 @@ package com.heeji.picket.controller.api;
 
 import com.heeji.picket.domain.ShowLikes;
 import com.heeji.picket.domain.ShowReviews;
+import com.heeji.picket.domain.User;
 import com.heeji.picket.service.ShowLikesService;
 import com.heeji.picket.service.ShowReviewsService;
 import com.heeji.picket.service.ShowsService;
@@ -40,16 +41,16 @@ public class ShowRestController {
     @PostMapping("/saveReview")
     @ResponseBody
     public ShowReviews saveReview(Model model, @RequestBody ShowReviews showReviews, HttpSession session) {
-        log.debug("like 진입");
-        showReviews.setUserId((Long)SessionUtil.getLoginUser(session).get("LOGIN_ID"));
+        log.debug("saveReview 진입");
+        showReviews.setUser((User)SessionUtil.getLoginUser(session).get("USER"));
         return showReviewsService.save(showReviews);
     }
 
     @PostMapping("/delReview")
     @ResponseBody
     public int delReview(Model model, @RequestBody ShowReviews showReviews, HttpSession session) {
-        log.debug("like 진입");
-        showReviews.setUserId((Long)SessionUtil.getLoginUser(session).get("LOGIN_ID"));
+        log.debug("delReview 진입");
+        showReviews.setUser((User)SessionUtil.getLoginUser(session).get("USER"));
         return showReviewsService.deleteById(showReviews.getReviewId());
     }
     

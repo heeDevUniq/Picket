@@ -28,15 +28,27 @@ const show = {
 
     // 리뷰 등록
     saveReview() {
-        com.ajaxForm('POST','/shows/api/saveReview','reviewForm',function(result) {
-            console.log('리뷰저장 : ' + result);
+        com.confirm('리뷰 등록','리뷰를 등록하시겠습니까?','question',function() {
+            com.ajaxForm('POST','/shows/api/saveReview','reviewForm',function(result) {
+                if (result.reviewId > 0) {
+                    com.alert('리뷰가 등록되었습니다.',function() {
+                        location.reload();
+                    });
+                }
+            });
         });
     },
 
     // 리뷰 삭제
-    delReview() {
-        com.ajaxForm('POST','/shows/api/delReview','reviewForm',function(result) {
-            console.log('리뷰삭제 : ' + result);
+    delReview(reviewId) {
+        com.confirm('리뷰 삭제','해당 리뷰를 삭제하시겠습니까?','question',function() {
+            com.ajaxParams('POST','/shows/api/delReview',{'reviewId':reviewId},function(result) {
+                if (result > 0) {
+                    com.alert('리뷰가 삭제되었습니다.',function() {
+                        location.reload();
+                    });
+                }
+            });
         });
     },
 
