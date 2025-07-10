@@ -35,7 +35,7 @@ public class UserAlarmService {
     }
 
     // 유저의 티켓팅 알람이 설정된 목록 조회
-    List<ShowLikes> findByUserId(Long userId) {
+    List<UserAlarm> findByUserId(Long userId) {
         return showAlarmRepository.findByUserId(userId);
     }
 

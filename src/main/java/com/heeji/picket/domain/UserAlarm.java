@@ -20,8 +20,7 @@ public class UserAlarm {
     @Comment("회원고유번호")
     private Long userId;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false, unique = true)
     @Comment("공연정보고유번호")
     private Long showId;
 

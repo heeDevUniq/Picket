@@ -45,7 +45,8 @@ const com = {
     alert(msg, callback) {
         Swal.fire({
             text: msg,
-            icon: "info"
+            icon: "info",
+            scrollbarPadding: false
         }).then(function() {
             if (callback) callback();
         });
@@ -57,10 +58,15 @@ const com = {
             text: msg,
             icon: icon,
             confirmButtonText: '확인',
+            cancelButtonText: '취소',
+            showCancelButton: true,
             allowOutsideClick: false,
-            allowEscapeKey: false
+            allowEscapeKey: false,
+            scrollbarPadding: false
         }).then(function(result) {
-            if (callback) callback();
+            if (result.isConfirmed) {
+                if (callback) callback();
+            }
         });
     },
 

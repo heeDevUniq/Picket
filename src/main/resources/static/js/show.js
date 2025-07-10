@@ -24,6 +24,21 @@ const show = {
 
     // 이 공연 알림 받기
     setAlarm() {
+        com.confirm('알림 설정','이 공연에 대한 알림을 받으시겠습니까?','question',function() {
+            com.ajaxForm('POST','/shows/api/setAlarm','showForm',function(result) {
+                if (result != null) {
+                    // 알람 받기
+                    com.alert('알림 설정이 완료되었습니다.',function() {
+                        location.reload();
+                    });
+                } else {
+                    // 알람 받기 취소
+                    com.alert('알림 설정이 취소되었습니다.',function() {
+                        location.reload();
+                    });
+                }
+            });
+        });
     },
 
     // 리뷰 등록
