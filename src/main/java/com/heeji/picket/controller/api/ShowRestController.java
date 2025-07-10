@@ -3,9 +3,11 @@ package com.heeji.picket.controller.api;
 import com.heeji.picket.domain.ShowLikes;
 import com.heeji.picket.domain.ShowReviews;
 import com.heeji.picket.domain.User;
+import com.heeji.picket.domain.UserAlarm;
 import com.heeji.picket.service.ShowLikesService;
 import com.heeji.picket.service.ShowReviewsService;
 import com.heeji.picket.service.ShowsService;
+import com.heeji.picket.service.UserAlarmService;
 import com.heeji.picket.utils.SessionUtil;
 
 import ch.qos.logback.core.model.Model;
@@ -22,11 +24,13 @@ public class ShowRestController {
     private final ShowsService showsService;
     private final ShowLikesService showLikesService;
     private final ShowReviewsService showReviewsService;
+    private final UserAlarmService userAlarmService;
 
-    public ShowRestController(ShowsService showsService, ShowLikesService showLikesService, ShowReviewsService showReviewsService) {
+    public ShowRestController(ShowsService showsService, ShowLikesService showLikesService, ShowReviewsService showReviewsService, UserAlarmService userAlarmService) {
         this.showsService = showsService;
         this.showLikesService = showLikesService;
         this.showReviewsService = showReviewsService;
+        this.userAlarmService = userAlarmService;
     }
 
     @PostMapping("/like")
@@ -54,4 +58,12 @@ public class ShowRestController {
         return showReviewsService.deleteById(showReviews.getReviewId());
     }
     
+    @PostMapping("/setAlarm")
+    @ResponseBody
+    public UserAlarm setAlarm(Model model, @RequestBody UserAlarm userAlarm, HttpSession session) {
+        log.debug("setAlarm 진입");
+        userAlarm.setUserId((Long)SessionUtil.getLoginUser(session).get("LOGIN_ID"));
+        return userAlarmService.setAlarm(userAlarm);
+    }
+
 }
