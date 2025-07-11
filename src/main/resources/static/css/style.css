@@ -294,6 +294,8 @@ padding-right: 10px;
 /* 푸터 */
 footer {
   height: 150px;
+  max-width: 1200px;
+  margin:0 auto;
   padding: 15px;
   border-top: 1px solid #DEDEDE;
   font-size:14px;

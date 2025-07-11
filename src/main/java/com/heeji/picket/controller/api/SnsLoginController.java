@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.net.URI;
 import java.net.URLEncoder;
@@ -27,6 +28,9 @@ public class SnsLoginController {
 
     private final UserService userService;
 
+    @Value("${server.port}")
+    private String serverPort;
+
     public SnsLoginController(UserService userService) {
         this.userService = userService;
     }
@@ -40,8 +44,9 @@ public class SnsLoginController {
 
         String form = "grant_type=authorization_code"
                 + "&client_id=" + URLEncoder.encode("0ed4893e99b41c7e2c03e73937596f51", "UTF-8")
-                + "&redirect_uri=" + URLEncoder.encode("http://localhost:8080/user/api/kakaoLogin", "UTF-8")
+                + "&redirect_uri=" + URLEncoder.encode("http://localhost:" + serverPort + "/user/api/kakaoLogin", "UTF-8")
                 + "&code=" + URLEncoder.encode(code, "UTF-8");
+        System.out.println("화깅 : " + form);
 
         HttpRequest tokenRequest = HttpRequest.newBuilder()
                 .uri(URI.create(tokenUrl))

@@ -19,4 +19,6 @@ public interface ShowLikesRepository extends JpaRepository<ShowLikes, Long> {
     // 유저의 좋아요 목록 조회
     List<ShowLikes> findByUserId(Long userId);
 
+    int countByUserId(Long userId);
+
 }

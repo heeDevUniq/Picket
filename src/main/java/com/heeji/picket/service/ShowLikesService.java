@@ -41,5 +41,10 @@ public class ShowLikesService {
     List<ShowLikes> findByUserId(Long userId) {
         return showLikesRepository.findByUserId(userId);
     }
+    
+    // 유저의 좋아요 개개수 조회
+    public int countByUserId(Long showId) {
+        return showLikesRepository.countByUserId(showId);
+    }
 
 }

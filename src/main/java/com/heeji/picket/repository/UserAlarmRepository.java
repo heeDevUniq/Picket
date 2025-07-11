@@ -17,4 +17,7 @@ public interface UserAlarmRepository extends JpaRepository<UserAlarm, Long> {
     // 유저의 알람 설정 목록 조회
     List<UserAlarm> findByUserId(Long userId);
 
+    // 유저의 알림 설정 개수 조회
+    int countByUserId(Long userId);
+
 }
