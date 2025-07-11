@@ -7,7 +7,6 @@ class PicketApplicationTests {
 //	@Test
 	void contextLoads() {
 		//
-		//
 	}
 
 }
