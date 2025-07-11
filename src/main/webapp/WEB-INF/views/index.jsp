@@ -2,7 +2,7 @@
 <%@include file="./com/header.jsp"%>
 <style>
 .main-banner {
-    max-width: 1480px;
+    max-width: 100%;
     margin: 0 auto;
     display: flex;
     justify-content: space-between;
