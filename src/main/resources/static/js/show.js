@@ -74,6 +74,20 @@ const show = {
 
     // 상세정보 더보기
     loadMore() {
+    },
+
+    popupNext() {
+        //window.location = "/shows/payment";
+        let params = {
+
+        }
+        com.ajaxParams('POST','/shows/payment',params,function(result) {
+            console.log('다녀옴',result);
+        });
+    },
+
+    popupClose() {
+        window.close();
     }
 
 }

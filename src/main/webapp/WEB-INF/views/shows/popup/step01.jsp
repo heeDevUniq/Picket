@@ -294,8 +294,8 @@
         </div>
 
         <div class="btn-box">
-            <button class="btn btn-prev">이전</button>
-            <button class="btn btn-next">다음</button>
+            <button class="btn btn-prev" onclick="show.popupClose();">닫기</button>
+            <button class="btn btn-next" onclick="show.popupNext();">다음</button>
         </div>
     </div>
 </div>

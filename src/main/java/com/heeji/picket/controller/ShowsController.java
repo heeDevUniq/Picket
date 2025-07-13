@@ -81,6 +81,15 @@ public class ShowsController {
         return "shows/popup/step01";
     }
 
+    @PostMapping("/payment")
+    public String payment(Model model, Map<String, Object> params) {
+        log.debug("getTickets 진입");
+        Long showId = (Long)params.get("showId");
+        // 이 공연 상세정보
+        model.addAttribute("show", showsService.findById(showId));
+        return "shows/popup/step02";
+    }
+
     @GetMapping("/my/list")
     public String myList(Model model) {
         log.debug("myList 진입");
