@@ -172,21 +172,23 @@
 </section>
 
 <section class="event-banner">
-        <img src="images/banner.png" alt="event Banner" style="display:block; margin:0 auto; width:70%;">
+    <a href="/notice"><img src="images/banner.png" alt="event Banner" style="display:block; margin:0 auto; width:70%;"></a>
 </section>
 
 <section class="open-soon">
     <h2>오픈예정</h2>
     <div class="open-list">
-        <c:forEach var="show" items="${shows.content}">
-            <div class="open-item">
-                <div class="open-img"></div>
-                <div class="open-info">
-                    <span class="badge">오픈일시</span>
-                    <span class="date">${show.openDate}</span>
-                    <p>${show.title}<br>${show.place}</p>
+        <c:forEach var="show" items="${shows.content}" varStatus="i">
+            <c:if test="${4 > i.index}">
+                <div class="open-item">
+                    <div class="open-img"></div>
+                    <div class="open-info">
+                        <span class="badge">오픈일시</span>
+                        <span class="date"><fmt:formatDate value="${show.openDate}" pattern="yyyy-MM-dd HH:mm" /></span>
+                        <p>${show.title}<br>${show.place}</p>
+                    </div>
                 </div>
-            </div>
+            </c:if>
         </c:forEach>
     </div>
 </section>
