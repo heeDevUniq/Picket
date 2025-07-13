@@ -1,7 +1,6 @@
 package com.heeji.picket.service;
 
 import com.heeji.picket.domain.User;
-import com.heeji.picket.dto.response.UserLoginResponse;
 import com.heeji.picket.repository.UserRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;

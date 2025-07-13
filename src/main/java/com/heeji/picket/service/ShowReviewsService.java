@@ -19,12 +19,13 @@ public class ShowReviewsService {
     @Autowired
     private ShowReviewsRepository showReviewsRepository;
 
-
+    // 공연 별 리뷰 조회
     @Transactional(readOnly = true)
     public Page<ShowReviews> findAllByShowId(Long showId, Pageable pageable) {
         return showReviewsRepository.findAllByShowId(showId, pageable);
     }
 
+    // 리뷰 등록/수정
     public ShowReviews save(ShowReviews showReviews) {
         if (showReviews.getReviewId() == null) {
             return showReviewsRepository.save(showReviews);
@@ -41,6 +42,7 @@ public class ShowReviewsService {
         }
     }
 
+    // 리뷰 삭제
     public int deleteById(Long id) {
         int delNum = 0;
         if (showReviewsRepository.existsById(id)) {

@@ -1,6 +1,7 @@
 package com.heeji.picket.controller;
 
 import com.heeji.picket.domain.Shows;
+import com.heeji.picket.service.SeatService;
 import com.heeji.picket.service.ShowLikesService;
 import com.heeji.picket.service.ShowReviewsService;
 import com.heeji.picket.service.ShowsService;
@@ -23,12 +24,13 @@ public class ShowsController {
     private final ShowsService showsService;
     private final ShowLikesService showLikesService;
     private final ShowReviewsService showReviewsService;
-    
+    private final SeatService seatService;
 
-    public ShowsController(ShowsService showsService, ShowLikesService showLikesService, ShowReviewsService showReviewsService) {
+    public ShowsController(ShowsService showsService, ShowLikesService showLikesService, ShowReviewsService showReviewsService, SeatService seatService) {
         this.showsService = showsService;
         this.showLikesService = showLikesService;
         this.showReviewsService = showReviewsService;
+        this.seatService = seatService;
     }
 
     @GetMapping("/list/{genre}")
@@ -55,8 +57,12 @@ public class ShowsController {
     }
 
     @GetMapping("/getTickets")
-    public String getTickets(Model model, @RequestBody Map<String, Object> params) {
+    public String getTickets(Model model, @RequestParam Long showId) {
         log.debug("getTickets 진입");
+        // 이 공연 상세정보
+        model.addAttribute("show", showsService.findById(showId));
+        // 좌석 목록
+        model.addAttribute("seats", seatService.findByShowId(showId));
         return "shows/popup/step01";
     }
 
