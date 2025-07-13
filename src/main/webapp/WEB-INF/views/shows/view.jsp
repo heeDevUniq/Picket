@@ -12,6 +12,13 @@
 공연일자:${show.startDate} ~ ${show.endDate}<br/>
 관람가:${show.ageLimit}<br/>
 오픈일:<fmt:formatDate value="${show.openDate}" pattern="yyyy-MM-dd HH:mm"/><br/><br/>
+날짜선택<br/>
+<c:forEach var="date" items="${showDates}" varStatus="i">
+    <input type="radio" name="showDateId" id="showDateId_${i.index}" value="${date.showDateId}">
+    <label for="showDateId_${i.index}">
+        <fmt:formatDate value="${date.showDate}" pattern="yyyy-MM-dd HH:mm"/>
+    </label>
+</c:forEach>
 <a href="#" onclick="show.book('${show.showId}');">예매하기</a>
 <a href="#" onclick="show.like();">좋아요</a><span id="likeCount">${likeCount}</span>
 <a href="#" onclick="show.setAlarm();">이 공연 티켓팅 알림받기</a>

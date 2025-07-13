@@ -17,8 +17,9 @@ public class SeatService {
     @Autowired
     private SeatRepository seatRepository;
 
-    public List<Seat> findByShowId(Long showId) {
-        return seatRepository.findByShowId(showId);
+    // 날짜 고유번호로 좌석 목록 조회
+    public List<Seat> findByShowDateId(Long showDateId) {
+        return seatRepository.findByShowDateId(showDateId);
     }
 
 }

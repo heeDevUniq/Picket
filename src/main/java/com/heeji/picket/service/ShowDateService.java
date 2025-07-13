@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.heeji.picket.domain.Seat;
 import com.heeji.picket.domain.ShowDate;
 import com.heeji.picket.repository.ShowDateRepository;
 
@@ -18,8 +17,14 @@ public class ShowDateService {
     @Autowired
     private ShowDateRepository showDateRepository;
 
-    // public List<ShowDate> findByShowId(Long showId) {
-    //     return showDateRepository.findByShowId(showId);
-    // }
+    // 공연 고유번호로 날짜 목록 조회
+    public List<ShowDate> findByShowId(Long showId) {
+        return showDateRepository.findByShowId(showId);
+    }
+    
+    // 날짜 고유번호로 공연 고유번호 조회
+    public Long findShowIdByShowDateId(Long showDateId) {
+        return showDateRepository.findShowIdByShowDateId(showDateId);
+    }
 
 }

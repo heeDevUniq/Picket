@@ -1,7 +1,9 @@
 package com.heeji.picket.controller;
 
 import com.heeji.picket.domain.Shows;
+import com.heeji.picket.service.SeatGradeService;
 import com.heeji.picket.service.SeatService;
+import com.heeji.picket.service.ShowDateService;
 import com.heeji.picket.service.ShowLikesService;
 import com.heeji.picket.service.ShowReviewsService;
 import com.heeji.picket.service.ShowsService;
@@ -22,14 +24,22 @@ import java.util.Map;
 public class ShowsController {
 
     private final ShowsService showsService;
+    private final ShowDateService showDateService;
+    
     private final ShowLikesService showLikesService;
     private final ShowReviewsService showReviewsService;
+    
+    private final SeatGradeService seatGradeService;
     private final SeatService seatService;
 
-    public ShowsController(ShowsService showsService, ShowLikesService showLikesService, ShowReviewsService showReviewsService, SeatService seatService) {
+    public ShowsController(ShowsService showsService, ShowDateService showDateService, ShowLikesService showLikesService, ShowReviewsService showReviewsService, SeatGradeService seatGradeService, SeatService seatService) {
         this.showsService = showsService;
+        this.showDateService = showDateService;
+
         this.showLikesService = showLikesService;
         this.showReviewsService = showReviewsService;
+
+        this.seatGradeService = seatGradeService;
         this.seatService = seatService;
     }
 
@@ -48,6 +58,8 @@ public class ShowsController {
         log.debug("shows view 진입");
         // 이 공연 상세정보
         model.addAttribute("show", showsService.findById(showsId));
+        // 이 공연 날짜 목록
+        model.addAttribute("showDates", showDateService.findByShowId(showsId));
         // 이 공연에 대한 좋아요 총 개수
         model.addAttribute("likeCount", showLikesService.countByShowId(showsId));
         // 이 공연에 대한 리뷰 목록
@@ -57,12 +69,15 @@ public class ShowsController {
     }
 
     @GetMapping("/getTickets")
-    public String getTickets(Model model, @RequestParam Long showId) {
+    public String getTickets(Model model, @RequestParam Long showDateId) {
         log.debug("getTickets 진입");
+        Long showId = showDateService.findShowIdByShowDateId(showDateId);
         // 이 공연 상세정보
         model.addAttribute("show", showsService.findById(showId));
+        // 이 공연 등급 목록
+        model.addAttribute("grades", seatGradeService.findByShowDateId(showDateId));
         // 좌석 목록
-        model.addAttribute("seats", seatService.findByShowId(showId));
+        model.addAttribute("seats", seatService.findByShowDateId(showDateId));
         return "shows/popup/step01";
     }
 

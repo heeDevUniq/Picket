@@ -100,7 +100,6 @@
     .seat {
         width: 30px;
         height: 30px;
-        background-color: #0066cc;
         color: #fff;
         text-align: center;
         line-height: 30px;
@@ -154,9 +153,9 @@
         margin-right: 8px;
     }
 
-    .color-a { background-color: #0066cc; }
-    .color-b { background-color: #00aa66; }
-    .color-s { background-color: #ff8888; }
+    .color-1 { background-color: #0066cc; }
+    .color-2 { background-color: #00aa66; }
+    .color-3 { background-color: #ff8888; }
 
     table {
         width: 100%;
@@ -241,8 +240,8 @@
                     <div class="row">
                         <div class="row-label"></div>
                 </c:if>
-                ${seat.seatGrade.gradeName}
-                <div class="seat" onclick="toggleSeat(this)">
+                
+                <div class="seat color-1" onclick="toggleSeat(this)">
                     ${i.count}
                 </div>
 
@@ -258,21 +257,13 @@
         <div class="grade-box">
             <h3>좌석등급/잔여석</h3>
             <div class="grade-list">
-                <div class="grade-item">
-                    <span><span class="color color-a"></span>A석</span>
-                    <span>30석</span>
-                    <span>140,000</span>
-                </div>
-                <div class="grade-item">
-                    <span><span class="color color-b"></span>B석</span>
-                    <span>200석</span>
-                    <span>120,000</span>
-                </div>
-                <div class="grade-item">
-                    <span><span class="color color-s"></span>S석</span>
-                    <span>100석</span>
-                    <span>100,000</span>
-                </div>
+                <c:forEach var="grade" items="${grades}" varStatus="i">
+                    <div class="grade-item">
+                        <span><span class="color color-${i.count}"></span>${grade.gradeName}석</span>
+                        <span>30석</span>
+                        <span>140,000</span>
+                    </div>
+                </c:forEach>
             </div>
         </div>
 

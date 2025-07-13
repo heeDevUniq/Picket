@@ -37,10 +37,6 @@ public class Seat {
     private Long showId;
 
     @Column(nullable = false)
-    @Comment("열")
-    private String rowName;
-
-    @Column(nullable = false)
     @Comment("좌석번호")
     private Integer seatNumber;
 

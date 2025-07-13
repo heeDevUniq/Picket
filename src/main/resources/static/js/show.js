@@ -1,8 +1,13 @@
 const show = {
 
     // 예매하기
-    book(showId) {
-        const popup = window.open('/shows/getTickets?showId=' + showId, '예매하기', 'width=1000px,height=650px,scrollbars=no,resizable=no');
+    book() {
+        const showDateId = $("[name='showDateId']:checked").val();
+        if (showDateId == undefined) {
+            com.alert("날짜를 선택해주세요.");
+            return;
+        }
+        const popup = window.open('/shows/getTickets?showDateId=' + showDateId, '예매하기', 'width=1000px,height=650px,scrollbars=no,resizable=no');
     },
 
     // 좋아요

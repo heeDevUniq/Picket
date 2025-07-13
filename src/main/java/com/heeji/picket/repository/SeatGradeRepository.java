@@ -1,6 +1,6 @@
 package com.heeji.picket.repository;
 
-import com.heeji.picket.domain.Seat;
+import com.heeji.picket.domain.SeatGrade;
 
 import java.util.List;
 
@@ -10,14 +10,13 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface SeatRepository extends JpaRepository<Seat, Long> {
+public interface SeatGradeRepository extends JpaRepository<SeatGrade, Long> {
 
     @Query("""
-        SELECT s
-        FROM Seat s
-        LEFT JOIN FETCH s.seatGrade sg
-        WHERE s.showDateId = :showDateId
+        SELECT sg
+        FROM SeatGrade sg
+        WHERE sg.showDateId = :showDateId
     """)
-    List<Seat> findByShowDateId(@Param("showDateId") Long showDateId);
+    List<SeatGrade> findByShowDateId(@Param("showDateId") Long showDateId);
 
 }
