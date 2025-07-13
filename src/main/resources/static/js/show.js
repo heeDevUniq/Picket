@@ -1,8 +1,8 @@
 const show = {
 
     // 예매하기
-    book() {
-        const popup = window.open('/shows/getTickets', '예매하기', 'width=1000px,height=650px,scrollbars=no');
+    book(showId) {
+        const popup = window.open('/shows/getTickets?showId=' + showId, '예매하기', 'width=1000px,height=650px,scrollbars=no,resizable=no');
     },
 
     // 좋아요
