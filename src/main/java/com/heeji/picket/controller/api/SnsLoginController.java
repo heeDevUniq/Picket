@@ -94,6 +94,7 @@ public class SnsLoginController {
                 return "redirect:/index";
             } else {
                 redirectAttributes.addFlashAttribute("email", email);
+                redirectAttributes.addFlashAttribute("providerType", "kakao");
                 redirectAttributes.addFlashAttribute("alertMsg", "회원정보를 찾을 수 없어 회원가입 페이지로 이동합니다.");
             }
         } else {
@@ -133,6 +134,7 @@ public class SnsLoginController {
                 returnMap.put("returnUrl", "/index");
             } else {
                 returnMap.put("email", email);
+                returnMap.put("providerType", "google");
                 returnMap.put("alertMsg", "회원정보를 찾을 수 없어 회원가입 페이지로 이동합니다.");
                 returnMap.put("returnUrl", "/signup");
             }

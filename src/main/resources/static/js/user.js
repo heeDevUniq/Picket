@@ -34,6 +34,7 @@ const user = {
                    if (result.alertMsg != null) {
                        com.confirm('안내',result.alertMsg,'info',function() {
                            sessionStorage.setItem('email', result.email);
+                           sessionStorage.setItem('providerType', result.providerType);
                            location.href = result.returnUrl;
                        });
                    } else {

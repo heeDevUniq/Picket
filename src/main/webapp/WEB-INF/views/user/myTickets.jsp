@@ -7,27 +7,33 @@
 
     <main class="main-content">
         <div class="qicon">
-            <div class="myticket icons">
-                <img src="images/myticket.svg" alt="ticket_icon">
-                <div class="min_text">
-                    <p>나의 예매권</p>
-                    <a href="/myTickets"><p style="color:#2875FF;">3</p></a>
+            <a href="/myTickets">
+                <div class="myticket icons">
+                    <img src="images/myticket.svg" alt="ticket_icon">
+                    <div class="min_text">
+                        <p>나의 예매권</p>
+                        <p style="color:#2875FF;">3</p>
+                    </div>
                 </div>
-            </div>
-            <div class="love icons">
-                <img src="images/love.svg" alt="ticket_icon">
-                <div class="min_text">
-                    <p>관심 공연</p>
-                    <a href="/myLikes"><p style="color:#2875FF;">${myLikeCount}</p></a>
+            </a>
+            <a href="/myLikes">
+                <div class="love icons">
+                    <img src="images/love.svg" alt="ticket_icon">
+                    <div class="min_text">
+                        <p>관심 공연</p>
+                        <p style="color:#2875FF;">${myLikeCount}</p>
+                    </div>
                 </div>
-            </div>
-            <div class="alarm icons">
-                <img src="images/alarm.svg" alt="ticket_icon">
-                <div class="min_text">
-                    <p>알림</p>
-                    <a href="/myAlarms"><p style="color:#2875FF;">${myAlarmCount}</p></a>
+            </a>
+            <a href="/myAlarms">
+                <div class="alarm icons">
+                    <img src="images/alarm.svg" alt="ticket_icon">
+                    <div class="min_text">
+                        <p>알림</p>
+                        <p style="color:#2875FF;">${myAlarmCount}</p>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
 
         <h3>예매 / 취소내역 </h3>

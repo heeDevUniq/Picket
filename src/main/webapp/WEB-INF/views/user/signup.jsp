@@ -7,9 +7,10 @@
             return;
         }
         const email = sessionStorage.getItem('email');
+        const providerType = sessionStorage.getItem('providerType');
         if (email) {
             $('#email').val(email);
-            $('#providerType').val('google');
+            $('#providerType').val(providerType);
             $('#email').attr('readonly', true);
             sessionStorage.removeItem('email');
         }

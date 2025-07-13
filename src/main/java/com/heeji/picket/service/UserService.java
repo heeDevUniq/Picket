@@ -35,12 +35,7 @@ public class UserService {
 
     public User login(String email, String password) {
         // email로 User 찾기
-        System.out.println("확인1 : " + email);
-        System.out.println("확인2 : " + password);
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
-
-        // bcrypt는 암호화할 때마다 결과가 다르므로 equals가 아닌 encoder.matches()로 비교해야 함
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
         if (!encoder.matches(password, user.getPassword())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
@@ -49,10 +44,9 @@ public class UserService {
     }
 
     public User findUser(String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseGet(() -> {
-                    return null;
-                });
+        User user = userRepository.findByEmail(email).orElseGet(() -> {
+            return null;
+        });
         return user;
     }
 

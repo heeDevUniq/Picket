@@ -3,6 +3,7 @@ package com.heeji.picket.controller;
 import com.heeji.picket.service.ShowLikesService;
 import com.heeji.picket.service.ShowsService;
 import com.heeji.picket.service.UserAlarmService;
+import com.heeji.picket.service.UserService;
 import com.heeji.picket.utils.SessionUtil;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.log4j.Log4j2;
@@ -14,12 +15,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Log4j2
 public class UserController {
 
+    private final UserService userService;
     private final ShowsService showsService;
     private final ShowLikesService showLikesService;
     private final UserAlarmService userAlarmService;
     
 
-    public UserController(ShowsService showsService, ShowLikesService showLikesService, UserAlarmService userAlarmService) {
+    public UserController(UserService userService, ShowsService showsService, ShowLikesService showLikesService, UserAlarmService userAlarmService) {
+        this.userService = userService;
         this.showsService = showsService;
         this.showLikesService = showLikesService;
         this.userAlarmService = userAlarmService;
@@ -72,8 +75,9 @@ public class UserController {
 
     // 회원정보수정
     @GetMapping("/myInfo")
-    public String myInfo(HttpSession session) {
+    public String myInfo(HttpSession session, Model model) {
         log.debug("myInfo진입");
+        model.addAttribute("user", userService.findUser(SessionUtil.getLoginUser(session).get("LOGIN_EMAIL").toString()));
         return this.sessionCheck(session, "user/myInfo");
     }
 
