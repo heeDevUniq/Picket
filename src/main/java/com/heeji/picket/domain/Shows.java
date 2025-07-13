@@ -2,19 +2,24 @@ package com.heeji.picket.domain;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 public class Shows {
 
     @Id
@@ -80,5 +85,8 @@ public class Shows {
 
     @Formula("(SELECT DATE_FORMAT(MAX(sd.show_date), '%Y-%m-%d') FROM show_date sd WHERE sd.show_id = show_id)")
     private String endDate;
+
+    @OneToMany(mappedBy = "shows", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ShowDate> showDates = new ArrayList<>();
 
 }

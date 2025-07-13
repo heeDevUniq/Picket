@@ -2,8 +2,10 @@ package com.heeji.picket.domain;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -12,7 +14,8 @@ import java.sql.Timestamp;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 public class UserAlarm {
 
     @Id
@@ -20,7 +23,7 @@ public class UserAlarm {
     @Comment("회원고유번호")
     private Long userId;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     @Comment("공연정보고유번호")
     private Long showId;
 
