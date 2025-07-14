@@ -83,7 +83,7 @@ public class ShowsController {
 
     @PostMapping("/payment")
     public String payment(Model model, Map<String, Object> params) {
-        log.debug("getTickets 진입");
+        log.debug("payment 진입");
         Long showId = (Long)params.get("showId");
         // 이 공연 상세정보
         model.addAttribute("show", showsService.findById(showId));
