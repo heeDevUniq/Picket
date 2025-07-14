@@ -19,9 +19,6 @@
             <div class="idbox">
                 <p>${user.email}</p>
             </div>
-            <div class="namebox">
-                <input type="text" name="name" value="${user.name}" placeholder="이름을 입력하세요.">
-            </div>
             <div class="pwbox">
                 <input type="password" name="password" placeholder="비밀번호">
                 <button type="button" class="btn_in">비밀변호변경</button>
@@ -35,22 +32,15 @@
             <span>전화번호</span>
         </div>
         <div class="userbox2">
+                    <div class="namebox">
+                        <input type="text" name="name" value="${user.name}" placeholder="이름을 입력하세요.">
+                    </div>
             <div class="telbox">
-                <select name="phoneNumber" id="phoneNumber">
-                    <option value="" disabled selected>통신사</option>
-                    <option value="SKT">SKT</option>
-                    <option value="KT">KT</option>
-                    <option value="U+">U+</option>
-                    <option value="알뜰폰 SKT">알뜰폰 SKT</option>
-                    <option value="알뜰폰 KT">알뜰폰 KT</option>
-                    <option value="알뜰폰 U+">알뜰폰 U+</option>
-                </select>
-                <input type="tel" placeholder="전화번호">
-                <button type="button" class="btn_in">인증번호 발송</button>
+              <input type="text"  placeholder="주소입력">
+                <button type="button" class="btn_in">주소검색</button>
             </div>
             <div class="telcheck">
-                <input type="tel" placeholder="인증번호 입력">
-                <button type="button" class="btn_in">확인</button>
+             <input type="text" placeholder="상세주소입력">
             </div>
         </div>
 
@@ -64,21 +54,15 @@
                     <input type="checkbox">
                     <span class="slider"></span>
                 </label>
+              </div>
             </div>
 
-            <div class="alarm-item">
-                <div class="alarm-label">카카오톡</div>
-                    <label class="toggle-switch">
-                        <input type="checkbox" checked>
-                        <span class="slider"></span>
-                    </label>
-                </div>
-            </div>
             <div class="edit-link">
                 <a href="#">픽켓회원탈퇴하기 ></a>
                 <div class="button-container">
                     <button type="submit" class="main_btn min_btn">저장하기</button>
                 </div>
+            </div>
             </div>
         </div>
     </main>
