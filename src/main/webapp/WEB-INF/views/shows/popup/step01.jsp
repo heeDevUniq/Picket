@@ -303,3 +303,9 @@
 <div class="seat-info">
     좌석을 선택해 주세요. <a href="#">[0]</a>
 </div>
+
+<form name="ticketingForm" id="ticketingForm">
+    <input type="hidden " name="showId" value="${show.showId}">
+    <input type="hidden " name="showDateId" value="${showDateId}">
+    <input type="hidden " name="seatId" value="">
+</form>

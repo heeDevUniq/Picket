@@ -79,7 +79,6 @@ const show = {
     popupNext() {
         //window.location = "/shows/payment";
         let params = {
-
         }
         com.ajaxParams('POST','/shows/payment',params,function(result) {
             console.log('다녀옴',result);
