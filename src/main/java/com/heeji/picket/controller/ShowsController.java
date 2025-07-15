@@ -87,7 +87,9 @@ public class ShowsController {
         log.debug("payment 진입");
         System.out.println("///////////////// 확인 : " + showId);
         System.out.println("///////////////// 확인 : " + showDateId);
-        System.out.println("///////////////// 확인 : " + seatArrays[0] + " / " + seatArrays[1]);
+        for(String seat : seatArrays) {
+            System.out.println("///////////////// 확인 : " + seat);
+        }
         model.addAttribute("showDateId", showDateId);
         // 이 공연 상세정보
         model.addAttribute("show", showsService.findById(showId));
