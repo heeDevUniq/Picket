@@ -76,17 +76,27 @@ const show = {
     loadMore() {
     },
 
+    // 팝업 다음 페이지 이동
     popupNext() {
-        //window.location = "/shows/payment";
-        let params = {
-        }
-        com.ajaxParams('POST','/shows/payment',params,function(result) {
-            console.log('다녀옴',result);
-        });
+        const form = $('#ticketingForm');
+        form.attr('method','POST');
+        form.attr('action','/shows/payment');
+        form.submit();
     },
 
+    // 팝업 이전 페이지 이동
+    popupPre(showDateId) {
+        window.location = "/shows/getTickets?showDateId=" + showDateId;
+    },
+
+    // 팝업 닫기
     popupClose() {
         window.close();
+    },
+
+    // 결제 (아임포트 연동)
+    payment() {
+
     }
 
 }

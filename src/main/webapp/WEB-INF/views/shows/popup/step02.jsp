@@ -4,6 +4,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="/js/show.js"></script>
+<script src="/js/common.js"></script>
 <style>
     body {
         margin: 0;
@@ -152,9 +153,9 @@
 </style>
 <!-- 상단 네비 -->
 <div class="nav-bar">
-    <img src="/images/picvet_logo.png" alt="PICVET Logo">
-    <a href="#">좌석선택</a>
-    <span>뮤지컬 &lt;팬텀&gt; 10주년 기념 공연</span>
+    <img src="/images/com./logo.png" alt="logo">
+    <a href="#">좌석확인</a>
+    <span>${show.title}</span>
 
     <div class="date-select">
         <span>관람일자</span>
@@ -169,7 +170,7 @@
 <div class="container">
     <!-- 포스터 영역 -->
     <div class="poster">
-        <img src="/images/shakespeare_poster.jpg" alt="Shakespeare in Love Poster">
+        <img src="${show.posterLink}" alt="공연 포스터">
     </div>
 
     <!-- 정보 영역 -->
@@ -201,8 +202,8 @@
             </div>
 
             <div class="button-box">
-                <button class="btn btn-back">이전</button>
-                <button class="btn btn-pay">결제</button>
+                <button class="btn btn-back" onclick="show.popupPre('${showDateId}');">이전</button>
+                <button class="btn btn-pay" onclick="show.payment();">결제</button>
             </div>
         </div>
     </div>

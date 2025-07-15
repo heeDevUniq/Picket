@@ -4,6 +4,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="/js/show.js"></script>
+<script src="/js/common.js"></script>
 <style>
     body {
         margin: 0;
@@ -109,8 +110,25 @@
         user-select: none;
     }
 
-    .seat.selected {
+    .seat input[type="checkbox"] {
+        display: none;
+    }
+
+    .seat input[type="checkbox"]:checked + span {
         background-color: #ff6600;
+    }
+
+    .seat span {
+        display: inline-block;
+        width: 30px;
+        height: 30px;
+        text-align: center;
+        line-height: 30px;
+        border-radius: 4px;
+        font-size: 12px;
+        color: #fff;
+        cursor: pointer;
+        user-select: none;
     }
 
     .sidebar {
@@ -153,9 +171,12 @@
         margin-right: 8px;
     }
 
-    .color-1 { background-color: #0066cc; }
-    .color-2 { background-color: #00aa66; }
-    .color-3 { background-color: #ff8888; }
+    .color-vip { background-color: #1155CC; }
+    .color-r { background-color: #4299E1; }
+    .color-s { background-color: #ED8936; }
+    .color-a { background-color: #E53E3E; }
+    .color-r { background-color: #68D391; }
+    .color-s { background-color: #EA57E0; }
 
     table {
         width: 100%;
@@ -214,8 +235,15 @@
     }
 </style>
 <script>
+    let toggleSeatCnt = 0;
+    let params = [];
     function toggleSeat(el) {
         el.classList.toggle('selected');
+        console.log(el.value);
+        params[toggleSeatCnt] = el.value;
+        console.log('params : ',params);
+        $("#seatArrays").val(params);
+        toggleSeatCnt++;
     }
 </script>
 <div class="nav-bar">
@@ -241,9 +269,10 @@
                         <div class="row-label"></div>
                 </c:if>
                 
-                <div class="seat color-1" onclick="toggleSeat(this)">
-                    ${i.count}
-                </div>
+                <label class="seat color-${fn:toLowerCase(seat.seatGrade.gradeName)}">
+                    <input type="checkbox" name="seat" value="${seat.seatId}" onchange="toggleSeat(this)">
+                    <span>${i.count}</span>
+                </label>
 
                 <c:if test="${(i.index + 1) % 10 == 0 || (i.index + 1) == fn:length(seats)}">
                     </div>
@@ -257,9 +286,9 @@
         <div class="grade-box">
             <h3>좌석등급/잔여석</h3>
             <div class="grade-list">
-                <c:forEach var="grade" items="${grades}" varStatus="i">
+                <c:forEach var="grade" items="${grades}">
                     <div class="grade-item">
-                        <span><span class="color color-${i.count}"></span>${grade.gradeName}석</span>
+                        <span><span class="color color-${grade.gradeName}"></span>${grade.gradeName}석</span>
                         <span>30석</span>
                         <span>140,000</span>
                     </div>
@@ -307,5 +336,5 @@
 <form name="ticketingForm" id="ticketingForm">
     <input type="hidden " name="showId" value="${show.showId}">
     <input type="hidden " name="showDateId" value="${showDateId}">
-    <input type="hidden " name="seatId" value="">
+    <input type="hidden " name="seatArrays" id="seatArrays" value="">
 </form>

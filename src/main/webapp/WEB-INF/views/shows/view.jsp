@@ -53,7 +53,7 @@
     <input type="text" name="content" placholder="리뷰를 등록하세요." onkeydown="if(event.key === 'Enter'){ show.saveReview(); }"><a href="#" onclick="show.saveReview();">등록</a>
 <br/>
     <c:forEach var="review" items="${reviews.content}">
-        ${review.content} <c:if test="${review.user.userId eq session.LOGIN_ID}"><a href="#" onclick="show.delReview('${review.reviewId}');">삭제</a></c:if><br/>
+        ${review.content} <c:if test="${review.user.userId eq session.LOGIN_ID && session.LOGIN_ID != null}"><a href="#" onclick="show.delReview('${review.reviewId}');">삭제</a></c:if><br/>
     </c:forEach>
 </form>
 </div>

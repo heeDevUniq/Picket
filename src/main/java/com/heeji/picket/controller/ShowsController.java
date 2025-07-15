@@ -72,6 +72,7 @@ public class ShowsController {
     public String getTickets(Model model, @RequestParam Long showDateId) {
         log.debug("getTickets 진입");
         Long showId = showDateService.findShowIdByShowDateId(showDateId);
+        model.addAttribute("showDateId", showDateId);
         // 이 공연 상세정보
         model.addAttribute("show", showsService.findById(showId));
         // 이 공연 등급 목록
@@ -82,9 +83,12 @@ public class ShowsController {
     }
 
     @PostMapping("/payment")
-    public String payment(Model model, Map<String, Object> params) {
+    public String payment(Model model, @RequestParam Long showId, @RequestParam Long showDateId, @RequestParam String[] seatArrays) {
         log.debug("payment 진입");
-        Long showId = (Long)params.get("showId");
+        System.out.println("///////////////// 확인 : " + showId);
+        System.out.println("///////////////// 확인 : " + showDateId);
+        System.out.println("///////////////// 확인 : " + seatArrays[0] + " / " + seatArrays[1]);
+        model.addAttribute("showDateId", showDateId);
         // 이 공연 상세정보
         model.addAttribute("show", showsService.findById(showId));
         return "shows/popup/step02";
