@@ -72,7 +72,6 @@
         <li><a href="/shows/list/festival">페스티벌</a></li>
     </ul>
     <ul>
-    <li><a href="user/signup">회원가입</a></li>
     <li><a href="/notice">공지사항</a></li>
     <li><a href="/open"">예매오픈안내</a></li>
     <ul>

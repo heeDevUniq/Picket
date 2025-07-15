@@ -56,14 +56,20 @@
     gap: 20px;
 }
 .ranking-item {
+    position: relative;
     width: 160px;
     text-align: center;
 }
 .ranking-item .ranking-number {
-    font-size: 20px;
+    font-size:42px;
     font-weight: bold;
     margin-bottom: 10px;
-}
+    position: absolute;
+    bottom: 46px;
+    left: 10px;
+    color: #fff;
+    z-index: 111;
+    }
 .ranking-item .ranking-img {
     width: 160px;
     height: 240px;
