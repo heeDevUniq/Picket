@@ -60,10 +60,12 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
-tasks.named('test') {
-	useJUnitPlatform()
-}
-
 bootJar {
     enabled = true
+}
+
+tasks.named("bootJar") {
+    from('src/main/webapp') {
+        into('WEB-INF')
+    }
 }
