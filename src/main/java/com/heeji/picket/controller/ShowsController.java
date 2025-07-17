@@ -83,16 +83,18 @@ public class ShowsController {
     }
 
     @PostMapping("/payment")
-    public String payment(Model model, @RequestParam Long showId, @RequestParam Long showDateId, @RequestParam String[] seatArrays) {
+    public String payment(Model model, @RequestParam Long showId, @RequestParam Long showDateId, @RequestParam Long[] seatArrays) {
         log.debug("payment 진입");
         System.out.println("///////////////// 확인 : " + showId);
         System.out.println("///////////////// 확인 : " + showDateId);
-        for(String seat : seatArrays) {
+        for(Long seat : seatArrays) {
             System.out.println("///////////////// 확인 : " + seat);
         }
         model.addAttribute("showDateId", showDateId);
         // 이 공연 상세정보
         model.addAttribute("show", showsService.findById(showId));
+        // 사용자가 선택한 좌석 목록
+        model.addAttribute("seats", seatService.findSeatsWithSeatGradeBySeatIdIn(seatArrays));
         return "shows/popup/step02";
     }
 

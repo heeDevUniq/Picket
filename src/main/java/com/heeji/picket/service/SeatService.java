@@ -21,5 +21,10 @@ public class SeatService {
     public List<Seat> findByShowDateId(Long showDateId) {
         return seatRepository.findByShowDateId(showDateId);
     }
+    
+    // 선택한 좌석 목록
+    public List<Seat> findSeatsWithSeatGradeBySeatIdIn(Long[] seatIds) {
+        return seatRepository.findSeatsWithSeatGradeBySeatIdIn(seatIds);
+    }
 
 }

@@ -20,4 +20,13 @@ public interface SeatRepository extends JpaRepository<Seat, Long> {
     """)
     List<Seat> findByShowDateId(@Param("showDateId") Long showDateId);
 
+    @Query("""
+        SELECT s
+        FROM Seat s
+        LEFT JOIN FETCH s.seatGrade
+        WHERE s.seatId IN :seatIds
+    """)
+    List<Seat> findSeatsWithSeatGradeBySeatIdIn(@Param("seatIds") Long[] seatIds);
+
+
 }

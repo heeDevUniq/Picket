@@ -95,36 +95,41 @@ const show = {
     },
 
     // 결제 (아임포트 연동)
-    payment() {
-
+    payment(title, amount, email, name) {
         IMP.request_pay({
-            pg: "{PG사 코드}.{상점ID}",
+            pg: "html5_inicis",
             pay_method: "card",
             merchant_uid: "ORD20180131-0000011",   // 주문번호
-            name: "노르웨이 회전 의자",
-            amount: 64900,                         // 숫자 타입
-            buyer_email: "gildong@gmail.com",
-            buyer_name: "홍길동",
-            buyer_tel: "010-4242-4242",
-            buyer_addr: "서울특별시 강남구 신사동",
-            buyer_postcode: "01181"
+            name: title,
+            amount: amount,                         // 숫자 타입
+            buyer_email: email,
+            buyer_name: name
         }, function (rsp) { // callback
-            $.ajax({
-               type: 'POST',
-               url: '/verify/' + rsp.imp_uid
-            }).done(function(data) {
-                if(rsp.paid_amount === data.response.amount){
-                    alert("결제 성공");
-                } else {
-                    alert("결제 실패");
-                }
-            });
+            if (rsp.success) {
+                // 결제 성공
+                console.log("결제 성공", rsp);
+                // 결제검증
+                $.ajax({
+                type: 'POST',
+                url: '/verify/' + rsp.imp_uid
+                }).done(function(data) {
+                    if(rsp.paid_amount === data.response.amount){
+                        alert("결제 성공");
+                    } else {
+                        alert("결제 실패");
+                    }
+                });
+            } else {
+                // 결제 실패
+                console.log("결제 실패", rsp);
+                alert("결제에 실패하였습니다. 에러내용: " + rsp.error_msg);
+            }
         });
     }
 
 }
 
  $(document).ready(function() {
-    var IMP = window.IMP; 
+    const IMP = window.IMP; 
     IMP.init("imp00040455"); 
 });

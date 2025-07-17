@@ -28,15 +28,15 @@ public class Seat {
     @Comment("좌석등급고유번호")
     private Long seatGradeId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     @Comment("공연날짜고유번호")
     private Long showDateId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     @Comment("공연정보고유번호")
     private Long showId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     @Comment("좌석번호")
     private Integer seatNumber;
 

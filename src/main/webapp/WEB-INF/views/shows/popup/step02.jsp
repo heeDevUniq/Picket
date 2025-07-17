@@ -180,9 +180,9 @@
         <div class="select-seat">
             <h3>선택좌석</h3>
             <div class="seat-list">
-                <div class="seat">A석 1열 15-25석</div>
-                <div class="seat">A석 12열 15-25석</div>
-                <div class="seat">B석 16열 15-25석</div>
+                <c:forEach var="seat" items="${seats}">
+                    <div class="seat">${seat.seatGrade.gradeName}석 ${seat.seatNumber}번</div>
+                </c:forEach>
             </div>
         </div>
 
@@ -204,7 +204,7 @@
 
             <div class="button-box">
                 <button class="btn btn-back" onclick="show.popupPre('${showDateId}');">이전</button>
-                <button class="btn btn-pay" onclick="show.payment();">결제</button>
+                <button class="btn btn-pay" onclick="show.payment('${show.title}','','${session.LOGIN_EMAIL}','${session.LOGIN_NAME}');">결제</button>
             </div>
         </div>
     </div>
