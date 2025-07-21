@@ -253,7 +253,7 @@
     <div class="date-select">
         <span>관람일자</span>
         <select>
-            <option>2025.06.26(목) AM 10:00</option>
+            <option>${show}</option>
         </select>
     </div>
 </div>
@@ -334,7 +334,7 @@
 </div>
 
 <form name="ticketingForm" id="ticketingForm">
-    <input type="hidden " name="showId" value="${show.showId}">
-    <input type="hidden " name="showDateId" value="${showDateId}">
-    <input type="hidden " name="seatArrays" id="seatArrays" value="">
+    <input type="hidden" name="showId" value="${show.showId}">
+    <input type="hidden" name="showDateId" value="${showDateId}">
+    <input type="hidden" name="seatArrays" id="seatArrays" value="">
 </form>

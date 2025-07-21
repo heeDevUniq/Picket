@@ -71,10 +71,9 @@ public class ShowsController {
     @GetMapping("/getTickets")
     public String getTickets(Model model, @RequestParam Long showDateId) {
         log.debug("getTickets 진입");
-        Long showId = showDateService.findShowIdByShowDateId(showDateId);
         model.addAttribute("showDateId", showDateId);
         // 이 공연 상세정보
-        model.addAttribute("show", showsService.findById(showId));
+        model.addAttribute("show", showDateService.findShowByShowDateId(showDateId));
         // 이 공연 등급 목록
         model.addAttribute("grades", seatGradeService.findByShowDateId(showDateId));
         // 좌석 목록
