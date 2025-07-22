@@ -36,6 +36,12 @@
                 </button>
             </div>
             <div class="my-icon-box">
+                <div class="my-ticket">
+                     <a href="/myTickets">
+                        <img src="/images/ticket.svg" alt="예약 아이콘">
+                        <span>예약</span>
+                     </a>
+                </div>
                 <div class="my-login">
                     <c:choose>
                         <c:when test="${session.LOGIN_EMAIL != null}">
@@ -51,12 +57,6 @@
                             </a>
                         </c:otherwise>
                     </c:choose>
-                </div>
-                <div class="my-ticket">
-                     <a href="/myTickets">
-                        <img src="/images/ticket.svg" alt="예약 아이콘">
-                        <span>예약</span>
-                     </a>
                 </div>
             </div>
         </div>
