@@ -15,7 +15,7 @@ import org.springframework.stereotype.Repository;
 public interface ShowDateRepository extends JpaRepository<ShowDate, Long> {
 
     @Query("""
-        SELECT sd.show
+        SELECT sd.shows
         FROM ShowDate sd
         WHERE sd.id = :showDateId
     """)
