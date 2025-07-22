@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@include file="../com/header.jsp"%>
 <script src="/js/show.js"></script>
+
 <section>
 <form name="showForm" id="showForm">
     <input type="hidden" name="showId" value="${show.showId}">
@@ -19,8 +20,8 @@
 <span>공연일자</span>${show.startDate} ~ ${show.endDate}<br/>
 <span>관람가</span>${show.ageLimit}<br/>
 <span>오픈일</span><fmt:formatDate value="${show.openDate}" pattern="yyyy-MM-dd HH:mm"/><br/>
+<span>날짜선택</span>
 <div class="datacheck">
-날짜선택<br/>
 <c:forEach var="date" items="${showDates}" varStatus="i">
     <input type="radio" name="showDateId" id="showDateId_${i.index}" value="${date.showDateId}">
     <label for="showDateId_${i.index}">
@@ -28,32 +29,46 @@
     </label>
 </c:forEach>
 </div>
+ <a href="#" onclick="show.book('${show.showId}');" class="main_btn mr75">예매하기</a>
 </div>
 </div>
+
 <div class="btn_more">
-<div>
-<a href="#" onclick="show.like();">좋아요</a><span id="likeCount">${likeCount}</span>
-<a href="#" onclick="show.setAlarm();">이 공연 티켓팅 알림받기</a>
-</div>
-<a href="#" onclick="show.book('${show.showId}');" class="main_btn mr75">예매하기</a>
-</div>
+  <div class="btn_group">
+    <a href="#" onclick="show.like();" class="like-btn" aria-label="좋아요">
+      <img src="/images/like.svg" alt="like">
+      <span class="like-count" id="likeCount">${likeCount}</span>
+    </a>
+    <a href="#" onclick="show.setAlarm();" class="btn_alarm_custom" aria-label="알림받기">
+      <img src="/images/alarm2.svg" alt="alarm">
+      알림받기
+    </a>
+  </div>
+
 </div>
 
 </div>
 </section>
 <section class="main-content">
-<a href="#" onclick="show.loadMore();">상세정보 더보기</a>
-
-<br/><br/>-------------<br/><br/>
-
-
-리뷰..<br/>
+<div class="tabs2">
+<a href="#" onclick="show.loadMore();" >공연정보</a>
+<a href="" onclick="" class="active">리뷰</a>
+</div>
 <form name="reviewForm" id="reviewForm">
     <input type="hidden" name="showId" value="${show.showId}">
-    <input type="text" name="content" placholder="리뷰를 등록하세요." onkeydown="if(event.key === 'Enter'){ show.saveReview(); }"><a href="#" onclick="show.saveReview();">등록</a>
-<br/>
+    <div class="review-input-box">
+        <div class="nickname"></div>
+        <input type="text" name="content" placeholder="리뷰를 등록하세요." onkeydown="if(event.key === 'Enter'){ show.saveReview(); return false; }" class="review-text-input">
+        <a href="#" onclick="show.saveReview();" class="btn-submit">글쓰기</a>
+    </div>
+
     <c:forEach var="review" items="${reviews.content}">
-        ${review.content} <c:if test="${review.user.userId eq session.LOGIN_ID && session.LOGIN_ID != null}"><a href="#" onclick="show.delReview('${review.reviewId}');">삭제</a></c:if><br/>
+        <div class="review-item">
+            <div class="text">${review.content}</div>
+            <c:if test="${review.user.userId eq session.LOGIN_ID && session.LOGIN_ID != null}">
+                <a href="#" onclick="show.delReview('${review.reviewId}');" class="btn-delete">×</a>
+            </c:if>
+        </div>
     </c:forEach>
 </form>
 </div>
