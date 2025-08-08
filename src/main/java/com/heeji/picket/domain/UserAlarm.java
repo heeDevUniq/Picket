@@ -19,10 +19,11 @@ import java.sql.Timestamp;
 public class UserAlarm {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false)
     @Comment("회원고유번호")
     private Long userId;
 
+    @Id
     @Column(nullable = false)
     @Comment("공연정보고유번호")
     private Long showId;

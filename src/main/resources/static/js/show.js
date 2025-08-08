@@ -19,10 +19,12 @@ const show = {
                 // 하트 채우기 추가해야 함
                 cnt++;
                 $("#likeCount").text(cnt);
+                $("#like-btn").attr("src", "/images/fill_like.svg");
             } else {
                 // 좋아요 취소
                 cnt--;
                 $("#likeCount").text(cnt);
+                $("#like-btn").attr("src", "/images/like.svg");
             }
         });
     },

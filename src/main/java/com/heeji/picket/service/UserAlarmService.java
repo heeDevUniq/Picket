@@ -20,6 +20,8 @@ public class UserAlarmService {
 
     // 티켓팅 알람 설정
     public UserAlarm setAlarm(UserAlarm userAlarm) {
+        System.out.println("진입!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        System.out.println("showId = " + userAlarm.getShowId() + ", userId = " + userAlarm.getUserId());
         // 유저가 이미 알람 설정 했는지 조회
         Optional<UserAlarm> existingAlarm = showAlarmRepository.findByShowIdAndUserId(userAlarm.getShowId(), userAlarm.getUserId());
 
@@ -33,6 +35,14 @@ public class UserAlarmService {
         }
     }
 
+    // 특정 공연에 로그인 유저의 알람 여부 조회
+    public int findByShowIdAndUserId(Long userId, Long showId) {
+        int retNum = 0;
+        if (showAlarmRepository.findByShowIdAndUserId(showId, userId).isPresent()) retNum = 1;
+        return retNum;
+    }
+
+    // 유저의 알람 개수 조회
     public int countByUserId(Long userId) {
         return showAlarmRepository.countByUserId(userId);
     }

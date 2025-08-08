@@ -32,6 +32,13 @@ public class ShowLikesService {
         }
     }
 
+    // 특정 공연에 로그인 유저의 좋아요 여부 조회
+    public int findByShowIdAndUserId(Long userId, Long showId) {
+        int retNum = 0;
+        if (showLikesRepository.findByShowIdAndUserId(showId, userId).isPresent()) retNum = 1;
+        return retNum;
+    }
+
     // 공연별 좋아요 수 조회
     public Long countByShowId(Long showId) {
         return showLikesRepository.countByShowId(showId);
@@ -42,7 +49,7 @@ public class ShowLikesService {
         return showLikesRepository.findByUserId(userId);
     }
     
-    // 유저의 좋아요 개개수 조회
+    // 유저의 좋아요 개수 조회
     public int countByUserId(Long showId) {
         return showLikesRepository.countByUserId(showId);
     }

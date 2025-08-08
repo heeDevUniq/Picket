@@ -253,7 +253,7 @@
     <div class="date-select">
         <span>관람일자</span>
         <select>
-            <option>${show}</option>
+            <option>${show.showDates}</option>
         </select>
     </div>
 </div>

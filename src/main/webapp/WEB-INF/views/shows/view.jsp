@@ -36,12 +36,19 @@
 <div class="btn_more">
   <div class="btn_group">
     <a href="#" onclick="show.like();" class="like-btn" aria-label="좋아요">
-      <img src="/images/like.svg" alt="like">
-      <span class="like-count" id="likeCount">${likeCount}</span>
+        <c:choose>
+            <c:when test="${likeMyCount > 0}"><c:set var="likeImg" value="/images/fill_like.svg" /></c:when>
+            <c:otherwise><c:set var="likeImg" value="/images/like.svg" /></c:otherwise>
+        </c:choose>
+        <img src="${likeImg}" alt="like" id="like-btn">
+        <span class="like-count" id="likeCount">${likeCount}</span>
     </a>
     <a href="#" onclick="show.setAlarm();" class="btn_alarm_custom" aria-label="알림받기">
-      <img src="/images/alarm2.svg" alt="alarm">
-      알림받기
+        <c:choose>
+            <c:when test="${alarmMyCount > 0}"><c:set var="alarmImg" value="/images/fill_bell.svg" /></c:when>
+            <c:otherwise><c:set var="alarmImg" value="/images/alarm2.svg" /></c:otherwise>
+        </c:choose>
+        <img src="${alarmImg}" alt="alarm" id="alarm-btn">티켓팅 알림
     </a>
   </div>
 

@@ -7,6 +7,10 @@ import com.heeji.picket.service.ShowDateService;
 import com.heeji.picket.service.ShowLikesService;
 import com.heeji.picket.service.ShowReviewsService;
 import com.heeji.picket.service.ShowsService;
+import com.heeji.picket.service.UserAlarmService;
+import com.heeji.picket.utils.SessionUtil;
+
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,8 +19,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @Controller
 @Log4j2
@@ -27,16 +29,18 @@ public class ShowsController {
     private final ShowDateService showDateService;
     
     private final ShowLikesService showLikesService;
+    private final UserAlarmService userAlarmService;
     private final ShowReviewsService showReviewsService;
     
     private final SeatGradeService seatGradeService;
     private final SeatService seatService;
 
-    public ShowsController(ShowsService showsService, ShowDateService showDateService, ShowLikesService showLikesService, ShowReviewsService showReviewsService, SeatGradeService seatGradeService, SeatService seatService) {
+    public ShowsController(ShowsService showsService, ShowDateService showDateService, ShowLikesService showLikesService, ShowReviewsService showReviewsService, SeatGradeService seatGradeService, SeatService seatService, UserAlarmService userAlarmService) {
         this.showsService = showsService;
         this.showDateService = showDateService;
 
         this.showLikesService = showLikesService;
+        this.userAlarmService = userAlarmService;
         this.showReviewsService = showReviewsService;
 
         this.seatGradeService = seatGradeService;
@@ -54,7 +58,7 @@ public class ShowsController {
     }
 
     @GetMapping("/view/{showsId}")
-    public String view(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, Model model, @PathVariable Long showsId) {
+    public String view(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, Model model, @PathVariable Long showsId, HttpSession session) {
         log.debug("shows view 진입");
         // 이 공연 상세정보
         model.addAttribute("show", showsService.findById(showsId));
@@ -62,6 +66,10 @@ public class ShowsController {
         model.addAttribute("showDates", showDateService.findByShowId(showsId));
         // 이 공연에 대한 좋아요 총 개수
         model.addAttribute("likeCount", showLikesService.countByShowId(showsId));
+        // 이 공연에 대한 로그인 사용자의 좋아요 여부
+        model.addAttribute("likeMyCount", showLikesService.findByShowIdAndUserId((Long)SessionUtil.getLoginUser(session).get("LOGIN_ID"), showsId));
+        // 이 공연에 대한 로그인 사용자의 알림림 여부
+        model.addAttribute("alarmMyCount", userAlarmService.findByShowIdAndUserId((Long)SessionUtil.getLoginUser(session).get("LOGIN_ID"), showsId));
         // 이 공연에 대한 리뷰 목록
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "insertDate"));
         model.addAttribute("reviews", showReviewsService.findAllByShowId(showsId, pageable));
@@ -73,7 +81,7 @@ public class ShowsController {
         log.debug("getTickets 진입");
         model.addAttribute("showDateId", showDateId);
         // 이 공연 상세정보
-        model.addAttribute("show", showDateService.findShowByShowDateId(showDateId));
+        model.addAttribute("show", showDateService.findShowByShowDateId(showDateId).orElse(null));
         // 이 공연 등급 목록
         model.addAttribute("grades", seatGradeService.findByShowDateId(showDateId));
         // 좌석 목록
