@@ -3,14 +3,15 @@ package com.heeji.picket.controller;
 import com.heeji.picket.domain.Shows;
 import com.heeji.picket.service.ShowsService;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 @Log4j2
@@ -23,15 +24,14 @@ public class MainController {
     }
 
     @GetMapping("/")
-    public String home(Model model) {
-        return index(0, 10, model);
+    public String home(Model model, @RequestBody Map<String, Object> params) {
+        return index(model, params);
     }
 
     @GetMapping("/index")
-    public String index(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, Model model) {
+    public String index(Model model, @RequestBody Map<String, Object> params) {
         log.debug("index진입");
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "insertDate"));
-        Page<Shows> shows = showsService.findAll(pageable);
+        List<HashMap<String, Object>> shows = showsService.list(params);
         model.addAttribute("shows", shows);
         return "index";
     }

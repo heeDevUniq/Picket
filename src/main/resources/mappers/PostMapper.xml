@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.heeji.picket.repository.PostRepository">
+
+    <select id="list" resultType="HashMap">
+        /* com.heeji.picket.repository.PostRepository.list */
+        SELECT  *
+        FROM    POST
+        WHERE   1 = 1
+        AND     TYPE = #{type}
+    </select>
+
+    <select id="info" resultType="HashMap">
+        /* com.heeji.picket.repository.PostRepository.info */
+        SELECT  *
+        FROM    POST
+        WHERE   1 = 1
+        AND     POST_ID = #{postId}
+    </select>
+
+    <update id="increaseViewCount">
+        UPDATE POST SET HITS = HITS + 1 WHERE POST_ID = #{postId}
+    </update>
+
+    int insert(Map<String, Object> params);
+
+    int update(Map<String, Object> params);
+
+    int delete(Map<String, Object> params);
+
+</mapper>

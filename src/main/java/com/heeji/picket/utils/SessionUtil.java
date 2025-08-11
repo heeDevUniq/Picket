@@ -2,7 +2,6 @@ package com.heeji.picket.utils;
 
 import com.heeji.picket.domain.User;
 import jakarta.servlet.http.HttpSession;
-import jakarta.websocket.Session;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
@@ -31,13 +30,12 @@ public class SessionUtil {
         return sessionMap;
     }
 
-    public static void setLoginUser(HttpSession session, User user) {
-        session.setAttribute("USER", user);
-        session.setAttribute("LOGIN_NAME", user.getName());
-        session.setAttribute("LOGIN_EMAIL", user.getEmail());
-        session.setAttribute("LOGIN_NAME", user.getName());
-        session.setAttribute("LOGIN_ID", user.getUserId());
-        session.setAttribute("LOGIN_ROLE", user.getRole());
+    public static void setLoginUser(HttpSession session, Map<String, Object> map) {
+        session.setAttribute("USER", map);
+        session.setAttribute("LOGIN_NAME", map.get("name"));
+        session.setAttribute("LOGIN_EMAIL", map.get("email"));
+        session.setAttribute("LOGIN_ID", map.get("userId"));
+        session.setAttribute("LOGIN_ROLE", map.get("role"));
         session.setAttribute("LOGIN_TIME", new Date());
     }
 

@@ -1,15 +1,13 @@
 package com.heeji.picket.service;
 
-import com.heeji.picket.domain.Post;
 import com.heeji.picket.repository.PostRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @Log4j2
@@ -18,40 +16,32 @@ public class PostService {
     @Autowired
     private PostRepository postRepository;
 
-    @Transactional(readOnly = true)
-    public Page<Post> findAllByType(String postType, Pageable pageable) {
-        return postRepository.findAllByType(postType, pageable);
+    public List<HashMap<String, Object>> list(Map<String, Object> params) {
+        return postRepository.list(params);
     }
 
-    public Post findById(Long id) {
-        return postRepository.findById(id).orElse(null);
+    public HashMap<String, Object> info(Map<String, Object> params) {
+        return postRepository.info(params);
     }
 
-    public void increaseViewCount(Long postId) {
-        postRepository.increaseViewCount(postId);
+    public void increaseViewCount(Map<String, Object> params) {
+        postRepository.increaseViewCount(params);
     }
 
-    public Post save(Post post) {
-        if (post.getPostId() == null) {
-            return postRepository.save(post);
-        }
+    public int save(Map<String, Object> params) {
+        HashMap<String, Object> info = postRepository.info(params);
 
-        Optional<Post> existingPostOpt = postRepository.findById(post.getPostId());
-
-        if (existingPostOpt.isPresent()) {
-            Post existingPost = existingPostOpt.get();
-            existingPost.setTitle(post.getTitle());
-            existingPost.setContent(post.getContent());
-            return postRepository.save(existingPost);
+        if (info != null) {
+            return postRepository.update(params);
         } else {
-            return postRepository.save(post);
+            return postRepository.insert(params);
         }
     }
 
-    public int deleteById(Long id) {
+    public int deleteById(Map<String, Object> params) {
         int delNum = 0;
-        if (postRepository.existsById(id)) {
-            postRepository.deleteById(id);
+        if (postRepository.info(params) != null) {
+            postRepository.delete(params);
             delNum = 1;
         }
         return delNum;

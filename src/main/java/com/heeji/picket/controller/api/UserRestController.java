@@ -1,16 +1,12 @@
 package com.heeji.picket.controller.api;
 
-import com.heeji.picket.domain.User;
-import com.heeji.picket.dto.request.UserDeleteRequest;
-import com.heeji.picket.dto.request.UserLoginRequest;
-import com.heeji.picket.dto.request.UserUpdateRequest;
-import com.heeji.picket.dto.response.UserLoginResponse;
 import com.heeji.picket.service.UserService;
 import com.heeji.picket.utils.SessionUtil;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.log4j.Log4j2;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -20,42 +16,30 @@ import java.util.Map;
 @Log4j2
 public class UserRestController {
 
-    private final UserService userService;
-    private static UserLoginResponse userLoginResponse;
-
-    public UserRestController(UserService userService) {
-        this.userService = userService;
-    }
+    @Autowired
+    UserService userService;
 
     @PostMapping("/sign-up")
     @ResponseStatus(HttpStatus.CREATED)
-    public void signUp(@RequestBody User user) {
-        userService.register(user);
+    public void signUp(@RequestBody Map<String, Object> params) {
+        userService.register(params);
     }
 
     @PostMapping("/sign-in")
-    public HttpStatus login(@RequestBody UserLoginRequest userLoginRequest, HttpSession session) {
-        System.out.println("진입!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!userLoginRequest: " + userLoginRequest);
-        ResponseEntity<UserLoginResponse> responseEntity = null;
-        String userEmail = userLoginRequest.getEmail();
-        String password = userLoginRequest.getPassword();
-        User user = userService.login(userEmail, password);
-        if (user != null) {
-            SessionUtil.setLoginUser(session, user);
-            userLoginResponse = UserLoginResponse.success(user);
-            log.info("로그인 성공, user: {}", user);
-            responseEntity = new ResponseEntity<UserLoginResponse>(userLoginResponse, HttpStatus.OK);
+    public void login(HttpSession session, @RequestBody Map<String, Object> params) {
+        Map<String, Object> info = userService.login(params);
+        if (info != null) {
+            SessionUtil.setLoginUser(session, info);
+            log.info("로그인 성공, user: {}", params);
         } else {
-            log.error("로그인 실패, user: {}", user);
-            return HttpStatus.NOT_FOUND;
+            log.error("로그인 실패, user: {}", params);
         }
-        return HttpStatus.OK;
     }
 
     @GetMapping("/my-info")
-    public User memberInfo(HttpSession session) {
-        String loginEmail = (String)SessionUtil.getLoginUser(session).get("LOGIN_EMAIL");
-        return userService.findUser(loginEmail);
+    public Map<String, Object> memberInfo(HttpSession session) {
+        Map<String, Object> userInfo = (Map<String, Object>)SessionUtil.getLoginUser(session).get("USER");
+        return userService.info(userInfo);
     }
 
     @PutMapping("/logout")
@@ -64,42 +48,37 @@ public class UserRestController {
     }
 
     @PatchMapping("/update")
-    public ResponseEntity<UserLoginResponse> updatePassword(@RequestBody UserUpdateRequest userUpdateRequest, HttpSession session) {
-        ResponseEntity<UserLoginResponse> resposneEntity = null;
-        String userEmail = (String)SessionUtil.getLoginUser(session).get("LOGIN_EMAIL");
-        String beforePassword = userUpdateRequest.getBeforePassword();
-        String afterPassword = userUpdateRequest.getAfterPassword();
+    public int updatePassword(HttpSession session, @RequestBody Map<String, Object> params) {
+        int retNum = 0;
+        params.put("email", (String)SessionUtil.getLoginUser(session).get("LOGIN_EMAIL"));
         try {
-            userService.updatePassword(userEmail, beforePassword, afterPassword);
-            resposneEntity.ok(new ResponseEntity<UserLoginResponse>(userLoginResponse, HttpStatus.OK));
+            userService.updatePassword(params);
+            retNum = 1;
         } catch(IllegalArgumentException e) {
-            log.error("updatePassword 실패, params : {}", userEmail, beforePassword, afterPassword);
-            resposneEntity = new ResponseEntity<UserLoginResponse>(HttpStatus.BAD_REQUEST);
+            log.error("updatePassword 실패, params : {}", params);
         }
-        return resposneEntity;
+        return retNum;
     }
 
     @DeleteMapping
-    public ResponseEntity<UserLoginResponse> delete(@RequestBody UserDeleteRequest userDeleteRequest, HttpSession session) {
-        ResponseEntity<UserLoginResponse> resposneEntity = null;
-        String userEmail = userDeleteRequest.getUserEmail();
+    public int delete(HttpSession session, @RequestBody Map<String, Object> params) {
+        int retNum = 0;
         try {
-            userService.delete(userEmail, userDeleteRequest.getPassword());
-            resposneEntity = new ResponseEntity<UserLoginResponse>(userLoginResponse, HttpStatus.OK);
+            userService.delete(params);
+            retNum = 1;
         } catch(RuntimeException e) {
-            log.error("회원 삭제 실패, params : {}", userEmail, userDeleteRequest.getPassword());
-            resposneEntity = new ResponseEntity<UserLoginResponse>(HttpStatus.BAD_REQUEST);
+            log.error("회원 삭제 실패, params : {}", params);
         }
         SessionUtil.clearSession(session);
-        return resposneEntity;
+        return retNum;
     }
 
     @PostMapping("/chkDupl")
     @ResponseBody
     public int chkDupl(@RequestBody Map<String, Object> params) {
         int retNum = 0;
-        User user = userService.findUser(params.get("email").toString());
-        if (user != null) {
+        Map<String, Object> info = userService.info(params);
+        if (info != null) {
             retNum = 1;
         }
         return retNum;

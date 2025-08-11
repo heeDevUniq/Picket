@@ -1,15 +1,17 @@
 package com.heeji.picket.repository;
 
-import com.heeji.picket.domain.User;
-import org.hibernate.mapping.Map;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
+import java.util.HashMap;
+import java.util.Map;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository {
 
-    public Optional<User> findByEmail(String email);
+    HashMap<String, Object> info(Map<String, Object> params);
+
+    int insert(Map<String, Object> params);
+
+    int delete(Map<String, Object> params);
 
 }

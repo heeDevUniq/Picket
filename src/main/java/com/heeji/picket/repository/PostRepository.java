@@ -1,25 +1,30 @@
 package com.heeji.picket.repository;
 
-import com.heeji.picket.domain.Post;
-import jakarta.transaction.Transactional;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.EntityGraph;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface PostRepository extends JpaRepository<Post, Long> {
+public interface PostRepository {
 
-    @EntityGraph(attributePaths = {"user"})
-    Page<Post> findAllByType(@Param("postType") String postType, Pageable pageable);
+    // 목록 조회
+    List<HashMap<String, Object>> list(Map<String, Object> params);
 
-    @Transactional
-    @Modifying
-    @Query("UPDATE Post p SET p.hits = p.hits + 1 WHERE p.postId = :postId")
-    int increaseViewCount(@Param("postId") Long postId);
+    // 상세 조회
+    HashMap<String, Object> info(Map<String, Object> params);
 
+    // 조회수 증가
+    int increaseViewCount(Map<String, Object> params);
+
+    // 공지사항/예매안내 등록
+    int insert(Map<String, Object> params);
+
+    // 공지사항/예매안내 수정
+    int update(Map<String, Object> params);
+
+    // 공지사항/예매안내 삭제
+    int delete(Map<String, Object> params);
+    
 }

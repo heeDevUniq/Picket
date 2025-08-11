@@ -83,13 +83,14 @@ public class SnsLoginController {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode jsonNode = mapper.readTree(res.body());
             String email = jsonNode.get("kakao_account").get("email").asText();
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("email", email);
 
             // 3. DB 조회 후 로그인 or 회원가입
-            User user = userService.findUser(email);
-            if (user != null) {
+            Map<String, Object> info = userService.info(map);
+            if (info != null) {
                 // 4. 세션 저장
-                user = userService.findUser(email);
-                SessionUtil.setLoginUser(session, user);
+                SessionUtil.setLoginUser(session, info);
                 redirectAttributes.addFlashAttribute("email", email);
                 return "redirect:/index";
             } else {
@@ -124,13 +125,14 @@ public class SnsLoginController {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode userInfo = mapper.readTree(response.body());
             String email = userInfo.get("email").asText();
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("email", email);
 
             // 2. DB 조회 후 로그인 or 회원가입
-            User user = userService.findUser(email);
-            if (user != null) {
+            Map<String, Object> info = userService.info(map);
+            if (info != null) {
                 // 3. 세션 저장
-                user = userService.findUser(email);
-                SessionUtil.setLoginUser(session, user);
+                SessionUtil.setLoginUser(session, info);
                 returnMap.put("returnUrl", "/index");
             } else {
                 returnMap.put("email", email);

@@ -4,10 +4,12 @@ import com.heeji.picket.domain.Post;
 import com.heeji.picket.service.PostService;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -16,17 +18,14 @@ import org.springframework.web.bind.annotation.*;
 @Log4j2
 public class PostController {
 
-    private final PostService postService;
-
-    public PostController(PostService postService) {
-        this.postService = postService;
-    }
+    @Autowired
+    PostService postService;
 
     @GetMapping("/{postType}")
-    public String index(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(required = false) String keyword, Model model, @PathVariable String postType) {
+    public String index(Model model, @PathVariable String postType, @RequestBody Map<String, Object> params) {
         log.debug("post index 진입");
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "insertDate"));
-        Page<Post> posts = postService.findAllByType(postType, pageable);
+        params.put("postType", postType);
+        List<HashMap<String, Object>> posts = postService.list(params);
 
         System.out.println("////////////////post index : " + posts);
 
@@ -35,34 +34,38 @@ public class PostController {
         return "post/index";
     }
 
-    @GetMapping("/{postType}/view/{postId}")
-    public String view(HttpSession session, Model model, @PathVariable String postType, @PathVariable Long postId) {
+    @GetMapping("/{postType}/view")
+    public String view(HttpSession session, Model model, @PathVariable String postType, @RequestBody Map<String, Object> params) {
         log.debug("post view 진입");
+        params.put("postType", postType);
         // 조회수 증가
-        postService.increaseViewCount(postId);
-        model.addAttribute("post", postService.findById(postId));
+        postService.increaseViewCount(params);
+        model.addAttribute("post", postService.info(params));
         model.addAttribute("postType", postType);
         return "post/view";
     }
 
-    @GetMapping("/{postType}/write/{postId}")
-    public String write(Model model, @PathVariable String postType, @PathVariable Long postId) {
+    @GetMapping("/{postType}/write")
+    public String write(Model model, @PathVariable String postType, @RequestBody Map<String, Object> params) {
         log.debug("post write 진입");
-        model.addAttribute("post", postService.findById(postId));
+        params.put("postType", postType);
+        model.addAttribute("post", postService.info(params));
         model.addAttribute("postType", postType);
         return "post/write";
     }
 
     @PostMapping("/{postType}/save")
     @ResponseBody
-    public Post save(@RequestBody Post post, @PathVariable String postType) {
-        return postService.save(post);
+    public int save(@PathVariable String postType, @RequestBody Map<String, Object> params) {
+        params.put("postType", postType);
+        return postService.save(params);
     }
 
     @PostMapping("/{postType}/delete")
     @ResponseBody
-    public int delete(@RequestBody Post post, @PathVariable String postType) {
-        return postService.deleteById(post.getPostId());
+    public int delete(@PathVariable String postType, @RequestBody Map<String, Object> params) {
+        params.put("postType", postType);
+        return postService.deleteById(params);
     }
 
 }

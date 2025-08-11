@@ -1,6 +1,8 @@
 package com.heeji.picket.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,37 +21,32 @@ public class UserAlarmService {
     private UserAlarmRepository showAlarmRepository;
 
     // 티켓팅 알람 설정
-    public UserAlarm setAlarm(UserAlarm userAlarm) {
-        System.out.println("진입!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        System.out.println("showId = " + userAlarm.getShowId() + ", userId = " + userAlarm.getUserId());
+    public int setAlarm(Map<String, Object> params) {
         // 유저가 이미 알람 설정 했는지 조회
-        Optional<UserAlarm> existingAlarm = showAlarmRepository.findByShowIdAndUserId(userAlarm.getShowId(), userAlarm.getUserId());
+        int alarmYn = showAlarmRepository.alarmYn(params);
 
-        if (existingAlarm.isPresent()) {
+        if (alarmYn > 0) {
             // 이미 설정 되어있으면 삭제
-            showAlarmRepository.delete(existingAlarm.get());
-            return null;
+            return showAlarmRepository.delete(params);
         } else {
             // 설정 안 되어 있으면 추가
-            return showAlarmRepository.save(userAlarm);
+            return showAlarmRepository.insert(params);
         }
     }
 
     // 특정 공연에 로그인 유저의 알람 여부 조회
-    public int findByShowIdAndUserId(Long userId, Long showId) {
-        int retNum = 0;
-        if (showAlarmRepository.findByShowIdAndUserId(showId, userId).isPresent()) retNum = 1;
-        return retNum;
+    public int alarmYn(Map<String, Object> params) {
+        return showAlarmRepository.alarmYn(params);
     }
 
     // 유저의 알람 개수 조회
-    public int countByUserId(Long userId) {
-        return showAlarmRepository.countByUserId(userId);
+    public int alarmCnt(Map<String, Object> params) {
+        return showAlarmRepository.alarmCnt(params);
     }
 
     // 유저의 알람 설정 목록 조회
-    public List<UserAlarm> findByUserId(Long userId) {
-        return showAlarmRepository.findByUserId(userId);
+    public List<HashMap<String, Object>> list(Map<String, Object> params) {
+        return showAlarmRepository.list(params);
     }
 
 }

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.heeji.picket.repository.SeatRepository">
+
+    <select id="findByShowDateId" resultType="HashMap">
+        SELECT *
+        FROM Seat s
+        LEFT JOIN s.seatGrade sg
+        WHERE s.showDateId = #{showDateId}
+    </select>
+
+    <select id="findSeatsWithSeatGradeBySeatIdIn" resultType="HashMap">
+        SELECT s
+        FROM Seat s
+        LEFT JOIN s.seatGrade sg
+        WHERE s.seatId IN #{seatIds}
+    </select>
+
+</mapper>

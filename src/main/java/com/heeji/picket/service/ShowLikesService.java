@@ -1,6 +1,8 @@
 package com.heeji.picket.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,39 +21,37 @@ public class ShowLikesService {
     private ShowLikesRepository showLikesRepository;
 
     // 좋아요하기
-    public ShowLikes like(ShowLikes showLikes) {
-        Optional<ShowLikes> existingLike = showLikesRepository.findByShowIdAndUserId(showLikes.getShowId(), showLikes.getUserId());
+    public int like(Map<String, Object> params) {
+        int likeYn = showLikesRepository.likeYn(params);
 
-        if (existingLike.isPresent()) {
+        if (likeYn > 0) {
             // 이미 좋아요 되어있으면 삭제
-            showLikesRepository.delete(existingLike.get());
-            return null;
+            showLikesRepository.delete(params);
+            return 0;
         } else {
             // 좋아요 안 되어 있으면 추가
-            return showLikesRepository.save(showLikes);
+            return showLikesRepository.insert(params);
         }
     }
 
     // 특정 공연에 로그인 유저의 좋아요 여부 조회
-    public int findByShowIdAndUserId(Long userId, Long showId) {
-        int retNum = 0;
-        if (showLikesRepository.findByShowIdAndUserId(showId, userId).isPresent()) retNum = 1;
-        return retNum;
+    public int likeYn(Map<String, Object> params) {
+        return showLikesRepository.likeYn(params);
     }
 
     // 공연별 좋아요 수 조회
-    public Long countByShowId(Long showId) {
-        return showLikesRepository.countByShowId(showId);
+    public int likeTotCnt(Map<String, Object> params) {
+        return showLikesRepository.likeTotCnt(params);
     }
 
-    // 유저의 좋아요목록 조회
-    List<ShowLikes> findByUserId(Long userId) {
-        return showLikesRepository.findByUserId(userId);
+    // 유저의 좋아요 목록 조회
+    List<HashMap<String, Object>> list(Map<String, Object> params) {
+        return showLikesRepository.list(params);
     }
     
     // 유저의 좋아요 개수 조회
-    public int countByUserId(Long showId) {
-        return showLikesRepository.countByUserId(showId);
+    public int likeCnt(Map<String, Object> params) {
+        return showLikesRepository.likeCnt(params);
     }
 
 }

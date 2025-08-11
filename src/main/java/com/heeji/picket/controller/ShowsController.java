@@ -12,6 +12,12 @@ import com.heeji.picket.utils.SessionUtil;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.log4j.Log4j2;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,72 +31,69 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/shows")
 public class ShowsController {
 
-    private final ShowsService showsService;
-    private final ShowDateService showDateService;
+    @Autowired
+    ShowsService showsService;
+
+    @Autowired
+    ShowDateService showDateService;
     
-    private final ShowLikesService showLikesService;
-    private final UserAlarmService userAlarmService;
-    private final ShowReviewsService showReviewsService;
+    @Autowired
+    ShowLikesService showLikesService;
     
-    private final SeatGradeService seatGradeService;
-    private final SeatService seatService;
-
-    public ShowsController(ShowsService showsService, ShowDateService showDateService, ShowLikesService showLikesService, ShowReviewsService showReviewsService, SeatGradeService seatGradeService, SeatService seatService, UserAlarmService userAlarmService) {
-        this.showsService = showsService;
-        this.showDateService = showDateService;
-
-        this.showLikesService = showLikesService;
-        this.userAlarmService = userAlarmService;
-        this.showReviewsService = showReviewsService;
-
-        this.seatGradeService = seatGradeService;
-        this.seatService = seatService;
-    }
+    @Autowired
+    UserAlarmService userAlarmService;
+    
+    @Autowired
+    ShowReviewsService showReviewsService;
+    
+    @Autowired
+    SeatGradeService seatGradeService;
+    
+    @Autowired
+    SeatService seatService;
 
     @GetMapping("/list/{genre}")
-    public String index(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, Model model, @PathVariable String genre) {
+    public String index(Model model, @PathVariable String genre, @RequestBody Map<String, Object> params) {
         log.debug("shows index진입");
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "insertDate"));
         // 선택 장르별 공연 목록
-        Page<Shows> shows = showsService.findAllByGenre(genre, pageable);
+        List<HashMap<String, Object>> shows = showsService.list(params);
         model.addAttribute("shows", shows);
         return "shows/index";
     }
 
     @GetMapping("/view/{showsId}")
-    public String view(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, Model model, @PathVariable Long showsId, HttpSession session) {
+    public String view(Model model, @PathVariable Long showsId, HttpSession session, @RequestBody Map<String, Object> params) {
         log.debug("shows view 진입");
         // 이 공연 상세정보
-        model.addAttribute("show", showsService.findById(showsId));
+        model.addAttribute("show", showsService.info(params));
         // 이 공연 날짜 목록
-        model.addAttribute("showDates", showDateService.findByShowId(showsId));
+        model.addAttribute("showDates", showDateService.list(params));
         // 이 공연에 대한 좋아요 총 개수
-        model.addAttribute("likeCount", showLikesService.countByShowId(showsId));
+        model.addAttribute("likeCount", showLikesService.likeTotCnt(params));
         // 이 공연에 대한 로그인 사용자의 좋아요 여부
-        model.addAttribute("likeMyCount", showLikesService.findByShowIdAndUserId((Long)SessionUtil.getLoginUser(session).get("LOGIN_ID"), showsId));
-        // 이 공연에 대한 로그인 사용자의 알림림 여부
-        model.addAttribute("alarmMyCount", userAlarmService.findByShowIdAndUserId((Long)SessionUtil.getLoginUser(session).get("LOGIN_ID"), showsId));
+        model.addAttribute("likeMyCount", showLikesService.likeYn(params));
+        // 이 공연에 대한 로그인 사용자의 알림 여부
+        model.addAttribute("alarmMyCount", userAlarmService.alarmYn(params));
         // 이 공연에 대한 리뷰 목록
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "insertDate"));
-        model.addAttribute("reviews", showReviewsService.findAllByShowId(showsId, pageable));
+        // model.addAttribute("reviews", showReviewsService.findAllByShowId(params));
         return "shows/view";
     }
 
     @GetMapping("/getTickets")
-    public String getTickets(Model model, @RequestParam Long showDateId) {
+    public String getTickets(Model model, @RequestBody Map<String, Object> params) {
         log.debug("getTickets 진입");
-        model.addAttribute("showDateId", showDateId);
+        model.addAttribute("showDateId", params.get("showDateId"));
         // 이 공연 상세정보
-        model.addAttribute("show", showDateService.findShowByShowDateId(showDateId).orElse(null));
+        model.addAttribute("show", showDateService.info(params));
         // 이 공연 등급 목록
-        model.addAttribute("grades", seatGradeService.findByShowDateId(showDateId));
+        model.addAttribute("grades", seatGradeService.list(params));
         // 좌석 목록
-        model.addAttribute("seats", seatService.findByShowDateId(showDateId));
+        model.addAttribute("seats", seatService.list(params));
         return "shows/popup/step01";
     }
 
     @PostMapping("/payment")
-    public String payment(Model model, @RequestParam Long showId, @RequestParam Long showDateId, @RequestParam Long[] seatArrays) {
+    public String payment(Model model, @RequestBody Map<String, Object> params, @RequestParam Long showId, @RequestParam Long showDateId, @RequestParam Long[] seatArrays) {
         log.debug("payment 진입");
         System.out.println("///////////////// 확인 : " + showId);
         System.out.println("///////////////// 확인 : " + showDateId);
@@ -99,9 +102,9 @@ public class ShowsController {
         }
         model.addAttribute("showDateId", showDateId);
         // 이 공연 상세정보
-        model.addAttribute("show", showsService.findById(showId));
+        model.addAttribute("show", showsService.info(params));
         // 사용자가 선택한 좌석 목록
-        model.addAttribute("seats", seatService.findSeatsWithSeatGradeBySeatIdIn(seatArrays));
+        // model.addAttribute("seats", seatService.findSeatsWithSeatGradeBySeatIdIn(seatArrays));
         return "shows/popup/step02";
     }
 
