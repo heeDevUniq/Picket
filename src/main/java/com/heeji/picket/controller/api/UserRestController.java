@@ -3,8 +3,9 @@ package com.heeji.picket.controller.api;
 import com.heeji.picket.service.UserService;
 import com.heeji.picket.utils.SessionUtil;
 import jakarta.servlet.http.HttpSession;
-import lombok.extern.log4j.Log4j2;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -13,8 +14,9 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/user/api")
-@Log4j2
 public class UserRestController {
+
+    private static final Logger logger = LoggerFactory.getLogger(UserRestController.class);
 
     @Autowired
     UserService userService;
@@ -30,9 +32,9 @@ public class UserRestController {
         Map<String, Object> info = userService.login(params);
         if (info != null) {
             SessionUtil.setLoginUser(session, info);
-            log.info("로그인 성공, user: {}", params);
+            logger.info("로그인 성공, user: {}", params);
         } else {
-            log.error("로그인 실패, user: {}", params);
+            logger.error("로그인 실패, user: {}", params);
         }
     }
 
@@ -55,7 +57,7 @@ public class UserRestController {
             userService.updatePassword(params);
             retNum = 1;
         } catch(IllegalArgumentException e) {
-            log.error("updatePassword 실패, params : {}", params);
+            logger.error("updatePassword 실패, params : {}", params);
         }
         return retNum;
     }
@@ -67,7 +69,7 @@ public class UserRestController {
             userService.delete(params);
             retNum = 1;
         } catch(RuntimeException e) {
-            log.error("회원 삭제 실패, params : {}", params);
+            logger.error("회원 삭제 실패, params : {}", params);
         }
         SessionUtil.clearSession(session);
         return retNum;

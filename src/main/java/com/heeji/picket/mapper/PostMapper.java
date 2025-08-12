@@ -1,6 +1,5 @@
 package com.heeji.picket.mapper;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,10 +9,10 @@ import org.apache.ibatis.annotations.Mapper;
 public interface PostMapper {
 
     // 목록 조회
-    List<HashMap<String, Object>> list(Map<String, Object> params);
+    List<Map<String, Object>> list(Map<String, Object> params);
 
     // 상세 조회
-    HashMap<String, Object> info(Map<String, Object> params);
+    Map<String, Object> info(Map<String, Object> params);
 
     // 조회수 증가
     int increaseViewCount(Map<String, Object> params);

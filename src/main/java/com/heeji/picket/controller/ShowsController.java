@@ -9,21 +9,23 @@ import com.heeji.picket.service.ShowsService;
 import com.heeji.picket.service.UserAlarmService;
 
 import jakarta.servlet.http.HttpSession;
-import lombok.extern.log4j.Log4j2;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@Log4j2
 @RequestMapping("/shows")
 public class ShowsController {
+
+    private static final Logger logger = LoggerFactory.getLogger(ShowsController.class);
 
     @Autowired
     ShowsService showsService;
@@ -47,17 +49,21 @@ public class ShowsController {
     SeatService seatService;
 
     @GetMapping("/list/{genre}")
-    public String index(Model model, @PathVariable String genre, @RequestBody Map<String, Object> params) {
-        log.debug("shows index진입");
+    public String index(Model model, @PathVariable String genre) {
+        logger.debug("shows index진입");
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("genre", genre);
         // 선택 장르별 공연 목록
-        List<HashMap<String, Object>> shows = showsService.list(params);
+        List<Map<String, Object>> shows = showsService.list(params);
         model.addAttribute("shows", shows);
         return "shows/index";
     }
 
-    @GetMapping("/view/{showsId}")
-    public String view(Model model, @PathVariable Long showsId, HttpSession session, @RequestBody Map<String, Object> params) {
-        log.debug("shows view 진입");
+    @GetMapping("/view/{showId}")
+    public String view(Model model, @PathVariable Long showId, HttpSession session, @RequestParam Map<String, Object> params) {
+        logger.debug("shows view 진입");
+        System.out.println("확인 : " + showId);
+        params.put("showId", showId);
         // 이 공연 상세정보
         model.addAttribute("show", showsService.info(params));
         // 이 공연 날짜 목록
@@ -74,8 +80,8 @@ public class ShowsController {
     }
 
     @GetMapping("/getTickets")
-    public String getTickets(Model model, @RequestBody Map<String, Object> params) {
-        log.debug("getTickets 진입");
+    public String getTickets(Model model, @RequestParam Map<String, Object> params) {
+        logger.debug("getTickets 진입");
         model.addAttribute("showDateId", params.get("showDateId"));
         // 이 공연 상세정보
         model.addAttribute("show", showDateService.info(params));
@@ -87,8 +93,8 @@ public class ShowsController {
     }
 
     @PostMapping("/payment")
-    public String payment(Model model, @RequestBody Map<String, Object> params, @RequestParam Long showId, @RequestParam Long showDateId, @RequestParam Long[] seatArrays) {
-        log.debug("payment 진입");
+    public String payment(Model model, @RequestParam Map<String, Object> params, @RequestParam Long showId, @RequestParam Long showDateId, @RequestParam Long[] seatArrays) {
+        logger.debug("payment 진입");
         System.out.println("///////////////// 확인 : " + showId);
         System.out.println("///////////////// 확인 : " + showDateId);
         for(Long seat : seatArrays) {
@@ -104,13 +110,13 @@ public class ShowsController {
 
     @GetMapping("/my/list")
     public String myList(Model model) {
-        log.debug("myList 진입");
+        logger.debug("myList 진입");
         return "myShows/index";
     }
 
     @GetMapping("/my/write")
     public String myWrite(Model model) {
-        log.debug("myWrite 진입");
+        logger.debug("myWrite 진입");
         return "myShows/write";
     }
 

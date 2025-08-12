@@ -1,8 +1,5 @@
 package com.heeji.picket.service;
 
-import lombok.extern.log4j.Log4j2;
-
-import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.heeji.picket.mapper.UserMapper;
 
 @Service
-@Log4j2
 public class UserService {
 
     @Autowired
@@ -32,7 +28,7 @@ public class UserService {
     }
 
     public Map<String, Object> login(Map<String, Object> params) {
-        HashMap<String, Object> info = userRepository.info(params);
+        Map<String, Object> info = userRepository.info(params);
         // email로 User 찾기
         if (info == null) {
             throw new IllegalArgumentException("존재하지 않는 사용자입니다.");
@@ -43,7 +39,7 @@ public class UserService {
         return info;
     }
 
-    public HashMap<String, Object> info(Map<String, Object> params) {
+    public Map<String, Object> info(Map<String, Object> params) {
         return userRepository.info(params);
     }
 
@@ -51,7 +47,7 @@ public class UserService {
     public void updatePassword(Map<String, Object> params) {
         String beforePassword = params.get("beforePassword").toString();
         String afterPassword = params.get("afterPassword").toString();
-        HashMap<String, Object> info = userRepository.info(params);
+        Map<String, Object> info = userRepository.info(params);
         if (info == null) {
             throw new IllegalArgumentException("존재하지 않는 사용자입니다.");
         }
@@ -64,7 +60,7 @@ public class UserService {
 
     @Transactional
     public void delete(Map<String, Object> params) {
-        HashMap<String, Object> info = userRepository.info(params);
+        Map<String, Object> info = userRepository.info(params);
         if (info == null) {
             throw new IllegalArgumentException("존재하지 않는 사용자입니다.");
         }

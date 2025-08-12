@@ -140,9 +140,6 @@
     margin-top: 5px;
     color: #333;
 }
-.title_btn{
-
-}
 </style>
 <section class="main-banner">
         <div class="banner-text">
@@ -164,7 +161,7 @@
     </div>
     <div class="ranking-list">
         <c:forEach var="show" items="${shows}" varStatus="i">
-            <a href="/shows/view/${show.showId}">
+            <a href="/shows/view/${show.show_id}">
                 <div class="ranking-item">
                     <span class="ranking-number">${i.count}</span>
                     <div class="ranking-img"></div>

@@ -175,8 +175,8 @@
     .color-r { background-color: #4299E1; }
     .color-s { background-color: #ED8936; }
     .color-a { background-color: #E53E3E; }
-    .color-r { background-color: #68D391; }
-    .color-s { background-color: #EA57E0; }
+    .color-b { background-color: #68D391; }
+    .color-c { background-color: #EA57E0; }
 
     table {
         width: 100%;

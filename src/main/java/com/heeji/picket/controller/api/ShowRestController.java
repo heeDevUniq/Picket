@@ -8,18 +8,20 @@ import com.heeji.picket.utils.SessionUtil;
 
 import ch.qos.logback.core.model.Model;
 import jakarta.servlet.http.HttpSession;
-import lombok.extern.log4j.Log4j2;
 
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 
 @RestController
 @RequestMapping("/shows/api")
-@Log4j2
 public class ShowRestController {
+
+    private static final Logger logger = LoggerFactory.getLogger(ShowRestController.class);
 
     @Autowired
     ShowsService showsService;
@@ -36,7 +38,7 @@ public class ShowRestController {
     @PostMapping("/like")
     @ResponseBody
     public int like(Model model, HttpSession session, @RequestBody Map<String, Object> params) {
-        log.debug("like 진입");
+        logger.debug("like 진입");
         params.put("userId", ((Long)SessionUtil.getLoginUser(session).get("LOGIN_ID")));
         return showLikesService.like(params);
     }
@@ -45,7 +47,7 @@ public class ShowRestController {
     @PostMapping("/saveReview")
     @ResponseBody
     public int saveReview(Model model, HttpSession session, @RequestBody Map<String, Object> params) {
-        log.debug("saveReview 진입");
+        logger.debug("saveReview 진입");
         params.put("userId", ((Long)SessionUtil.getLoginUser(session).get("LOGIN_ID")));
         return showReviewsService.save(params);
     }
@@ -53,7 +55,7 @@ public class ShowRestController {
     @PostMapping("/delReview")
     @ResponseBody
     public int delReview(Model model, HttpSession session, @RequestBody Map<String, Object> params) {
-        log.debug("delReview 진입");
+        logger.debug("delReview 진입");
         params.put("userId", ((Long)SessionUtil.getLoginUser(session).get("LOGIN_ID")));
         return showReviewsService.delete(params);
     }
@@ -61,7 +63,7 @@ public class ShowRestController {
     @PostMapping("/setAlarm")
     @ResponseBody
     public int setAlarm(Model model, HttpSession session, @RequestBody Map<String, Object> params) {
-        log.debug("setAlarm 진입");
+        logger.debug("setAlarm 진입");
         params.put("userId", ((Long)SessionUtil.getLoginUser(session).get("LOGIN_ID")));
         return userAlarmService.setAlarm(params);
     }

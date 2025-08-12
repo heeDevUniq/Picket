@@ -1,6 +1,5 @@
 package com.heeji.picket.mapper;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,7 +15,7 @@ public interface ShowLikesMapper {
     int likeTotCnt(Map<String, Object> params);
 
     // 유저의 좋아요 목록 조회
-    List<HashMap<String, Object>> list(Map<String, Object> params);
+    List<Map<String, Object>> list(Map<String, Object> params);
 
     // 유저의 좋아요 수 조회
     int likeCnt(Map<String, Object> params);

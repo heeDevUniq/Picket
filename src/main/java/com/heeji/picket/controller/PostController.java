@@ -1,30 +1,32 @@
 package com.heeji.picket.controller;
 
+import com.heeji.picket.controller.api.ShowRestController;
 import com.heeji.picket.service.PostService;
 import jakarta.servlet.http.HttpSession;
-import lombok.extern.log4j.Log4j2;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@Log4j2
 public class PostController {
+
+    private static final Logger logger = LoggerFactory.getLogger(PostController.class);
 
     @Autowired
     PostService postService;
 
     @GetMapping("/{postType}")
     public String index(Model model, @PathVariable String postType, @RequestBody Map<String, Object> params) {
-        log.debug("post index 진입");
+        logger.debug("post index 진입");
         params.put("postType", postType);
-        List<HashMap<String, Object>> posts = postService.list(params);
+        List<Map<String, Object>> posts = postService.list(params);
 
         System.out.println("////////////////post index : " + posts);
 
@@ -35,7 +37,7 @@ public class PostController {
 
     @GetMapping("/{postType}/view")
     public String view(HttpSession session, Model model, @PathVariable String postType, @RequestBody Map<String, Object> params) {
-        log.debug("post view 진입");
+        logger.debug("post view 진입");
         params.put("postType", postType);
         // 조회수 증가
         postService.increaseViewCount(params);
@@ -46,7 +48,7 @@ public class PostController {
 
     @GetMapping("/{postType}/write")
     public String write(Model model, @PathVariable String postType, @RequestBody Map<String, Object> params) {
-        log.debug("post write 진입");
+        logger.debug("post write 진입");
         params.put("postType", postType);
         model.addAttribute("post", postService.info(params));
         model.addAttribute("postType", postType);

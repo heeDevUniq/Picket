@@ -67,16 +67,17 @@
     <main class="main-content">
         <h2 class="page-title">티켓</h2>
         <div class="show-list">
-            <c:forEach var="show" items="${shows.content}">
-                <a href="/shows/view/${show.showId}">
+            <c:forEach var="show" items="${shows}">
+            ${show}
+                <a href="/shows/view/${show.show_id}">
                     <div class="show-card">
                         <div class="poster">
-                            <img src="${show.posterLink}" alt="${show.title}">
+                            <img src="${show.poster_link}" alt="${show.title}">
                         </div>
                         <div class="show-info">
                             <h3 class="title">${show.title}</h3>
                             <p class="venue">${show.place}</p>
-                            <p class="date">${show.startDate} ~ ${show.endDate}</p>
+                            <p class="date">${show.start_date} ~ ${show.end_date}</p>
                         </div>
                     </div>
                 </a>

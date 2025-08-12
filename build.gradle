@@ -69,3 +69,7 @@ tasks.named("bootJar") {
         into('WEB-INF')
     }
 }
+
+compileJava {
+	options.compilerArgs << '-parameters'
+}

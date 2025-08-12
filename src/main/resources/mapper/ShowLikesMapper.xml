@@ -19,7 +19,7 @@
         AND     SHOW_ID = #{showId}
     </select>
 
-    <select id="list" resultType="java.util.HashMap">
+    <select id="list" resultType="java.util.Map">
         /* com.heeji.picket.repository.ShowLikesRepository.list */
         SELECT  *
         FROM    SHOW_LIKES

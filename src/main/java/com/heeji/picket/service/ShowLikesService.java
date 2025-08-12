@@ -1,6 +1,5 @@
 package com.heeji.picket.service;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -9,10 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.heeji.picket.mapper.ShowLikesMapper;
 
-import lombok.extern.log4j.Log4j2;
-
 @Service
-@Log4j2
 public class ShowLikesService {
 
     @Autowired
@@ -43,7 +39,7 @@ public class ShowLikesService {
     }
 
     // 유저의 좋아요 목록 조회
-    List<HashMap<String, Object>> list(Map<String, Object> params) {
+    List<Map<String, Object>> list(Map<String, Object> params) {
         return showLikesRepository.list(params);
     }
     

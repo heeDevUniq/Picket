@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.heeji.picket.mapper.UserAlarmMapper">
 
-    <select id="likeYn" resultType="int">
+    <select id="alarmYn" resultType="int">
         /* com.heeji.picket.mapper.UserAlarmMapper.alarmYn */
         SELECT  COUNT(*)
         FROM    USER_ALARM
@@ -19,7 +19,7 @@
         AND     USER_ID = #{userId}
     </select>
 
-    <select id="list" resultType="java.util.HashMap">
+    <select id="list" resultType="java.util.Map">
         /* com.heeji.picket.mapper.UserAlarmMapper.list */
         SELECT  *
         FROM    USER_ALARM

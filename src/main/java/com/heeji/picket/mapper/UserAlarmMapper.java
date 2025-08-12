@@ -1,6 +1,5 @@
 package com.heeji.picket.mapper;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,7 +12,7 @@ public interface UserAlarmMapper {
     int alarmYn(Map<String, Object> params);
 
     // 유저의 알람 설정 목록 조회
-    List<HashMap<String, Object>> list(Map<String, Object> params);
+    List<Map<String, Object>> list(Map<String, Object> params);
 
     // 유저의 알림 설정 개수 조회
     int alarmCnt(Map<String, Object> params);

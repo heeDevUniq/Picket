@@ -1,6 +1,5 @@
 package com.heeji.picket.service;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -9,10 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.heeji.picket.mapper.UserAlarmMapper;
 
-import lombok.extern.log4j.Log4j2;
-
 @Service
-@Log4j2
 public class UserAlarmService {
 
     @Autowired
@@ -43,7 +39,7 @@ public class UserAlarmService {
     }
 
     // 유저의 알람 설정 목록 조회
-    public List<HashMap<String, Object>> list(Map<String, Object> params) {
+    public List<Map<String, Object>> list(Map<String, Object> params) {
         return showAlarmRepository.list(params);
     }
 
