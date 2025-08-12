@@ -11,6 +11,8 @@ public interface UserRepository {
     HashMap<String, Object> info(Map<String, Object> params);
 
     int insert(Map<String, Object> params);
+    
+    int update(Map<String, Object> params);
 
     int delete(Map<String, Object> params);
 

@@ -2,8 +2,34 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.heeji.picket.repository.ShowReviewsRepository">
 
-    <select id="findAllByShowId" resultType="HashMap">
-        SELECT * FROM show_reviews WHERE show_id = #{showId}
+    <select id="list" resultType="HashMap">
+        /* com.heeji.picket.repository.ShowReviewsRepository.list */
+        SELECT  *
+        FROM    SHOW_REVIEWS
+        WHERE   1 = 1
+        AND     SHOW_ID = #{showId}
     </select>
+
+    <insert id="insert">
+        /* com.heeji.picket.repository.ShowReviewsRepository.insert */
+        INSERT INTO SHOW_REVIEWS (
+            LIKE_ID,
+            SHOW_ID,
+            USER_ID,
+            INSERT_DATE
+        ) VALUES (
+            0,
+            #{showId},
+            #{userId},
+            NOW()
+        )
+    </insert>
+
+    <delete id="delete">
+        /* com.heeji.picket.repository.ShowReviewsRepository.delete */
+        DELETE FROM SHOW_REVIEWS
+        WHERE       1 = 1
+        AND         LIKE_ID = #{likeId}
+    </delete>
 
 </mapper>

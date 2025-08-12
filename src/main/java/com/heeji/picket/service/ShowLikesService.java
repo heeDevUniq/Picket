@@ -3,12 +3,10 @@ package com.heeji.picket.service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.heeji.picket.domain.ShowLikes;
 import com.heeji.picket.repository.ShowLikesRepository;
 
 import lombok.extern.log4j.Log4j2;
@@ -29,7 +27,7 @@ public class ShowLikesService {
             showLikesRepository.delete(params);
             return 0;
         } else {
-            // 좋아요 안 되어 있으면 추가
+            // 좋아요 안 되어 있으면 등록
             return showLikesRepository.insert(params);
         }
     }

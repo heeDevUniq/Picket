@@ -2,10 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.heeji.picket.repository.SeatGradeRepository">
 
-    <select id="findByShowDateId" resultType="HashMap">
-        SELECT sg
-        FROM SeatGrade sg
-        WHERE sg.showDateId = #{showDateId}
+    <select id="list" resultType="HashMap">
+        /* com.heeji.picket.repository.SeatGradeRepository.list */
+        SELECT  *
+        FROM    SEAT_GRADE
+        WHERE   1 = 1
+        AND     SHOW_DATE_ID = #{showDateId}
     </select>
 
 </mapper>

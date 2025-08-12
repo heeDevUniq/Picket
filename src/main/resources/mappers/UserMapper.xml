@@ -2,5 +2,68 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.heeji.picket.repository.UserRepository">
 
+    <select id="info" resultType="HashMap">
+        /* com.heeji.picket.repository.UserRepository.info */
+        SELECT  *
+        FROM    USER
+        WHERE   1 = 1
+        AND     EMAIL = #{email}
+        <if test="password != null and password != ''">
+        AND     PASSWORD = #{password}
+        </if>
+    </select>
+
+    <insert id="insert">
+        /* com.heeji.picket.repository.UserRepository.insert */
+        INSERT INTO USER (
+            USER_ID,
+            EMAIL,
+            PASSWORD,
+            ROLE,
+            NAME,
+            PHONE_NUMBER,
+            ADDRESS,
+            DETAIL_ADDRESS,
+            IS_DELETED,
+            PROVIDER_TYPE,
+            EMAIL_ON,
+            INSERT_DATE
+        ) VALUES (
+            0,
+            #{email},
+            #{password},
+            #{role},
+            #{name},
+            #{phoneNumber},
+            #{address},
+            #{detailAddress},
+            'N',
+            #{providerType},
+            #{emailOn},
+            NOW()
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE  USER
+        SET     UPDATE_DATE = NOW()
+        ,       PASSWORD = #{password}
+        ,       ROLE = #{role}
+        ,       NAME = #{name}
+        ,       PHONE_NUMBER = #{phoneNumber}
+        ,       ADDRESS = #{address}
+        ,       DETAIL_ADDRESS = #{detailAddress}
+        ,       IS_DELETED = #{isDeleted}
+        ,       DELETE_DATE = #{deleteDate}
+        ,       PROVIDER_TYPE = #{providerType}
+        ,       EMAIL_ON = #{emailOn}
+    </update>
+
+    <delete id="delete">
+        /* com.heeji.picket.repository.UserRepository.delete */
+        DELETE FROM USER
+        WHERE       1 = 1
+        AND         EMAIL = #{email}
+    </delete>
 
 </mapper>

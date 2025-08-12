@@ -14,7 +14,7 @@ const show = {
     like() {
         let cnt = parseInt($("#likeCount").text());
         com.ajaxForm('POST','/shows/api/like','showForm',function(result) {
-            if (result.postLikeId > 0) {
+            if (result.likeId > 0) {
                 // 좋아요
                 // 하트 채우기 추가해야 함
                 cnt++;

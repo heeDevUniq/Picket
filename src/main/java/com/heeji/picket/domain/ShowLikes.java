@@ -21,7 +21,7 @@ public class ShowLikes {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Comment("좋아요고유번호")
-    private Long postLikeId;
+    private Long likeId;
 
     @Column(nullable = false)
     @Comment("공연정보고유번호")

@@ -24,8 +24,8 @@ public class SeatService {
     }
     
     // 선택한 좌석 목록
-    // public List<HashMap<String, Object>> findSeatsWithSeatGradeBySeatIdIn(Long[] seatIds) {
-    //     return seatRepository.findSeatsWithSeatGradeBySeatIdIn(seatIds);
-    // }
+    public List<HashMap<String, Object>> selectedSeatList(String[] seatIdArray) {
+        return seatRepository.selectedSeatList(seatIdArray);
+    }
 
 }

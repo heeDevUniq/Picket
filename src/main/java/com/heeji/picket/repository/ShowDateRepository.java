@@ -12,6 +12,5 @@ public interface ShowDateRepository  {
     List<HashMap<String, Object>> list(Map<String, Object> params);
 
     HashMap<String, Object> info(Map<String, Object> params);
-    
 
 }

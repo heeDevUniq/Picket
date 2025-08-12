@@ -19,13 +19,45 @@
     </select>
 
     <update id="increaseViewCount">
+        /* com.heeji.picket.repository.PostRepository.increaseViewCount */
         UPDATE POST SET HITS = HITS + 1 WHERE POST_ID = #{postId}
     </update>
 
-    int insert(Map<String, Object> params);
+    <insert id="insert">
+        /* com.heeji.picket.repository.PostRepository.insert */
+        INSERT INTO POST (
+            POST_ID,
+            TYPE,
+            TITLE,
+            CONTENT,
+            HITS,
+            INSERT_DATE,
+            INSERT_ID
+        ) VALUES (
+            0,
+            #{type},
+            #{title},
+            #{content},
+            0,
+            NOW(),
+            #{loginId}
+        )
+    </insert>
+    
+    <update id="update">
+        /* com.heeji.picket.repository.PostRepository.update */
+        UPDATE POST
+        SET UPDATE_DATE = NOW()
+        ,   UPDATE_ID = #{loginId}
+        ,   TITLE = #{title}
+        ,   CONTENT = #{content}
+    </update>
 
-    int update(Map<String, Object> params);
-
-    int delete(Map<String, Object> params);
+    <delete id="delete">
+        /* com.heeji.picket.repository.PostRepository.delete */
+        DELETE FROM POST
+        WHERE       1 = 1
+        AND         POST_ID = #{postId}
+    </delete>
 
 </mapper>

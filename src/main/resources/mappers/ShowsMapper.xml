@@ -2,8 +2,20 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.heeji.picket.repository.ShowsRepository">
 
-    <select id="findAllByGenre" resultType="HashMap">
-        SELECT * FROM shows WHERE genre = #{genre}
+    <select id="list" resultType="HashMap">
+        /* com.heeji.picket.repository.ShowsRepository.list */
+        SELECT  *
+        FROM    SHOWS
+        WHERE   1 = 1
+        AND     GENRE = #{genre}
+    </select>
+
+    <select id="info" resultType="HashMap">
+        /* com.heeji.picket.repository.ShowsRepository.info */
+        SELECT  *
+        FROM    SHOWS
+        WHERE   1 = 1
+        AND     SHOW_ID = #{showId}
     </select>
 
 </mapper>

@@ -23,25 +23,14 @@ public class ShowReviewsService {
         return showReviewsRepository.list(params);
     }
 
-    // 리뷰 등록/수정
+    // 리뷰 등록
     public int save(Map<String, Object> params) {
-        HashMap<String, Object> info = showReviewsRepository.info(params);
-
-        if (info != null) {
-            return showReviewsRepository.update(params);
-        } else {
-            return showReviewsRepository.insert(params);
-        }
+        return showReviewsRepository.insert(params);
     }
 
     // 리뷰 삭제
     public int delete(Map<String, Object> params) {
-        int delNum = 0;
-        if (showReviewsRepository.info(params) != null) {
-            showReviewsRepository.delete(params);
-            delNum = 1;
-        }
-        return delNum;
+        return showReviewsRepository.delete(params);
     }
 
 }

@@ -2,10 +2,22 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.heeji.picket.repository.ShowDateRepository">
 
-    <select id="findShowByShowDateId" resultType="HashMap">
-        SELECT sd.shows
-        FROM Show_Date sd
-        WHERE sd.id = #{showDateId}
+    <select id="list" resultType="HashMap">
+        /* com.heeji.picket.repository.ShowDateRepository.list */
+        SELECT  *
+        FROM    SHOW_DATE
+        WHERE   1 = 1
+        AND     SHOW_ID = #{showId}
+    </select>
+
+    <select id="info" resultType="HashMap">
+        /* com.heeji.picket.repository.ShowDateRepository.info */
+        SELECT  *
+        FROM    SHOW_DATE SD
+        LEFT JOIN SHOW S
+        ON      SD.SHOW_ID = S.SHOW_ID
+        WHERE   1 = 1
+        AND     SD.SHOW_DATE_ID = #{showDateId}
     </select>
 
 </mapper>

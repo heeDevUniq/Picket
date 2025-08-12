@@ -21,8 +21,10 @@ public interface ShowLikesRepository {
     // 유저의 좋아요 수 조회
     int likeCnt(Map<String, Object> params);
 
+    // 좋아요 등록
     int insert(Map<String, Object> params);
 
+    // 좋아요 삭제
     int delete(Map<String, Object> params);
 
 }

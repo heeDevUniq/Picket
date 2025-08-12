@@ -25,13 +25,10 @@ public class UserService {
     @Transactional
     public void register(Map<String, Object> params) {
         if (userRepository.info(params) != null) {
-            log.debug("// 회원가입 실패, params : {}", params);
             throw new IllegalArgumentException("이미 가입된 이메일입니다.");
         }
-        // 비밀번호 암호화 후 저장
         params.put("password", encoder.encode(params.get("password").toString()));
         userRepository.insert(params);
-        // save()는 void가 아니고 저장된 엔티티를 리턴하므로 insertNum 체크 필요 없음
     }
 
     public Map<String, Object> login(Map<String, Object> params) {
@@ -59,12 +56,10 @@ public class UserService {
             throw new IllegalArgumentException("존재하지 않는 사용자입니다.");
         }
         if (!encoder.matches(beforePassword, info.get("password").toString())) {
-            log.error("// 비밀번호 변경 실패, params : {}", params);
             throw new RuntimeException("기존 비밀번호가 일치하지 않습니다.");
         }
         params.put("password", encoder.encode(afterPassword));
-        userRepository.insert(params);
-        log.info("// 비밀번호 변경 성공, params : {}", params);
+        userRepository.update(params);
     }
 
     @Transactional
@@ -74,11 +69,9 @@ public class UserService {
             throw new IllegalArgumentException("존재하지 않는 사용자입니다.");
         }
         if (!encoder.matches(params.get("password").toString(), info.get("password").toString())) {
-            log.error("// 회원 삭제 실패, params : {}", params);
             throw new RuntimeException("비밀번호가 일치하지 않습니다.");
         }
 
         userRepository.delete(params);
-        log.info("// 회원 삭제 성공, params : {}", params);
     }
 }

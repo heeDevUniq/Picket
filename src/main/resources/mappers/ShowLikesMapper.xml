@@ -2,20 +2,59 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.heeji.picket.repository.ShowLikesRepository">
 
-    <select id="findByShowIdAndUserId" resultType="int">
-        SELECT  COUNT(*) FROM show_likes WHERE show_id = #{showId} AND user_id = #{userId}
+    <select id="likeYn" resultType="int">
+        /* com.heeji.picket.repository.ShowLikesRepository.likeYn */
+        SELECT  COUNT(*)
+        FROM    SHOW_LIKES
+        WHERE   1 = 1
+        AND     SHOW_ID = #{showId}
+        AND     USER_ID = #{userId}
     </select>
 
-    <select id="countByShowId" resultType="int">
-        SELECT COUNT(*) FROM show_likes WHERE show_id = #{showId}
+    <select id="likeTotCnt" resultType="int">
+        /* com.heeji.picket.repository.ShowLikesRepository.likeTotCnt */
+        SELECT  COUNT(*)
+        FROM    SHOW_LIKES
+        WHERE   1 = 1
+        AND     SHOW_ID = #{showId}
     </select>
 
-    <select id="findByUserId" resultType="HashMap">
-        SELECT * FROM show_likes WHERE user_id = #{userId}
+    <select id="list" resultType="HashMap">
+        /* com.heeji.picket.repository.ShowLikesRepository.list */
+        SELECT  *
+        FROM    SHOW_LIKES
+        WHERE   1 = 1
+        AND     USER_ID = #{userId}
     </select>
 
-    <select id="countByUserId" resultType="int">
-        SELECT COUNT(*) FROM show_likes WHERE user_id = #{userId}
+    <select id="likeCnt" resultType="int">
+        /* com.heeji.picket.repository.ShowLikesRepository.likeCnt */
+        SELECT  COUNT(*)
+        FROM    SHOW_LIKES
+        WHERE   1 = 1
+        AND     USER_ID = #{userId}
     </select>
+
+    <insert id="insert">
+        /* com.heeji.picket.repository.ShowLikesRepository.insert */
+        INSERT INTO SHOW_LIKES (
+            LIKE_ID,
+            SHOW_ID,
+            USER_ID,
+            INSERT_DATE
+        ) VALUES (
+            0,
+            #{showId},
+            #{userId},
+            NOW()
+        )
+    </insert>
+
+    <delete id="delete">
+        /* com.heeji.picket.repository.ShowLikesRepository.delete */
+        DELETE FROM SHOW_LIKES
+        WHERE       1 = 1
+        AND         LIKE_ID = #{likeId}
+    </delete>
 
 </mapper>

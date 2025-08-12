@@ -2,18 +2,24 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.heeji.picket.repository.SeatRepository">
 
-    <select id="findByShowDateId" resultType="HashMap">
-        SELECT *
-        FROM Seat s
-        LEFT JOIN s.seatGrade sg
-        WHERE s.showDateId = #{showDateId}
+    <select id="list" resultType="HashMap">
+        /* com.heeji.picket.repository.SeatRepository.list */
+        SELECT  *
+        FROM    SEAT S
+        LEFT JOIN SEAT_GRADE SG
+        ON      S.SEAT_GRADE_ID = SG.SEAT_GRADE_ID
+        WHERE   1 = 1
+        AND     S.SHOW_DATE_ID = #{showDateId}
     </select>
 
-    <select id="findSeatsWithSeatGradeBySeatIdIn" resultType="HashMap">
-        SELECT s
-        FROM Seat s
-        LEFT JOIN s.seatGrade sg
-        WHERE s.seatId IN #{seatIds}
+    <select id="selectedSeatList" resultType="HashMap">
+        /* com.heeji.picket.repository.SeatRepository.selectedSeatList */
+        SELECT  *
+        FROM    SEAT S
+        WHERE   S.SEAT_ID IN
+        <foreach collection="array" item="arr" open="(" close=")" separator=",">
+            #{arr}
+        </foreach>
     </select>
 
 </mapper>
