@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.heeji.picket.repository.ShowDateRepository">
+<mapper namespace="com.heeji.picket.mapper.ShowDateMapper">
 
-    <select id="list" resultType="HashMap">
-        /* com.heeji.picket.repository.ShowDateRepository.list */
+    <select id="list" resultType="java.util.HashMap">
+        /* com.heeji.picket.mapper.ShowDateMapper.list */
         SELECT  *
         FROM    SHOW_DATE
         WHERE   1 = 1
         AND     SHOW_ID = #{showId}
     </select>
 
-    <select id="info" resultType="HashMap">
-        /* com.heeji.picket.repository.ShowDateRepository.info */
+    <select id="info" resultType="java.util.HashMap">
+        /* com.heeji.picket.mapper.ShowDateMapper.info */
         SELECT  *
         FROM    SHOW_DATE SD
         LEFT JOIN SHOW S

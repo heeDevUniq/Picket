@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.heeji.picket.repository.SeatGradeRepository">
+<mapper namespace="com.heeji.picket.mapper.SeatGradeMapper">
 
-    <select id="list" resultType="HashMap">
-        /* com.heeji.picket.repository.SeatGradeRepository.list */
+    <select id="list" resultType="java.util.HashMap">
+        /* com.heeji.picket.mapper.SeatGradeMapper.list */
         SELECT  *
         FROM    SEAT_GRADE
         WHERE   1 = 1

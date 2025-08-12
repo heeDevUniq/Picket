@@ -1,12 +1,12 @@
-package com.heeji.picket.repository;
-
-import org.springframework.stereotype.Repository;
+package com.heeji.picket.mapper;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Repository
-public interface UserRepository {
+import org.apache.ibatis.annotations.Mapper;
+
+@Mapper
+public interface UserMapper {
 
     HashMap<String, Object> info(Map<String, Object> params);
 

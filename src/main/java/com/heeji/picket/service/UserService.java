@@ -1,7 +1,5 @@
 package com.heeji.picket.service;
 
-import com.heeji.picket.domain.User;
-import com.heeji.picket.repository.UserRepository;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.HashMap;
@@ -12,12 +10,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.heeji.picket.mapper.UserMapper;
+
 @Service
 @Log4j2
 public class UserService {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserMapper userRepository;
 
     @Autowired
     private BCryptPasswordEncoder encoder;

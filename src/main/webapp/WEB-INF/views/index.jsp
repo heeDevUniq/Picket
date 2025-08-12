@@ -163,7 +163,7 @@
         <button>전시</button>
     </div>
     <div class="ranking-list">
-        <c:forEach var="show" items="${shows.content}" varStatus="i">
+        <c:forEach var="show" items="${shows}" varStatus="i">
             <a href="/shows/view/${show.showId}">
                 <div class="ranking-item">
                     <span class="ranking-number">${i.count}</span>
@@ -184,7 +184,7 @@
 <section class="open-soon">
     <h2>오픈예정</h2>
     <div class="open-list">
-        <c:forEach var="show" items="${shows.content}" varStatus="i">
+        <c:forEach var="show" items="${shows}" varStatus="i">
             <c:if test="${4 > i.index}">
                 <div class="open-item">
                     <div class="open-img"></div>

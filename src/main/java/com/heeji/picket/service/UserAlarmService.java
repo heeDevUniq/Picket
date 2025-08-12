@@ -7,7 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.heeji.picket.repository.UserAlarmRepository;
+import com.heeji.picket.mapper.UserAlarmMapper;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -16,7 +16,7 @@ import lombok.extern.log4j.Log4j2;
 public class UserAlarmService {
 
     @Autowired
-    private UserAlarmRepository showAlarmRepository;
+    private UserAlarmMapper showAlarmRepository;
 
     // 티켓팅 알람 설정
     public int setAlarm(Map<String, Object> params) {

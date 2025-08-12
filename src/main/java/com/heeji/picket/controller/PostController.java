@@ -1,6 +1,5 @@
 package com.heeji.picket.controller;
 
-import com.heeji.picket.domain.Post;
 import com.heeji.picket.service.PostService;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.log4j.Log4j2;

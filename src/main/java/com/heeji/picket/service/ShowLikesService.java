@@ -7,7 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.heeji.picket.repository.ShowLikesRepository;
+import com.heeji.picket.mapper.ShowLikesMapper;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -16,7 +16,7 @@ import lombok.extern.log4j.Log4j2;
 public class ShowLikesService {
 
     @Autowired
-    private ShowLikesRepository showLikesRepository;
+    private ShowLikesMapper showLikesRepository;
 
     // 좋아요하기
     public int like(Map<String, Object> params) {

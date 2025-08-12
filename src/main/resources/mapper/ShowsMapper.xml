@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.heeji.picket.repository.ShowsRepository">
+<mapper namespace="com.heeji.picket.mapper.ShowsMapper">
 
-    <select id="list" resultType="HashMap">
-        /* com.heeji.picket.repository.ShowsRepository.list */
+    <select id="list" resultType="java.util.HashMap">
+        /* com.heeji.picket.mapper.ShowsMapper.list */
         SELECT  *
         FROM    SHOWS
         WHERE   1 = 1
+        <if test="genre != null and genre != ''">
         AND     GENRE = #{genre}
+        </if>
     </select>
 
-    <select id="info" resultType="HashMap">
-        /* com.heeji.picket.repository.ShowsRepository.info */
+    <select id="info" resultType="java.util.HashMap">
+        /* com.heeji.picket.mapper.ShowsMapper.info */
         SELECT  *
         FROM    SHOWS
         WHERE   1 = 1

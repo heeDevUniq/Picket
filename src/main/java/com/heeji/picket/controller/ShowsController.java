@@ -1,6 +1,5 @@
 package com.heeji.picket.controller;
 
-import com.heeji.picket.domain.Shows;
 import com.heeji.picket.service.SeatGradeService;
 import com.heeji.picket.service.SeatService;
 import com.heeji.picket.service.ShowDateService;
@@ -8,7 +7,6 @@ import com.heeji.picket.service.ShowLikesService;
 import com.heeji.picket.service.ShowReviewsService;
 import com.heeji.picket.service.ShowsService;
 import com.heeji.picket.service.UserAlarmService;
-import com.heeji.picket.utils.SessionUtil;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.log4j.Log4j2;
@@ -18,10 +16,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;

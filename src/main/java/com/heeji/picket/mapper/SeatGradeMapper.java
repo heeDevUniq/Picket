@@ -1,14 +1,14 @@
-package com.heeji.picket.repository;
+package com.heeji.picket.mapper;
 
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.stereotype.Repository;
+import org.apache.ibatis.annotations.Mapper;
 
-@Repository
-public interface SeatGradeRepository {
+@Mapper
+public interface SeatGradeMapper {
 
     List<HashMap<String, Object>> list(Map<String, Object> params);
 

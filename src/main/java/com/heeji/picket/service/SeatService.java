@@ -7,7 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.heeji.picket.repository.SeatRepository;
+import com.heeji.picket.mapper.SeatMapper;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -16,7 +16,7 @@ import lombok.extern.log4j.Log4j2;
 public class SeatService {
 
     @Autowired
-    private SeatRepository seatRepository;
+    private SeatMapper seatRepository;
 
     // 날짜 고유번호로 좌석 목록 조회
     public List<HashMap<String, Object>> list(Map<String, Object> params) {

@@ -1,13 +1,13 @@
-package com.heeji.picket.repository;
+package com.heeji.picket.mapper;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.stereotype.Repository;
+import org.apache.ibatis.annotations.Mapper;
 
-@Repository
-public interface ShowLikesRepository {
+@Mapper
+public interface ShowLikesMapper {
 
     // 특정 공연에 대해 유저가 이미 좋아요 했는지 조회
     int likeYn(Map<String, Object> params);

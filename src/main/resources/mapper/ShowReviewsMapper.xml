@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.heeji.picket.repository.ShowReviewsRepository">
+<mapper namespace="com.heeji.picket.mapper.ShowReviewsMapper">
 
-    <select id="list" resultType="HashMap">
-        /* com.heeji.picket.repository.ShowReviewsRepository.list */
+    <select id="list" resultType="java.util.HashMap">
+        /* com.heeji.picket.mapper.ShowReviewsMapper.list */
         SELECT  *
         FROM    SHOW_REVIEWS
         WHERE   1 = 1
@@ -11,7 +11,7 @@
     </select>
 
     <insert id="insert">
-        /* com.heeji.picket.repository.ShowReviewsRepository.insert */
+        /* com.heeji.picket.mapper.ShowReviewsMapper.insert */
         INSERT INTO SHOW_REVIEWS (
             LIKE_ID,
             SHOW_ID,
@@ -26,7 +26,7 @@
     </insert>
 
     <delete id="delete">
-        /* com.heeji.picket.repository.ShowReviewsRepository.delete */
+        /* com.heeji.picket.mapper.ShowReviewsMapper.delete */
         DELETE FROM SHOW_REVIEWS
         WHERE       1 = 1
         AND         LIKE_ID = #{likeId}

@@ -1,14 +1,14 @@
-package com.heeji.picket.repository;
+package com.heeji.picket.mapper;
 
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.stereotype.Repository;
+import org.apache.ibatis.annotations.Mapper;
 
-@Repository
-public interface ShowReviewsRepository {
+@Mapper
+public interface ShowReviewsMapper {
     
     // 공연 별 리뷰 목록 조회
     List<HashMap<String, Object>> list(Map<String, Object> params);

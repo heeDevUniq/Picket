@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.heeji.picket.repository.PostRepository">
+<mapper namespace="com.heeji.picket.mapper.PostMapper">
 
-    <select id="list" resultType="HashMap">
-        /* com.heeji.picket.repository.PostRepository.list */
+    <select id="list" resultType="java.util.HashMap">
+        /* com.heeji.picket.mapper.PostMapper.list */
         SELECT  *
         FROM    POST
         WHERE   1 = 1
         AND     TYPE = #{type}
     </select>
 
-    <select id="info" resultType="HashMap">
-        /* com.heeji.picket.repository.PostRepository.info */
+    <select id="info" resultType="java.util.HashMap">
+        /* com.heeji.picket.mapper.PostMapper.info */
         SELECT  *
         FROM    POST
         WHERE   1 = 1
@@ -19,12 +19,12 @@
     </select>
 
     <update id="increaseViewCount">
-        /* com.heeji.picket.repository.PostRepository.increaseViewCount */
+        /* com.heeji.picket.mapper.PostMapper.increaseViewCount */
         UPDATE POST SET HITS = HITS + 1 WHERE POST_ID = #{postId}
     </update>
 
     <insert id="insert">
-        /* com.heeji.picket.repository.PostRepository.insert */
+        /* com.heeji.picket.mapper.PostMapper.insert */
         INSERT INTO POST (
             POST_ID,
             TYPE,
@@ -45,7 +45,7 @@
     </insert>
     
     <update id="update">
-        /* com.heeji.picket.repository.PostRepository.update */
+        /* com.heeji.picket.mapper.PostMapper.update */
         UPDATE POST
         SET UPDATE_DATE = NOW()
         ,   UPDATE_ID = #{loginId}
@@ -54,7 +54,7 @@
     </update>
 
     <delete id="delete">
-        /* com.heeji.picket.repository.PostRepository.delete */
+        /* com.heeji.picket.mapper.PostMapper.delete */
         DELETE FROM POST
         WHERE       1 = 1
         AND         POST_ID = #{postId}

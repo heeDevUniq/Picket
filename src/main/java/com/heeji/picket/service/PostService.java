@@ -1,9 +1,10 @@
 package com.heeji.picket.service;
 
-import com.heeji.picket.repository.PostRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.heeji.picket.mapper.PostMapper;
 
 import java.util.HashMap;
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.Map;
 public class PostService {
 
     @Autowired
-    private PostRepository postRepository;
+    private PostMapper postRepository;
 
     public List<HashMap<String, Object>> list(Map<String, Object> params) {
         return postRepository.list(params);

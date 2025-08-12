@@ -7,7 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.heeji.picket.repository.ShowDateRepository;
+import com.heeji.picket.mapper.ShowDateMapper;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -16,7 +16,7 @@ import lombok.extern.log4j.Log4j2;
 public class ShowDateService {
 
     @Autowired
-    private ShowDateRepository showDateRepository;
+    private ShowDateMapper showDateRepository;
 
     // 공연 고유번호로 날짜 목록 조회
     public List<HashMap<String, Object>> list(Map<String, Object> params) {

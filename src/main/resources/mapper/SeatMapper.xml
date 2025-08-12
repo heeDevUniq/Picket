@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.heeji.picket.repository.SeatRepository">
+<mapper namespace="com.heeji.picket.mapper.SeatMapper">
 
-    <select id="list" resultType="HashMap">
-        /* com.heeji.picket.repository.SeatRepository.list */
+    <select id="list" resultType="java.util.HashMap">
+        /* com.heeji.picket.mapper.SeatMapper.list */
         SELECT  *
         FROM    SEAT S
         LEFT JOIN SEAT_GRADE SG
@@ -12,8 +12,8 @@
         AND     S.SHOW_DATE_ID = #{showDateId}
     </select>
 
-    <select id="selectedSeatList" resultType="HashMap">
-        /* com.heeji.picket.repository.SeatRepository.selectedSeatList */
+    <select id="selectedSeatList" resultType="java.util.HashMap">
+        /* com.heeji.picket.mapper.SeatMapper.selectedSeatList */
         SELECT  *
         FROM    SEAT S
         WHERE   S.SEAT_ID IN

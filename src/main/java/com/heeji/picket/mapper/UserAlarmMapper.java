@@ -1,13 +1,13 @@
-package com.heeji.picket.repository;
+package com.heeji.picket.mapper;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.stereotype.Repository;
+import org.apache.ibatis.annotations.Mapper;
 
-@Repository
-public interface UserAlarmRepository {
+@Mapper
+public interface UserAlarmMapper {
 
     // 유저가 이미 알람 설정 했는지 조회
     int alarmYn(Map<String, Object> params);

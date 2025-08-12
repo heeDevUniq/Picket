@@ -2,7 +2,6 @@ package com.heeji.picket.controller.api;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.heeji.picket.domain.User;
 import com.heeji.picket.service.UserService;
 import com.heeji.picket.utils.SessionUtil;
 import jakarta.servlet.http.HttpSession;

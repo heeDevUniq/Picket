@@ -1,6 +1,5 @@
 package com.heeji.picket.controller;
 
-import com.heeji.picket.domain.Shows;
 import com.heeji.picket.service.ShowsService;
 import lombok.extern.log4j.Log4j2;
 
@@ -11,7 +10,6 @@ import java.util.Map;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 @Log4j2
@@ -24,13 +22,14 @@ public class MainController {
     }
 
     @GetMapping("/")
-    public String home(Model model, @RequestBody Map<String, Object> params) {
-        return index(model, params);
+    public String home(Model model) {
+        return index(model);
     }
 
     @GetMapping("/index")
-    public String index(Model model, @RequestBody Map<String, Object> params) {
+    public String index(Model model) {
         log.debug("index진입");
+        Map<String, Object> params = new HashMap<String, Object>();
         List<HashMap<String, Object>> shows = showsService.list(params);
         model.addAttribute("shows", shows);
         return "index";
