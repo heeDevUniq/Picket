@@ -1,6 +1,5 @@
 package com.heeji.picket.utils;
 
-import com.heeji.picket.domain.User;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -11,8 +10,6 @@ import java.util.Map;
 
 @ControllerAdvice
 public class SessionUtil {
-
-    private static final String ROLE = "user";
 
     private SessionUtil() {
         // Prevent instantiation
