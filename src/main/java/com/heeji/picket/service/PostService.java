@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.heeji.picket.mapper.PostMapper;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,8 +15,11 @@ public class PostService {
     @Autowired
     private PostMapper postRepository;
 
-    public List<Map<String, Object>> list(Map<String, Object> params) {
-        return postRepository.list(params);
+    public Map<String, Object> list(Map<String, Object> params) {
+        Map<String, Object> result = new HashMap<>();
+        List<Map<String, Object>> list = postRepository.list(params);
+        result.put("list", list);
+        return result;
     }
 
     public Map<String, Object> info(Map<String, Object> params) {
