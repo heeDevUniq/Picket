@@ -3,16 +3,26 @@ const user = {
     join() {
         //user.fnChkValidate('form');
         com.ajaxForm('POST','/user/api/sign-up','signupForm',function(result) {
-            console.log('result : ' + result);
-            com.confirm('가입완료','회원가입이 완료되었습니다.','info',function() {
-                location.href = '/index';
-            });
+            if (result && result.success) {
+                com.alert('회원가입이 완료되었습니다.',function() {
+                    location.href = '/login';
+                });
+            } else {
+                com.alert((result && result.message) ? result.message : '회원가입에 실패하였습니다.');
+            }
         });
     },
 
     // 로그인
     login() {
-        com.ajaxForm('POST','/user/api/sign-in','loginForm');
+        com.ajaxForm('POST','/user/api/sign-in','loginForm',function(result) {
+            if (result && result.success) {
+                const back = new URLSearchParams(location.search).get('returnUrl');
+                location.href = back || result.returnUrl;
+            } else {
+                com.alert((result && result.message) ? result.message : '로그인에 실패하였습니다.');
+            }
+        });
     },
 
     // 카카오 로그인
@@ -49,31 +59,64 @@ const user = {
 
     // 이메일 중복 체크
     fnChkDupl() {
+        const email = $('#email').val().trim();
+        if (!email) {
+            pk.shake(document.getElementById('email'));
+            pk.toast('이메일을 입력해주세요.', 'err');
+            return;
+        }
         com.ajaxForm('POST','/user/api/chkDupl','signupForm',function(result) {
-            if (result > 0) {
-                $('#duplText').text('이미 사용중인 이메일입니다.').css('color', 'red');
-            } else {
-                $('#duplText').text('이미 사용중인 이메일입니다.').css('color', 'blue');
-            }
+            const dup = result > 0;
+            $('#duplText')
+                .text(dup ? '이미 사용중인 이메일입니다.' : '사용 가능한 이메일입니다.')
+                .css('color', dup ? '#D92D20' : '#12B76A');
+            $('#email')
+                .toggleClass('pk-field-error', dup)
+                .toggleClass('pk-field-ok', !dup);
+            if (dup) pk.shake(document.getElementById('email'));
         });
     },
 
-    // 비밀번호 체크
+    // 비밀번호 유효성/강도/일치 검사
     fnChkPw() {
-        // 비밀번호 일치 확인
-        if ($('#password').val() == $('#confPassword').val()) {
-            $('#pwText').text('비밀번호 일치합니다.').css('color', 'blue');
-        } else {
-            $('#pwText').text('비밀번호가 일치하지 않습니다.').css('color', 'red');
+        const pw = $('#password').val() || '';
+        const conf = $('#confPassword').val() || '';
+
+        const rule = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()])[a-zA-Z\d!@#$%^&*()]{8,12}$/;
+        const valid = rule.test(pw);
+
+        // 강도 막대
+        let score = 0;
+        if (pw.length >= 8) score++;
+        if (/[a-zA-Z]/.test(pw)) score++;
+        if (/\d/.test(pw)) score++;
+        if (/[!@#$%^&*()]/.test(pw)) score++;
+        const bar = document.querySelector('#pwMeter i');
+        if (bar) {
+            const colors = ['#F04438', '#F79009', '#F79009', '#12B76A'];
+            bar.style.width = (score * 25) + '%';
+            bar.style.background = colors[Math.max(0, score - 1)];
         }
 
-        // 비밀번호 유효성 검사 (8자이상 12자이하 영문, 숫자, 특수문자 조합)
-        const regex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()])[a-zA-Z\d!@#$%^&*()]{8,12}$/;
-        if (regex.test($('#password').val())) {
-            $('#pwText').text('8자이상 12자이하 영문, 숫자, 특수문자 조합').css('color', 'blue');
+        $('#password')
+            .toggleClass('pk-field-ok', valid && pw.length > 0)
+            .toggleClass('pk-field-error', !valid && pw.length > 0);
+
+        if (!pw) {
+            $('#pwText').text('');
+        } else if (!valid) {
+            $('#pwText').text('8~12자, 영문·숫자·특수문자를 모두 포함해야 합니다.').css('color', '#D92D20');
+        } else if (conf && pw !== conf) {
+            $('#pwText').text('비밀번호가 일치하지 않습니다.').css('color', '#D92D20');
+        } else if (conf && pw === conf) {
+            $('#pwText').text('사용 가능한 비밀번호입니다.').css('color', '#12B76A');
         } else {
-            $('#pwText').text('비밀번호가 유효하지 않습니다.').css('color', 'red');
+            $('#pwText').text('비밀번호 확인란에 한 번 더 입력해주세요.').css('color', '#6B7280');
         }
+
+        $('#confPassword')
+            .toggleClass('pk-field-ok', conf.length > 0 && pw === conf)
+            .toggleClass('pk-field-error', conf.length > 0 && pw !== conf);
     },
 
 //    fnChkValidate(formId) {
@@ -138,5 +181,14 @@ const user = {
             location.href = "/logout";
         });
     }
-
 }
+
+// 엔터로 제출
+$(function () {
+    $('#loginForm input').on('keydown', function (e) {
+        if (e.key === 'Enter') { e.preventDefault(); user.login(); }
+    });
+    $('#signupForm input').on('keydown', function (e) {
+        if (e.key === 'Enter') { e.preventDefault(); user.join(); }
+    });
+});

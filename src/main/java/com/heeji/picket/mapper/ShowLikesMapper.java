@@ -8,22 +8,22 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface ShowLikesMapper {
 
-    // 특정 공연에 대해 유저가 이미 좋아요 했는지 조회
+    // 좋아요 여부
     int likeYn(Map<String, Object> params);
 
-    // 공연 별 좋아요 수 조회
+    // 공연별 좋아요 수
     int likeTotCnt(Map<String, Object> params);
 
-    // 유저의 좋아요 목록 조회
+    // 내 관심공연 목록
     List<Map<String, Object>> list(Map<String, Object> params);
 
-    // 유저의 좋아요 수 조회
+    // 내 관심공연 수
     int likeCnt(Map<String, Object> params);
 
-    // 좋아요 등록
+    // 등록
     int insert(Map<String, Object> params);
 
-    // 좋아요 삭제
+    // 삭제
     int delete(Map<String, Object> params);
 
 }

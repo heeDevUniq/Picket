@@ -14,12 +14,12 @@ public class ShowDateService {
     @Autowired
     private ShowDateMapper showDateRepository;
 
-    // 공연 고유번호로 날짜 목록 조회
+    // 공연별 날짜 목록
     public List<Map<String, Object>> list(Map<String, Object> params) {
         return showDateRepository.list(params);
     }
     
-    // 날짜 고유번호로 공연 정보 조회
+    // 날짜별 공연 정보
     public Map<String, Object> info(Map<String, Object> params) {
         return showDateRepository.info(params);
     }

@@ -2,8 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.heeji.picket.mapper.ShowLikesMapper">
 
-    <select id="likeYn" resultType="int">
-        /* com.heeji.picket.repository.ShowLikesRepository.likeYn */
+    <select id="likeYn" parameterType="java.util.Map" resultType="int">
+        /* com.heeji.picket.mapper.ShowLikesMapper.likeYn */
         SELECT  COUNT(*)
         FROM    SHOW_LIKES
         WHERE   1 = 1
@@ -11,50 +11,58 @@
         AND     USER_ID = #{userId}
     </select>
 
-    <select id="likeTotCnt" resultType="int">
-        /* com.heeji.picket.repository.ShowLikesRepository.likeTotCnt */
+    <select id="likeTotCnt" parameterType="java.util.Map" resultType="int">
+        /* com.heeji.picket.mapper.ShowLikesMapper.likeTotCnt */
         SELECT  COUNT(*)
         FROM    SHOW_LIKES
         WHERE   1 = 1
         AND     SHOW_ID = #{showId}
     </select>
 
-    <select id="list" resultType="java.util.Map">
-        /* com.heeji.picket.repository.ShowLikesRepository.list */
-        SELECT  *
-        FROM    SHOW_LIKES
+    <select id="list" parameterType="java.util.Map" resultType="java.util.Map">
+        /* com.heeji.picket.mapper.ShowLikesMapper.list */
+        SELECT  SL.LIKE_ID      AS likeId
+        ,       SL.SHOW_ID      AS showId
+        ,       SL.USER_ID      AS userId
+        ,       SL.INSERT_DATE  AS insertDate
+        ,       S.TITLE         AS title
+        ,       S.PLACE         AS place
+        ,       S.POSTER_LINK         AS posterLink
+        FROM    SHOW_LIKES SL
+        LEFT JOIN SHOWS S
+        ON      SL.SHOW_ID = S.SHOW_ID
         WHERE   1 = 1
-        AND     USER_ID = #{userId}
+        AND     SL.USER_ID = #{userId}
+        ORDER BY SL.LIKE_ID DESC
     </select>
 
-    <select id="likeCnt" resultType="int">
-        /* com.heeji.picket.repository.ShowLikesRepository.likeCnt */
+    <select id="likeCnt" parameterType="java.util.Map" resultType="int">
+        /* com.heeji.picket.mapper.ShowLikesMapper.likeCnt */
         SELECT  COUNT(*)
         FROM    SHOW_LIKES
         WHERE   1 = 1
         AND     USER_ID = #{userId}
     </select>
 
-    <insert id="insert">
-        /* com.heeji.picket.repository.ShowLikesRepository.insert */
+    <insert id="insert" parameterType="java.util.Map">
+        /* com.heeji.picket.mapper.ShowLikesMapper.insert */
         INSERT INTO SHOW_LIKES (
-            LIKE_ID,
             SHOW_ID,
             USER_ID,
             INSERT_DATE
         ) VALUES (
-            0,
             #{showId},
             #{userId},
             NOW()
         )
     </insert>
 
-    <delete id="delete">
-        /* com.heeji.picket.repository.ShowLikesRepository.delete */
+    <delete id="delete" parameterType="java.util.Map">
+        /* com.heeji.picket.mapper.ShowLikesMapper.delete */
         DELETE FROM SHOW_LIKES
         WHERE       1 = 1
-        AND         LIKE_ID = #{likeId}
+        AND         SHOW_ID = #{showId}
+        AND         USER_ID = #{userId}
     </delete>
 
 </mapper>

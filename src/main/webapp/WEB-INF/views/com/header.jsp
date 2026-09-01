@@ -2,7 +2,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<html>
+<!DOCTYPE html>
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
@@ -11,7 +12,13 @@
     <meta property="og:title" content="픽켓 : Pick! Your Ticket">
     <link rel="shortcut icon" href="/images/com/favicon.ico" type="image/x-icon">
     <link rel="icon" href="/images/com/favicon.ico" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap">
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/typography.css">
+    <link rel="stylesheet" href="/css/interactive.css">
+    <link rel="stylesheet" href="/css/responsive.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.css">
@@ -20,6 +27,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.js"></script>
     <script src="/js/common.js"></script>
+    <script src="/js/interactive.js"></script>
     <script src="/js/user.js"></script>
 </head>
 <body>
@@ -29,11 +37,18 @@
             <a href="/index"><img src="/images/com/logo.png" alt="PICKET 로고"></a>
         </div>
         <div class="my-box">
-            <div class="search-box">
-                <input type="text" placeholder="인기 공연 / 콘서트 혜택 모음">
-                <button class="search-btn">
-                    <img src="/images/search.svg" alt="검색">
-                </button>
+            <div class="pk-search" id="pkSearch">
+                <form class="search-box" action="/search" method="get" role="search" autocomplete="off">
+                    <input type="text" name="keyword" id="pkSearchInput"
+                           placeholder="공연명, 장소를 검색해보세요"
+                           value="${fn:escapeXml(keyword)}"
+                           aria-label="공연 검색"
+                           aria-autocomplete="list" aria-controls="pkSuggest" aria-expanded="false">
+                    <button type="submit" class="search-btn" aria-label="검색">
+                        <img src="/images/search.svg" alt="">
+                    </button>
+                </form>
+                <div class="pk-suggest" id="pkSuggest" role="listbox" hidden></div>
             </div>
             <div class="my-icon-box">
                 <div class="my-ticket">
@@ -44,7 +59,7 @@
                 </div>
                 <div class="my-login">
                     <c:choose>
-                        <c:when test="${session.LOGIN_EMAIL != null}">
+                        <c:when test="${sessionScope.LOGIN_EMAIL != null}">
                              <a href="#" onclick="user.logout();" class="login_on">
                                  <img src="/images/user2.svg" alt="로그아웃 아이콘">
                                  <span>로그아웃</span>
@@ -73,7 +88,7 @@
     </ul>
     <ul>
     <li><a href="/notice">공지사항</a></li>
-    <li><a href="/open"">예매오픈안내</a></li>
-    <ul>
+    <li><a href="/open">예매오픈안내</a></li>
+    </ul>
 </nav>
 

@@ -5,7 +5,7 @@
 	<main class="main-content">
 		<h2>${postType eq 'notice'?'공지사항':'예매오픈안내'} ${post eq null?'등록':'수정'}</h2>
 		<form class="write-form" name="postForm" id="postForm">
-			<input type="hidden" name="postId" value="${post.postId}"> <input type="hidden" name="type" value="${postType}">
+			<input type="hidden" name="postId" value="${post.postId}"> <input type="hidden" name="postType" value="${postType}">
 
 			<div class="form-group">
 				<label for="title">제목</label> <input type="text" id="title" name="title" placeholder="제목을 입력하세요." value="${post.title}">

@@ -8,22 +8,25 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface PostMapper {
 
-    // 목록 조회
+    // 목록 (페이징)
     List<Map<String, Object>> list(Map<String, Object> params);
 
-    // 상세 조회
+    // 전체 건수
+    int count(Map<String, Object> params);
+
+    // 상세
     Map<String, Object> info(Map<String, Object> params);
 
     // 조회수 증가
     int increaseViewCount(Map<String, Object> params);
 
-    // 공지사항/예매안내 등록
+    // 등록
     int insert(Map<String, Object> params);
 
-    // 공지사항/예매안내 수정
+    // 수정
     int update(Map<String, Object> params);
 
-    // 공지사항/예매안내 삭제
+    // 삭제
     int delete(Map<String, Object> params);
     
 }

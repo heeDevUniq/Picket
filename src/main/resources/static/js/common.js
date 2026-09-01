@@ -10,6 +10,9 @@ const com = {
             data: JSON.stringify(json),
             success: function(result) {
                 if (callback) callback(result);
+            },
+            error: function(xhr) {
+                com.ajaxError(xhr);
             }
         });
     },
@@ -22,8 +25,20 @@ const com = {
             data: JSON.stringify(params),
             success: function(result) {
                 if (callback) callback(result);
+            },
+            error: function(xhr) {
+                com.ajaxError(xhr);
             }
         });
+    },
+
+    ajaxError(xhr) {
+        // 로그인이 필요하면 안내 없이 바로 이동, 돌아올 주소를 남긴다
+        if (xhr && xhr.status === 401) {
+            location.href = '/login?returnUrl=' + encodeURIComponent(location.pathname + location.search);
+            return;
+        }
+        com.alert('처리 중 오류가 발생하였습니다. 잠시 후 다시 시도해주세요.');
     },
 
     locateUrl(url, obj) {
@@ -70,12 +85,11 @@ const com = {
         });
     },
 
-    chkLogin() {
-        const session = false;
-        if (session) {
-            com.confirm('로그인 안내','해당 기능은 로그인이 필요합니다.','warnning',function() {
-                location.href = "/login";
-            });
+    chkLogin(isLogin) {
+        if (!isLogin) {
+            location.href = '/login?returnUrl=' + encodeURIComponent(location.pathname + location.search);
+            return false;
         }
+        return true;
     }
 }

@@ -14,31 +14,30 @@ public class UserAlarmService {
     @Autowired
     private UserAlarmMapper showAlarmRepository;
 
-    // 티켓팅 알람 설정
+    // 알림 토글
     public int setAlarm(Map<String, Object> params) {
-        // 유저가 이미 알람 설정 했는지 조회
         int alarmYn = showAlarmRepository.alarmYn(params);
 
         if (alarmYn > 0) {
-            // 이미 설정 되어있으면 삭제
-            return showAlarmRepository.delete(params);
+            // 이미 설정됨 -> 해제 (0 반환)
+            showAlarmRepository.delete(params);
+            return 0;
         } else {
-            // 설정 안 되어 있으면 추가
             return showAlarmRepository.insert(params);
         }
     }
 
-    // 특정 공연에 로그인 유저의 알람 여부 조회
+    // 알림 설정 여부
     public int alarmYn(Map<String, Object> params) {
         return showAlarmRepository.alarmYn(params);
     }
 
-    // 유저의 알람 개수 조회
+    // 내 알림 수
     public int alarmCnt(Map<String, Object> params) {
         return showAlarmRepository.alarmCnt(params);
     }
 
-    // 유저의 알람 설정 목록 조회
+    // 내 알림 목록
     public List<Map<String, Object>> list(Map<String, Object> params) {
         return showAlarmRepository.list(params);
     }

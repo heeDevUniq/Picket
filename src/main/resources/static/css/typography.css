@@ -1,0 +1,138 @@
+/* 타이포그래피 (IBM Plex Sans KR + Noto Sans KR + IBM Plex Mono) */
+
+:root {
+    --pk-font-ui:   "IBM Plex Sans KR", "Noto Sans KR", system-ui, -apple-system, "Malgun Gothic", sans-serif;
+    --pk-font-body: "Noto Sans KR", "IBM Plex Sans KR", system-ui, "Malgun Gothic", sans-serif;
+    --pk-font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+    /* 타입 스케일 */
+    --pk-t-display: clamp(28px, 4.4vw, 42px);
+    --pk-t-h1:      26px;
+    --pk-t-h2:      22px;
+    --pk-t-h3:      18px;
+    --pk-t-lg:      17px;
+    --pk-t-body:    15px;
+    --pk-t-sm:      14px;
+    --pk-t-xs:      13px;
+    --pk-t-2xs:     12px;
+    --pk-t-label:   11px;
+}
+
+/* style.css 의 * 셀렉터가 Montserrat 를 강제하므로 여기서 되돌린다 */
+body,
+input, textarea, select, button, table, p, li, td, th, dd, dt, span, div, a {
+    font-family: var(--pk-font-body);
+}
+
+body {
+    font-size: var(--pk-t-body);
+    line-height: 1.7;
+    letter-spacing: -0.003em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* 제목·UI 요소 */
+h1, h2, h3, h4, h5,
+.viewtitle, .page-title, .pk-page-title,
+.ranking-title, .show-info .title,
+.genre-tabs button, .tab_btn, .tabs2 > a,
+.main_btn, .btn, .btn-submit, .btn_in, .duplbtn, .pk-btn-sm,
+nav a, .header a, .pk-badge, .pk-suggest-text b {
+    font-family: var(--pk-font-ui);
+    letter-spacing: -0.015em;
+}
+
+h1, h2, h3 { text-wrap: balance; }
+
+h1 { font-size: var(--pk-t-h1); font-weight: 700; line-height: 1.25; }
+h2 { font-size: var(--pk-t-h2); font-weight: 700; line-height: 1.3; }
+h3 { font-size: var(--pk-t-h3); font-weight: 600; line-height: 1.4; }
+
+.main-banner .banner-text h1 {
+    font-size: var(--pk-t-display);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+}
+
+.viewtitle,
+.page-title,
+.pk-page-title {
+    font-size: var(--pk-t-h2);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+}
+
+.genre-ranking h2,
+.open-soon h2 { font-size: var(--pk-t-h2); }
+
+/* 본문 */
+p { font-size: var(--pk-t-body); }
+.show-detail { font-size: var(--pk-t-body); line-height: 1.75; }
+
+/* 보조 텍스트 */
+.show-info .venue,
+.show-info .date,
+.ranking-location,
+.ranking-date,
+.open-item .date,
+.pk-list-meta,
+.sub { font-size: var(--pk-t-xs); }
+
+/* 숫자·코드·가격은 고정폭 + 자릿수 정렬 */
+.pk-countdown,
+.ranking-price,
+.ticket-info .price,
+.pk-seat-summary strong,
+.pk-page,
+.grade-rest, .grade-price,
+.like-count,
+#reviewCount, #seatCount, #seatTotal,
+.pk-list-meta b,
+td:first-child {
+    font-family: var(--pk-font-mono);
+    font-variant-numeric: tabular-nums;
+}
+
+/* 배지·라벨 */
+.pk-badge,
+.pk-poster-flag,
+.pk-suggest-kind {
+    font-family: var(--pk-font-ui);
+    font-size: var(--pk-t-label);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+}
+
+/* 표 */
+table { font-size: var(--pk-t-sm); }
+th {
+    font-family: var(--pk-font-ui);
+    font-weight: 600;
+    font-size: var(--pk-t-xs);
+    letter-spacing: -0.01em;
+}
+
+/* 버튼 */
+.main_btn, .btn, .btn-submit, .pk-btn-sm, .tab_btn {
+    font-weight: 600;
+}
+
+/* 입력 */
+input, textarea, select { font-size: var(--pk-t-sm); }
+input::placeholder, textarea::placeholder { font-size: var(--pk-t-xs); }
+
+/* 빈 상태 */
+.pk-empty { font-size: var(--pk-t-xs); }
+.pk-empty b { font-family: var(--pk-font-ui); font-size: var(--pk-t-lg); font-weight: 600; }
+
+/* 토스트 */
+.pk-toast { font-family: var(--pk-font-ui); font-size: var(--pk-t-sm); font-weight: 500; }
+
+@media (max-width: 768px) {
+    body { font-size: var(--pk-t-sm); }
+    h1 { font-size: 21px; }
+    h2 { font-size: 19px; }
+    .viewtitle, .page-title, .pk-page-title { font-size: 19px; }
+}

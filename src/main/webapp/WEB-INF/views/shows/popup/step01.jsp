@@ -2,13 +2,26 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>픽켓 예매</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="/css/typography.css">
+<link rel="stylesheet" href="/css/interactive.css">
+<link rel="stylesheet" href="/css/responsive.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/js/interactive.js"></script>
 <script src="/js/show.js"></script>
 <script src="/js/common.js"></script>
 <style>
     body {
         margin: 0;
-        font-family: "Apple SD Gothic Neo", sans-serif;
         background-color: #f9f9f9;
         color: #333;
     }
@@ -111,7 +124,11 @@
     }
 
     .seat input[type="checkbox"] {
-        display: none;
+        position: absolute;
+        opacity: 0;
+        width: 1px;
+        height: 1px;
+        margin: -1px;
     }
 
     .seat input[type="checkbox"]:checked + span {
@@ -220,6 +237,21 @@
         color: #fff;
     }
 
+    .btn-next:disabled {
+        background-color: #C9CDD4;
+        cursor: not-allowed;
+        transform: none !important;
+        box-shadow: none !important;
+    }
+
+    .seat-map { position: relative; }
+
+    .grade-block { display: flex; flex-direction: column; gap: 5px; }
+    .grade-rest { font-variant-numeric: tabular-nums; color: #5A6272; font-size: 12.5px; }
+    .grade-price { font-weight: 700; font-variant-numeric: tabular-nums; }
+    .rest-bar { height: 5px; border-radius: 999px; background: #EFF1F5; overflow: hidden; }
+    .rest-bar > i { display: block; height: 100%; border-radius: 999px; transition: width .5s cubic-bezier(.2,.8,.2,1); }
+
     .seat-info {
         background-color: #444;
         color: #fff;
@@ -235,27 +267,58 @@
     }
 </style>
 <script>
-    let toggleSeatCnt = 0;
-    let params = [];
+    // 좌석 선택/해제 시 목록·합계 갱신
     function toggleSeat(el) {
-        el.classList.toggle('selected');
-        console.log(el.value);
-        params[toggleSeatCnt] = el.value;
-        console.log('params : ',params);
-        $("#seatArrays").val(params);
-        toggleSeatCnt++;
+        const selected = [];
+        const rows = [];
+        let total = 0;
+
+        $("input[name='seat']:checked").each(function () {
+            const $s = $(this);
+            const price = parseInt($s.data('price'), 10) || 0;
+            total += price;
+            selected.push($s.val());
+            rows.push('<tr><td>' + $s.data('grade') + '석</td>'
+                    + '<td>' + $s.data('seatNumber') + '번</td>'
+                    + '<td>' + price.toLocaleString('ko-KR') + '원</td></tr>');
+        });
+
+        $("#seatArrays").val(selected.join(','));
+        $("#selectedSeatBody").html(rows.length
+            ? rows.join('')
+            : '<tr><td colspan="3">선택한 좌석이 없습니다.</td></tr>');
+        $("#seatCount").text(selected.length);
+        $("#seatTotal").text(total.toLocaleString('ko-KR'));
+        $("#selectedSeatCnt").text('[' + selected.length + ']');
+        $(".btn-next").prop('disabled', selected.length === 0);
+
+        if (el && el.checked) {
+            pk.toast($(el).data('grade') + '석 ' + $(el).data('seatNumber') + '번 선택', 'ok');
+        }
     }
+
+    $(function () { toggleSeat(null); });
 </script>
+</head>
+<body>
 <div class="nav-bar">
-    <img src="/images/com./logo.png" alt="logo">
+    <img src="/images/com/logo.png" alt="logo">
     <a href="#">좌석선택</a>
     <span>${show.title}</span>
     <div class="date-select">
         <span>관람일자</span>
         <select>
-            <option>${show.showDates}</option>
+            <option><fmt:formatDate value="${show.showDate}" pattern="yyyy.MM.dd(E) HH:mm" /></option>
         </select>
     </div>
+</div>
+
+<div class="pk-stepper" role="list">
+    <span class="pk-step is-on" role="listitem"><i>1</i>좌석선택</span>
+    <span class="pk-step-line"></span>
+    <span class="pk-step " role="listitem"><i>2</i>결제</span>
+    <span class="pk-step-line"></span>
+    <span class="pk-step " role="listitem"><i>3</i>예매완료</span>
 </div>
 
 <div class="container">
@@ -269,9 +332,13 @@
                         <div class="row-label"></div>
                 </c:if>
                 
-                <label class="seat color-${fn:toLowerCase(seat.seatGrade.gradeName)}">
-                    <input type="checkbox" name="seat" value="${seat.seatId}" onchange="toggleSeat(this)">
-                    <span>${i.count}</span>
+                <label class="seat color-${fn:toLowerCase(seat.gradeName)}">
+                    <input type="checkbox" name="seat" value="${seat.seatId}"
+                           data-grade="${seat.gradeName}" data-seat-number="${seat.seatNumber}"
+                           data-price="${seat.price}"
+                           <c:if test="${seat.seatStatus ne 'available'}">disabled</c:if>
+                           onchange="toggleSeat(this)">
+                    <span>${seat.seatNumber}</span>
                 </label>
 
                 <c:if test="${(i.index + 1) % 10 == 0 || (i.index + 1) == fn:length(seats)}">
@@ -287,10 +354,16 @@
             <h3>좌석등급/잔여석</h3>
             <div class="grade-list">
                 <c:forEach var="grade" items="${grades}">
-                    <div class="grade-item">
-                        <span><span class="color color-${grade.gradeName}"></span>${grade.gradeName}석</span>
-                        <span>30석</span>
-                        <span>140,000</span>
+                    <div class="grade-block">
+                        <div class="grade-item">
+                            <span><span class="color color-${fn:toLowerCase(grade.gradeName)}"></span>${grade.gradeName}석</span>
+                            <span class="grade-rest">${grade.remainCount} / ${grade.seatCount}석</span>
+                            <span class="grade-price"><fmt:formatNumber value="${grade.price}" pattern="#,###" /></span>
+                        </div>
+                        <c:set var="ratio" value="${grade.seatCount > 0 ? (grade.remainCount * 100 / grade.seatCount) : 0}" />
+                        <div class="rest-bar" title="잔여 ${grade.remainCount}석">
+                            <i style="width:${ratio}%; background:${ratio le 20 ? '#DC3E32' : (ratio le 50 ? '#E08A0B' : '#0E9F6E')}"></i>
+                        </div>
                     </div>
                 </c:forEach>
             </div>
@@ -303,23 +376,20 @@
                 <tr>
                     <th>좌석등급</th>
                     <th>좌석번호</th>
+                    <th>가격</th>
                 </tr>
                 </thead>
-                <tbody>
+                <tbody id="selectedSeatBody">
                 <tr>
-                    <td>A석</td>
-                    <td>1열 15 - 25석</td>
-                </tr>
-                <tr>
-                    <td>A석</td>
-                    <td>12열 15 - 25석</td>
-                </tr>
-                <tr>
-                    <td>B석</td>
-                    <td>16열 15 - 25석</td>
+                    <td colspan="3">선택한 좌석이 없습니다.</td>
                 </tr>
                 </tbody>
             </table>
+
+            <div class="pk-seat-summary">
+                <span><b id="seatCount">0</b>매 선택</span>
+                <span>합계 <strong><span id="seatTotal">0</span>원</strong></span>
+            </div>
         </div>
 
         <div class="btn-box">
@@ -330,11 +400,13 @@
 </div>
 
 <div class="seat-info">
-    좌석을 선택해 주세요. <a href="#">[0]</a>
+    좌석을 선택해 주세요. <span id="selectedSeatCnt">[0]</span>
 </div>
 
-<form name="ticketingForm" id="ticketingForm">
+<form name="ticketingForm" id="ticketingForm" method="POST" action="/shows/payment">
     <input type="hidden" name="showId" value="${show.showId}">
     <input type="hidden" name="showDateId" value="${showDateId}">
     <input type="hidden" name="seatArrays" id="seatArrays" value="">
 </form>
+</body>
+</html>

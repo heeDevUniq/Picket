@@ -2,24 +2,124 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.heeji.picket.mapper.ShowsMapper">
 
-    <select id="list" parameterType="java.util.Map">
+    <select id="list" parameterType="java.util.Map" resultType="java.util.Map">
         /* com.heeji.picket.mapper.ShowsMapper.list */
-        SELECT  S.*
-        ,       (SELECT MIN(SHOW_DATE) FROM SHOW_DATE SD WHERE SD.SHOW_ID = S.SHOW_ID) AS START_DATE
-        ,       (SELECT MAX(SHOW_DATE) FROM SHOW_DATE SD WHERE SD.SHOW_ID = S.SHOW_ID) AS END_DATE
+        SELECT  S.SHOW_ID       AS showId
+        ,       S.TITLE         AS title
+        ,       S.PLACE         AS place
+        ,       S.GENRE         AS genre
+        ,       S.HOST          AS host
+        ,       S.CONTACT       AS contact
+        ,       S.AGE_LIMIT     AS ageLimit
+        ,       S.OPEN_DATE     AS openDate
+        ,       S.IS_DELETED    AS isDeleted
+        ,       S.INFO          AS info
+        ,       S.POSTER_LINK             AS posterLink
+        ,       S.INSERT_DATE   AS insertDate
+        ,       S.INSERT_ID     AS insertId
+        ,       S.UPDATE_DATE   AS updateDate
+        ,       S.UPDATE_ID     AS updateId
+        ,       (SELECT MIN(SG.PRICE) FROM SEAT_GRADE SG WHERE SG.SHOW_ID = S.SHOW_ID) AS minPrice
+        ,       (
+                    SELECT  COUNT(*)
+                    FROM    SEAT SE
+                    WHERE   SE.SHOW_ID = S.SHOW_ID
+                    AND     IFNULL(SE.SEAT_STATUS, 'available') = 'available'
+                )               AS remainCount
+        ,       (SELECT MIN(SD.SHOW_DATE) FROM SHOW_DATE SD WHERE SD.SHOW_ID = S.SHOW_ID) AS startDate
+        ,       (SELECT MAX(SD.SHOW_DATE) FROM SHOW_DATE SD WHERE SD.SHOW_ID = S.SHOW_ID) AS endDate
         FROM    SHOWS S
         WHERE   1 = 1
         <if test="genre != null and genre != ''">
-        AND     GENRE = #{genre}
+        AND     S.GENRE = #{genre}
+        </if>
+        ORDER BY S.SHOW_ID DESC
+        <if test="size != null">
+        LIMIT #{size} OFFSET #{offset}
         </if>
     </select>
 
-    <select id="info" parameterType="java.util.Map">
-        /* com.heeji.picket.mapper.ShowsMapper.info */
-        SELECT  *
+    <select id="count" parameterType="java.util.Map" resultType="int">
+        /* com.heeji.picket.mapper.ShowsMapper.count */
+        SELECT  COUNT(*)
         FROM    SHOWS S
         WHERE   1 = 1
-        AND     SHOW_ID = #{showId}
+        <if test="genre != null and genre != ''">
+        AND     S.GENRE = #{genre}
+        </if>
+    </select>
+
+    <select id="info" parameterType="java.util.Map" resultType="java.util.Map">
+        /* com.heeji.picket.mapper.ShowsMapper.info */
+        SELECT  S.SHOW_ID       AS showId
+        ,       S.TITLE         AS title
+        ,       S.PLACE         AS place
+        ,       S.GENRE         AS genre
+        ,       S.HOST          AS host
+        ,       S.CONTACT       AS contact
+        ,       S.AGE_LIMIT     AS ageLimit
+        ,       S.OPEN_DATE     AS openDate
+        ,       S.IS_DELETED    AS isDeleted
+        ,       S.INFO          AS info
+        ,       S.POSTER_LINK             AS posterLink
+        ,       S.INSERT_DATE   AS insertDate
+        ,       S.INSERT_ID     AS insertId
+        ,       S.UPDATE_DATE   AS updateDate
+        ,       S.UPDATE_ID     AS updateId
+        ,       (SELECT MIN(SG.PRICE) FROM SEAT_GRADE SG WHERE SG.SHOW_ID = S.SHOW_ID) AS minPrice
+        ,       (
+                    SELECT  COUNT(*)
+                    FROM    SEAT SE
+                    WHERE   SE.SHOW_ID = S.SHOW_ID
+                    AND     IFNULL(SE.SEAT_STATUS, 'available') = 'available'
+                )               AS remainCount
+        ,       (SELECT MIN(SD.SHOW_DATE) FROM SHOW_DATE SD WHERE SD.SHOW_ID = S.SHOW_ID) AS startDate
+        ,       (SELECT MAX(SD.SHOW_DATE) FROM SHOW_DATE SD WHERE SD.SHOW_ID = S.SHOW_ID) AS endDate
+        FROM    SHOWS S
+        WHERE   1 = 1
+        AND     S.SHOW_ID = #{showId}
+    </select>
+
+    <select id="search" parameterType="java.util.Map" resultType="java.util.Map">
+        /* com.heeji.picket.mapper.ShowsMapper.search */
+        SELECT  S.SHOW_ID       AS showId
+        ,       S.TITLE         AS title
+        ,       S.PLACE         AS place
+        ,       S.GENRE         AS genre
+        ,       S.HOST          AS host
+        ,       S.CONTACT       AS contact
+        ,       S.AGE_LIMIT     AS ageLimit
+        ,       S.OPEN_DATE     AS openDate
+        ,       S.IS_DELETED    AS isDeleted
+        ,       S.INFO          AS info
+        ,       S.POSTER_LINK             AS posterLink
+        ,       S.INSERT_DATE   AS insertDate
+        ,       S.INSERT_ID     AS insertId
+        ,       S.UPDATE_DATE   AS updateDate
+        ,       S.UPDATE_ID     AS updateId
+        ,       (SELECT MIN(SG.PRICE) FROM SEAT_GRADE SG WHERE SG.SHOW_ID = S.SHOW_ID) AS minPrice
+        ,       (
+                    SELECT  COUNT(*)
+                    FROM    SEAT SE
+                    WHERE   SE.SHOW_ID = S.SHOW_ID
+                    AND     IFNULL(SE.SEAT_STATUS, 'available') = 'available'
+                )               AS remainCount
+        ,       (SELECT MIN(SD.SHOW_DATE) FROM SHOW_DATE SD WHERE SD.SHOW_ID = S.SHOW_ID) AS startDate
+        ,       CASE WHEN S.TITLE LIKE CONCAT('%', #{keyword}, '%') ESCAPE '!' THEN 'show' ELSE 'place' END AS matchType
+        FROM    SHOWS S
+        WHERE   1 = 1
+        AND     (
+                    S.TITLE LIKE CONCAT('%', #{keyword}, '%') ESCAPE '!'
+                 OR S.PLACE LIKE CONCAT('%', #{keyword}, '%') ESCAPE '!'
+                )
+        ORDER BY
+                CASE WHEN S.TITLE LIKE CONCAT(#{keyword}, '%') ESCAPE '!' THEN 0
+                     WHEN S.TITLE LIKE CONCAT('%', #{keyword}, '%') ESCAPE '!' THEN 1
+                     ELSE 2 END,
+                S.SHOW_ID DESC
+        <if test="size != null">
+        LIMIT #{size}
+        </if>
     </select>
 
 </mapper>

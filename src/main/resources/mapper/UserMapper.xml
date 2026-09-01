@@ -2,21 +2,32 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.heeji.picket.mapper.UserMapper">
 
-    <select id="info" resultType="java.util.Map">
+    <select id="info" parameterType="java.util.Map" resultType="java.util.Map">
         /* com.heeji.picket.mapper.UserMapper.info */
-        SELECT  *
+        SELECT  USER_ID         AS userId
+        ,       EMAIL           AS email
+        ,       PASSWORD        AS password
+        ,       ROLE            AS role
+        ,       NAME            AS name
+        ,       PHONE_NUMBER    AS phoneNumber
+        ,       ADDRESS         AS address
+        ,       DETAIL_ADDRESS  AS detailAddress
+        ,       IS_DELETED      AS isDeleted
+        ,       DELETE_DATE     AS deleteDate
+        ,       PROVIDER_TYPE   AS providerType
+        ,       KAKAO_ON        AS kakaoOn
+        ,       EMAIL_ON        AS emailOn
+        ,       INSERT_DATE     AS insertDate
+        ,       UPDATE_DATE     AS updateDate
         FROM    USER
         WHERE   1 = 1
         AND     EMAIL = #{email}
-        <if test="password != null and password != ''">
-        AND     PASSWORD = #{password}
-        </if>
+        AND     IFNULL(IS_DELETED, 'N') = 'N'
     </select>
 
-    <insert id="insert">
+    <insert id="insert" parameterType="java.util.Map">
         /* com.heeji.picket.mapper.UserMapper.insert */
         INSERT INTO USER (
-            USER_ID,
             EMAIL,
             PASSWORD,
             ROLE,
@@ -26,10 +37,10 @@
             DETAIL_ADDRESS,
             IS_DELETED,
             PROVIDER_TYPE,
+            KAKAO_ON,
             EMAIL_ON,
             INSERT_DATE
         ) VALUES (
-            0,
             #{email},
             #{password},
             #{role},
@@ -39,27 +50,34 @@
             #{detailAddress},
             'N',
             #{providerType},
+            #{kakaoOn},
             #{emailOn},
             NOW()
         )
     </insert>
 
-    <update id="update">
+    <update id="update" parameterType="java.util.Map">
+        /* com.heeji.picket.mapper.UserMapper.update */
         UPDATE  USER
-        SET     UPDATE_DATE = NOW()
-        ,       PASSWORD = #{password}
-        ,       ROLE = #{role}
-        ,       NAME = #{name}
-        ,       PHONE_NUMBER = #{phoneNumber}
-        ,       ADDRESS = #{address}
-        ,       DETAIL_ADDRESS = #{detailAddress}
-        ,       IS_DELETED = #{isDeleted}
-        ,       DELETE_DATE = #{deleteDate}
-        ,       PROVIDER_TYPE = #{providerType}
-        ,       EMAIL_ON = #{emailOn}
+        <set>
+            UPDATE_DATE = NOW()
+            <if test="password != null and password != ''">, PASSWORD = #{password}</if>
+            <if test="role != null and role != ''">, ROLE = #{role}</if>
+            <if test="name != null and name != ''">, NAME = #{name}</if>
+            <if test="phoneNumber != null">, PHONE_NUMBER = #{phoneNumber}</if>
+            <if test="address != null">, ADDRESS = #{address}</if>
+            <if test="detailAddress != null">, DETAIL_ADDRESS = #{detailAddress}</if>
+            <if test="isDeleted != null and isDeleted != ''">, IS_DELETED = #{isDeleted}</if>
+            <if test="deleteDate != null">, DELETE_DATE = #{deleteDate}</if>
+            <if test="providerType != null">, PROVIDER_TYPE = #{providerType}</if>
+            <if test="kakaoOn != null">, KAKAO_ON = #{kakaoOn}</if>
+            <if test="emailOn != null">, EMAIL_ON = #{emailOn}</if>
+        </set>
+        WHERE   1 = 1
+        AND     EMAIL = #{email}
     </update>
 
-    <delete id="delete">
+    <delete id="delete" parameterType="java.util.Map">
         /* com.heeji.picket.mapper.UserMapper.delete */
         DELETE FROM USER
         WHERE       1 = 1

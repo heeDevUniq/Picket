@@ -2,34 +2,44 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.heeji.picket.mapper.ShowReviewsMapper">
 
-    <select id="list" resultType="java.util.Map">
+    <select id="list" parameterType="java.util.Map" resultType="java.util.Map">
         /* com.heeji.picket.mapper.ShowReviewsMapper.list */
-        SELECT  *
-        FROM    SHOW_REVIEWS
+        SELECT  SR.REVIEW_ID    AS reviewId
+        ,       SR.SHOW_ID      AS showId
+        ,       SR.CONTENT      AS content
+        ,       SR.INSERT_DATE  AS insertDate
+        ,       SR.INSERT_ID    AS insertId
+        ,       SR.UPDATE_DATE  AS updateDate
+        ,       U.NAME          AS userName
+        FROM    SHOW_REVIEWS SR
+        LEFT JOIN USER U
+        ON      SR.INSERT_ID = U.USER_ID
         WHERE   1 = 1
-        AND     SHOW_ID = #{showId}
+        AND     SR.SHOW_ID = #{showId}
+        ORDER BY SR.REVIEW_ID DESC
     </select>
 
-    <insert id="insert">
+    <insert id="insert" parameterType="java.util.Map">
         /* com.heeji.picket.mapper.ShowReviewsMapper.insert */
         INSERT INTO SHOW_REVIEWS (
-            LIKE_ID,
             SHOW_ID,
-            USER_ID,
-            INSERT_DATE
+            CONTENT,
+            INSERT_DATE,
+            INSERT_ID
         ) VALUES (
-            0,
             #{showId},
-            #{userId},
-            NOW()
+            #{content},
+            NOW(),
+            #{userId}
         )
     </insert>
 
-    <delete id="delete">
+    <delete id="delete" parameterType="java.util.Map">
         /* com.heeji.picket.mapper.ShowReviewsMapper.delete */
         DELETE FROM SHOW_REVIEWS
         WHERE       1 = 1
-        AND         LIKE_ID = #{likeId}
+        AND         REVIEW_ID = #{reviewId}
+        AND         INSERT_ID = #{userId}
     </delete>
 
 </mapper>

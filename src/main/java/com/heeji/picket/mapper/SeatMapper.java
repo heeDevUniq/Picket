@@ -7,10 +7,10 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface SeatMapper {
 
-    // 날짜 별 좌석 목록 조회
+    // 날짜별 좌석 목록
     List<Map<String, Object>> list(Map<String, Object> params);
 
-    // 선택한 좌석 목록 조회회
-    List<Map<String, Object>> selectedSeatList(String[] seatIdArray);
+    // 선택 좌석 목록
+    List<Map<String, Object>> selectedSeatList(Long[] seatIdArray);
 
 }

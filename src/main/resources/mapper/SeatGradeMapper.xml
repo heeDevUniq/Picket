@@ -2,12 +2,24 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.heeji.picket.mapper.SeatGradeMapper">
 
-    <select id="list" resultType="java.util.Map">
+    <select id="list" parameterType="java.util.Map" resultType="java.util.Map">
         /* com.heeji.picket.mapper.SeatGradeMapper.list */
-        SELECT  *
-        FROM    SEAT_GRADE
+        SELECT  SG.SEAT_GRADE_ID    AS seatGradeId
+        ,       SG.SHOW_DATE_ID     AS showDateId
+        ,       SG.SHOW_ID          AS showId
+        ,       SG.SEAT_COUNT       AS seatCount
+        ,       SG.PRICE            AS price
+        ,       SG.GRADE_NAME       AS gradeName
+        ,       (
+                    SELECT  COUNT(*)
+                    FROM    SEAT S
+                    WHERE   S.SEAT_GRADE_ID = SG.SEAT_GRADE_ID
+                    AND     IFNULL(S.SEAT_STATUS, 'available') = 'available'
+                )               AS remainCount
+        FROM    SEAT_GRADE SG
         WHERE   1 = 1
-        AND     SHOW_DATE_ID = #{showDateId}
+        AND     SG.SHOW_DATE_ID = #{showDateId}
+        ORDER BY SG.SEAT_GRADE_ID ASC
     </select>
 
 </mapper>

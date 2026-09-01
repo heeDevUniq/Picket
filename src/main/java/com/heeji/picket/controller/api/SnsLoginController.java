@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.heeji.picket.service.UserService;
 import com.heeji.picket.utils.SessionUtil;
 import jakarta.servlet.http.HttpSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +20,7 @@ import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,27 +28,31 @@ import java.util.Map;
 @RequestMapping("/user/api")
 public class SnsLoginController {
 
+    private static final Logger logger = LoggerFactory.getLogger(SnsLoginController.class);
+
     private final UserService userService;
 
-    @Value("${server.port}")
-    private String serverPort;
+    @Value("${picket.oauth.kakao.client-id:}")
+    private String kakaoClientId;
+
+    @Value("${picket.oauth.kakao.redirect-uri:}")
+    private String kakaoRedirectUri;
 
     public SnsLoginController(UserService userService) {
         this.userService = userService;
     }
 
     @RequestMapping("/kakaoLogin")
-    public String kakaoLogin(@RequestParam String code, HttpSession session, RedirectAttributes redirectAttributes) throws Exception {
-        // 1. code 로 access_token 요청
+    public String kakaoLogin(@RequestParam("code") String code, HttpSession session, RedirectAttributes redirectAttributes) throws Exception {
+        // code -> access_token
         String tokenUrl = "https://kauth.kakao.com/oauth/token";
 
         HttpClient tokenClient = HttpClient.newHttpClient();
 
         String form = "grant_type=authorization_code"
-                + "&client_id=" + URLEncoder.encode("0ed4893e99b41c7e2c03e73937596f51", "UTF-8")
-                + "&redirect_uri=" + URLEncoder.encode("http://localhost:" + serverPort + "/user/api/kakaoLogin", "UTF-8")
-                + "&code=" + URLEncoder.encode(code, "UTF-8");
-        System.out.println("화깅 : " + form);
+                + "&client_id=" + URLEncoder.encode(kakaoClientId, StandardCharsets.UTF_8)
+                + "&redirect_uri=" + URLEncoder.encode(kakaoRedirectUri, StandardCharsets.UTF_8)
+                + "&code=" + URLEncoder.encode(code, StandardCharsets.UTF_8);
 
         HttpRequest tokenRequest = HttpRequest.newBuilder()
                 .uri(URI.create(tokenUrl))
@@ -55,17 +62,16 @@ public class SnsLoginController {
 
         HttpResponse<String> tokenResponse = tokenClient.send(tokenRequest, HttpResponse.BodyHandlers.ofString());
 
-        String accessToken = "";
-
-        if (tokenResponse.statusCode() == 200) {
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode jsonNode = mapper.readTree(tokenResponse.body());
-            accessToken = jsonNode.get("access_token").asText();
-        } else {
-            throw new RuntimeException("토큰 요청 실패: " + tokenResponse.body());
+        if (tokenResponse.statusCode() != 200) {
+            logger.error("카카오 토큰 요청 실패, status : {}", tokenResponse.statusCode());
+            redirectAttributes.addFlashAttribute("alertMsg", "카카오 로그인에 실패하였습니다. 잠시 후 다시 시도해주세요.");
+            return "redirect:/login";
         }
 
-        // 2. access_token 으로 사용자 정보 요청
+        ObjectMapper mapper = new ObjectMapper();
+        String accessToken = mapper.readTree(tokenResponse.body()).path("access_token").asText();
+
+        // access_token -> 사용자 정보
         String userInfoUrl = "https://kapi.kakao.com/v2/user/me";
 
         HttpClient userClient = HttpClient.newHttpClient();
@@ -78,29 +84,32 @@ public class SnsLoginController {
 
         HttpResponse<String> res = userClient.send(userRequest, HttpResponse.BodyHandlers.ofString());
 
-        if (res.statusCode() == 200) {
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode jsonNode = mapper.readTree(res.body());
-            String email = jsonNode.get("kakao_account").get("email").asText();
-            Map<String, Object> map = new HashMap<String, Object>();
-            map.put("email", email);
-
-            // 3. DB 조회 후 로그인 or 회원가입
-            Map<String, Object> info = userService.info(map);
-            if (info != null) {
-                // 4. 세션 저장
-                SessionUtil.setLoginUser(session, info);
-                redirectAttributes.addFlashAttribute("email", email);
-                return "redirect:/index";
-            } else {
-                redirectAttributes.addFlashAttribute("email", email);
-                redirectAttributes.addFlashAttribute("providerType", "kakao");
-                redirectAttributes.addFlashAttribute("alertMsg", "회원정보를 찾을 수 없어 회원가입 페이지로 이동합니다.");
-            }
-        } else {
-            redirectAttributes.addFlashAttribute("alertMsg", "회원정보를 찾을 수 없어 회원가입 페이지로 이동합니다.");
-            throw new RuntimeException("사용자 정보 요청 실패: " + res.body());
+        if (res.statusCode() != 200) {
+            logger.error("카카오 사용자 정보 요청 실패, status : {}", res.statusCode());
+            redirectAttributes.addFlashAttribute("alertMsg", "카카오 사용자 정보를 가져오지 못했습니다.");
+            return "redirect:/login";
         }
+
+        JsonNode jsonNode = mapper.readTree(res.body());
+        String email = jsonNode.path("kakao_account").path("email").asText(null);
+        if (email == null || email.isEmpty()) {
+            redirectAttributes.addFlashAttribute("alertMsg", "카카오 계정의 이메일 제공에 동의해야 로그인할 수 있습니다.");
+            return "redirect:/login";
+        }
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("email", email);
+
+        // 가입 이력 있으면 로그인, 없으면 회원가입으로
+        Map<String, Object> info = userService.info(map);
+        if (info != null) {
+            SessionUtil.setLoginUser(session, info);
+            return "redirect:/index";
+        }
+
+        redirectAttributes.addFlashAttribute("email", email);
+        redirectAttributes.addFlashAttribute("providerType", "kakao");
+        redirectAttributes.addFlashAttribute("alertMsg", "회원정보를 찾을 수 없어 회원가입 페이지로 이동합니다.");
         return "redirect:/signup";
     }
 
@@ -110,7 +119,7 @@ public class SnsLoginController {
         Map<String, Object> returnMap = new HashMap<>();
         String accessToken = body.get("credential");
 
-        // 1. access_token 으로 사용자 정보 요청
+        // access_token -> 사용자 정보
         HttpRequest userInfoRequest = HttpRequest.newBuilder()
                 .uri(URI.create("https://www.googleapis.com/oauth2/v3/userinfo"))
                 .header("Authorization", "Bearer " + accessToken)
@@ -120,29 +129,35 @@ public class SnsLoginController {
         HttpClient client = HttpClient.newHttpClient();
         HttpResponse<String> response = client.send(userInfoRequest, HttpResponse.BodyHandlers.ofString());
 
-        if (response.statusCode() == 200) {
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode userInfo = mapper.readTree(response.body());
-            String email = userInfo.get("email").asText();
-            Map<String, Object> map = new HashMap<String, Object>();
-            map.put("email", email);
+        if (response.statusCode() != 200) {
+            logger.error("구글 사용자 정보 요청 실패, status : {}", response.statusCode());
+            returnMap.put("alertMsg", "구글 사용자 정보를 가져오지 못했습니다.");
+            returnMap.put("returnUrl", "/login");
+            return returnMap;
+        }
 
-            // 2. DB 조회 후 로그인 or 회원가입
-            Map<String, Object> info = userService.info(map);
-            if (info != null) {
-                // 3. 세션 저장
-                SessionUtil.setLoginUser(session, info);
-                returnMap.put("returnUrl", "/index");
-            } else {
-                returnMap.put("email", email);
-                returnMap.put("providerType", "google");
-                returnMap.put("alertMsg", "회원정보를 찾을 수 없어 회원가입 페이지로 이동합니다.");
-                returnMap.put("returnUrl", "/signup");
-            }
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode userInfo = mapper.readTree(response.body());
+        String email = userInfo.path("email").asText(null);
+        if (email == null || email.isEmpty()) {
+            returnMap.put("alertMsg", "구글 계정의 이메일을 확인할 수 없습니다.");
+            returnMap.put("returnUrl", "/login");
+            return returnMap;
+        }
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("email", email);
+
+        // 가입 이력 있으면 로그인, 없으면 회원가입으로
+        Map<String, Object> info = userService.info(map);
+        if (info != null) {
+            SessionUtil.setLoginUser(session, info);
+            returnMap.put("returnUrl", "/index");
         } else {
+            returnMap.put("email", email);
+            returnMap.put("providerType", "google");
             returnMap.put("alertMsg", "회원정보를 찾을 수 없어 회원가입 페이지로 이동합니다.");
             returnMap.put("returnUrl", "/signup");
-            throw new RuntimeException("사용자 정보 요청 실패: " + response.body());
         }
         return returnMap;
     }

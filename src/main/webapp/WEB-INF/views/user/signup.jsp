@@ -2,17 +2,22 @@
 <%@ include file="../com/noheader.jsp" %>
 <script>
     window.onload = function () {
-        if ('${alertMsg}' != null && '${alertMsg}' != '') {
-            com.alert('${alertMsg}');
-            return;
-        }
-        const email = sessionStorage.getItem('email');
-        const providerType = sessionStorage.getItem('providerType');
+        // 카카오는 flash attribute, 구글은 sessionStorage 로 전달
+        const email = '${email}' || sessionStorage.getItem('email');
+        const providerType = '${providerType}' || sessionStorage.getItem('providerType');
         if (email) {
             $('#email').val(email);
-            $('#providerType').val(providerType);
             $('#email').attr('readonly', true);
-            sessionStorage.removeItem('email');
+        }
+        if (providerType) {
+            $('#providerType').val(providerType);
+        }
+        sessionStorage.removeItem('email');
+        sessionStorage.removeItem('providerType');
+
+        const alertMsg = '${alertMsg}';
+        if (alertMsg) {
+            com.alert(alertMsg);
         }
     }
 </script>
@@ -59,6 +64,7 @@
                        placeholder="비밀번호"
                        oninput="user.fnChkPw();" />
                 <span class="icon lock2"></span>
+                <div class="pk-meter" id="pwMeter" aria-hidden="true"><i></i></div>
             </div>
 
             <!-- 비밀번호 확인 -->

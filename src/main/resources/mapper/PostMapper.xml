@@ -2,31 +2,61 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.heeji.picket.mapper.PostMapper">
 
-    <select id="list" resultType="java.util.Map">
+    <select id="list" parameterType="java.util.Map" resultType="java.util.Map">
         /* com.heeji.picket.mapper.PostMapper.list */
-        SELECT  *
+        SELECT  POST_ID     AS postId
+        ,       TYPE        AS postType
+        ,       TITLE       AS title
+        ,       CONTENT     AS content
+        ,       HITS        AS hits
+        ,       INSERT_DATE AS insertDate
+        ,       INSERT_ID   AS insertId
+        ,       UPDATE_DATE AS updateDate
+        ,       UPDATE_ID   AS updateId
         FROM    POST
         WHERE   1 = 1
-        AND     TYPE = #{type}
+        AND     TYPE = #{postType}
+        ORDER BY POST_ID DESC
+        <if test="size != null">
+        LIMIT #{size} OFFSET #{offset}
+        </if>
     </select>
 
-    <select id="info" resultType="java.util.Map">
+    <select id="count" parameterType="java.util.Map" resultType="int">
+        /* com.heeji.picket.mapper.PostMapper.count */
+        SELECT  COUNT(*)
+        FROM    POST
+        WHERE   1 = 1
+        AND     TYPE = #{postType}
+    </select>
+
+    <select id="info" parameterType="java.util.Map" resultType="java.util.Map">
         /* com.heeji.picket.mapper.PostMapper.info */
-        SELECT  *
+        SELECT  POST_ID     AS postId
+        ,       TYPE        AS postType
+        ,       TITLE       AS title
+        ,       CONTENT     AS content
+        ,       HITS        AS hits
+        ,       INSERT_DATE AS insertDate
+        ,       INSERT_ID   AS insertId
+        ,       UPDATE_DATE AS updateDate
+        ,       UPDATE_ID   AS updateId
         FROM    POST
         WHERE   1 = 1
         AND     POST_ID = #{postId}
     </select>
 
-    <update id="increaseViewCount">
+    <update id="increaseViewCount" parameterType="java.util.Map">
         /* com.heeji.picket.mapper.PostMapper.increaseViewCount */
-        UPDATE POST SET HITS = HITS + 1 WHERE POST_ID = #{postId}
+        UPDATE  POST
+        SET     HITS = HITS + 1
+        WHERE   1 = 1
+        AND     POST_ID = #{postId}
     </update>
 
-    <insert id="insert">
+    <insert id="insert" parameterType="java.util.Map" useGeneratedKeys="true" keyProperty="postId">
         /* com.heeji.picket.mapper.PostMapper.insert */
         INSERT INTO POST (
-            POST_ID,
             TYPE,
             TITLE,
             CONTENT,
@@ -34,8 +64,7 @@
             INSERT_DATE,
             INSERT_ID
         ) VALUES (
-            0,
-            #{type},
+            #{postType},
             #{title},
             #{content},
             0,
@@ -43,17 +72,19 @@
             #{loginId}
         )
     </insert>
-    
-    <update id="update">
+
+    <update id="update" parameterType="java.util.Map">
         /* com.heeji.picket.mapper.PostMapper.update */
-        UPDATE POST
-        SET UPDATE_DATE = NOW()
-        ,   UPDATE_ID = #{loginId}
-        ,   TITLE = #{title}
-        ,   CONTENT = #{content}
+        UPDATE  POST
+        SET     UPDATE_DATE = NOW()
+        ,       UPDATE_ID = #{loginId}
+        ,       TITLE = #{title}
+        ,       CONTENT = #{content}
+        WHERE   1 = 1
+        AND     POST_ID = #{postId}
     </update>
 
-    <delete id="delete">
+    <delete id="delete" parameterType="java.util.Map">
         /* com.heeji.picket.mapper.PostMapper.delete */
         DELETE FROM POST
         WHERE       1 = 1

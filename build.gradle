@@ -1,6 +1,6 @@
 plugins {
 	id 'java'
-	id 'application'
+	id 'war'
 	id 'org.springframework.boot' version '3.2.3'
 	id 'io.spring.dependency-management' version '1.1.7'
 }
@@ -14,8 +14,8 @@ java {
 	}
 }
 
-application {
-	mainClassName = 'com.heeji.picket.PicketApplication'
+springBoot {
+	mainClass = 'com.heeji.picket.PicketApplication'
 }
 
 configurations {
@@ -39,17 +39,27 @@ dependencies {
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 
-	implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
-	implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1'
-	implementation 'jakarta.servlet:jakarta.servlet-api:6.0.0'
-	implementation 'jakarta.servlet.jsp:jakarta.servlet.jsp-api:3.1.1'
-	implementation 'jakarta.el:jakarta.el-api:5.0.1'
-	implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0'
+	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+	providedRuntime 'org.apache.tomcat.embed:tomcat-embed-jasper'
+
+	compileOnly 'jakarta.servlet:jakarta.servlet-api:6.0.0'
+	compileOnly 'jakarta.servlet.jsp:jakarta.servlet.jsp-api:3.1.1'
+	compileOnly 'jakarta.el:jakarta.el-api:5.0.1'
+
+	implementation('jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0') {
+		exclude group: 'jakarta.servlet', module: 'jakarta.servlet-api'
+		exclude group: 'jakarta.el', module: 'jakarta.el-api'
+	}
+	implementation('org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1') {
+		exclude group: 'jakarta.servlet', module: 'jakarta.servlet-api'
+		exclude group: 'jakarta.servlet.jsp', module: 'jakarta.servlet.jsp-api'
+		exclude group: 'jakarta.el', module: 'jakarta.el-api'
+	}
 
 	implementation 'com.google.api-client:google-api-client:1.34.1'
 	implementation 'com.google.oauth-client:google-oauth-client-jetty:1.34.1'
 	implementation 'com.google.http-client:google-http-client-jackson2:1.34.1'
-	
+
 	implementation 'mysql:mysql-connector-java:8.0.33'
 	implementation 'com.github.iamport:iamport-rest-client-java:0.2.21'
 
@@ -60,14 +70,8 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
-bootJar {
-    enabled = true
-}
-
-tasks.named("bootJar") {
-    from('src/main/webapp') {
-        into('WEB-INF')
-    }
+tasks.named('test') {
+	useJUnitPlatform()
 }
 
 compileJava {

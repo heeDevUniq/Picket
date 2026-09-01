@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.heeji.picket.mapper.UserAlarmMapper">
 
-    <select id="alarmYn" resultType="int">
+    <select id="alarmYn" parameterType="java.util.Map" resultType="int">
         /* com.heeji.picket.mapper.UserAlarmMapper.alarmYn */
         SELECT  COUNT(*)
         FROM    USER_ALARM
@@ -11,7 +11,7 @@
         AND     USER_ID = #{userId}
     </select>
 
-    <select id="alarmCnt" resultType="int">
+    <select id="alarmCnt" parameterType="java.util.Map" resultType="int">
         /* com.heeji.picket.mapper.UserAlarmMapper.alarmCnt */
         SELECT  COUNT(*)
         FROM    USER_ALARM
@@ -19,15 +19,24 @@
         AND     USER_ID = #{userId}
     </select>
 
-    <select id="list" resultType="java.util.Map">
+    <select id="list" parameterType="java.util.Map" resultType="java.util.Map">
         /* com.heeji.picket.mapper.UserAlarmMapper.list */
-        SELECT  *
-        FROM    USER_ALARM
+        SELECT  UA.USER_ID      AS userId
+        ,       UA.SHOW_ID      AS showId
+        ,       UA.INSERT_DATE  AS insertDate
+        ,       S.TITLE         AS title
+        ,       S.PLACE         AS place
+        ,       S.OPEN_DATE     AS openDate
+        ,       S.POSTER_LINK         AS posterLink
+        FROM    USER_ALARM UA
+        LEFT JOIN SHOWS S
+        ON      UA.SHOW_ID = S.SHOW_ID
         WHERE   1 = 1
-        AND     USER_ID = #{userId}
+        AND     UA.USER_ID = #{userId}
+        ORDER BY UA.INSERT_DATE DESC
     </select>
 
-    <insert id="insert">
+    <insert id="insert" parameterType="java.util.Map">
         /* com.heeji.picket.mapper.UserAlarmMapper.insert */
         INSERT INTO USER_ALARM (
             SHOW_ID,
@@ -40,12 +49,12 @@
         )
     </insert>
 
-    <delete id="delete">
+    <delete id="delete" parameterType="java.util.Map">
         /* com.heeji.picket.mapper.UserAlarmMapper.delete */
         DELETE FROM USER_ALARM
-        WHERE       1 = 1        
+        WHERE       1 = 1
         AND         SHOW_ID = #{showId}
-        AND         LIKE_ID = #{likeId}
+        AND         USER_ID = #{userId}
     </delete>
 
 </mapper>

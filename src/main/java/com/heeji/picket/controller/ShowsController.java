@@ -7,6 +7,7 @@ import com.heeji.picket.service.ShowLikesService;
 import com.heeji.picket.service.ShowReviewsService;
 import com.heeji.picket.service.ShowsService;
 import com.heeji.picket.service.UserAlarmService;
+import com.heeji.picket.utils.SessionUtil;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -32,79 +33,89 @@ public class ShowsController {
 
     @Autowired
     ShowDateService showDateService;
-    
+
     @Autowired
     ShowLikesService showLikesService;
-    
+
     @Autowired
     UserAlarmService userAlarmService;
-    
+
     @Autowired
     ShowReviewsService showReviewsService;
-    
+
     @Autowired
     SeatGradeService seatGradeService;
-    
+
     @Autowired
     SeatService seatService;
 
+    // 장르 코드 -> 화면 표기
+    private static final Map<String, String> GENRE_LABELS = Map.of(
+            "musical", "뮤지컬/연극",
+            "concert", "콘서트",
+            "classic", "클래식/무용",
+            "exhibit", "전시/행사",
+            "festival", "페스티벌");
+
     @GetMapping("/list/{genre}")
-    public String index(Model model, @PathVariable String genre) {
-        logger.debug("shows index진입");
+    public String index(Model model, @PathVariable("genre") String genre, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size) {
+        logger.debug("shows index 진입, genre : {}, page : {}", genre, page);
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("genre", genre);
-        // 선택 장르별 공연 목록
-        List<Map<String, Object>> shows = showsService.list(params);
-        model.addAttribute("shows", shows);
+        // 장르별 목록
+        Map<String, Object> paged = showsService.pagedList(params, page, size == null ? 12 : size);
+        model.addAttribute("paging", paged);
+        model.addAttribute("shows", paged.get("list"));
+        model.addAttribute("genre", genre);
+        model.addAttribute("genreLabel", GENRE_LABELS.getOrDefault(genre, "티켓"));
+        // JSP 오픈 여부 비교용
+        model.addAttribute("nowMillis", System.currentTimeMillis());
         return "shows/index";
     }
 
     @GetMapping("/view/{showId}")
-    public String view(Model model, @PathVariable Long showId, HttpSession session, @RequestParam Map<String, Object> params) {
-        logger.debug("shows view 진입");
-        System.out.println("확인 : " + showId);
+    public String view(Model model, @PathVariable("showId") Long showId, HttpSession session) {
+        logger.debug("shows view 진입, showId : {}", showId);
+        Map<String, Object> params = new HashMap<String, Object>();
         params.put("showId", showId);
-        // 이 공연 상세정보
+        // 좋아요/알림은 로그인 회원 기준
+        params.put("userId", SessionUtil.getLoginId(session));
+
         model.addAttribute("show", showsService.info(params));
-        // 이 공연 날짜 목록
         model.addAttribute("showDates", showDateService.list(params));
-        // 이 공연에 대한 좋아요 총 개수
         model.addAttribute("likeCount", showLikesService.likeTotCnt(params));
-        // 이 공연에 대한 로그인 사용자의 좋아요 여부
         model.addAttribute("likeMyCount", showLikesService.likeYn(params));
-        // 이 공연에 대한 로그인 사용자의 알림 여부
         model.addAttribute("alarmMyCount", userAlarmService.alarmYn(params));
-        // 이 공연에 대한 리뷰 목록
-        // model.addAttribute("reviews", showReviewsService.findAllByShowId(params));
+        model.addAttribute("reviews", showReviewsService.list(params));
         return "shows/view";
     }
 
     @GetMapping("/getTickets")
-    public String getTickets(Model model, @RequestParam Map<String, Object> params) {
-        logger.debug("getTickets 진입");
-        model.addAttribute("showDateId", params.get("showDateId"));
-        // 이 공연 상세정보
+    public String getTickets(Model model, @RequestParam("showDateId") Long showDateId) {
+        logger.debug("getTickets 진입, showDateId : {}", showDateId);
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("showDateId", showDateId);
+        model.addAttribute("showDateId", showDateId);
+        // 선택한 날짜의 공연 정보
         model.addAttribute("show", showDateService.info(params));
-        // 이 공연 등급 목록
         model.addAttribute("grades", seatGradeService.list(params));
-        // 좌석 목록
         model.addAttribute("seats", seatService.list(params));
         return "shows/popup/step01";
     }
 
     @PostMapping("/payment")
-    public String payment(Model model, @RequestParam Map<String, Object> params, @RequestParam Long showId, @RequestParam Long showDateId, @RequestParam Long[] seatArrays) {
-        logger.debug("payment 진입");
-        System.out.println("///////////////// 확인 : " + showId);
-        System.out.println("///////////////// 확인 : " + showDateId);
-        for(Long seat : seatArrays) {
-            System.out.println("///////////////// 확인 : " + seat);
-        }
+    public String payment(Model model, @RequestParam("showId") Long showId, @RequestParam("showDateId") Long showDateId, @RequestParam(value = "seatArrays", required = false) Long[] seatArrays) {
+        logger.debug("payment 진입, showId : {}, showDateId : {}", showId, showDateId);
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("showId", showId);
+        params.put("showDateId", showDateId);
+
         model.addAttribute("showDateId", showDateId);
-        // 이 공연 상세정보
-        model.addAttribute("show", showsService.info(params));
-        // 사용자가 선택한 좌석 목록
-        // model.addAttribute("seats", seatService.findSeatsWithSeatGradeBySeatIdIn(seatArrays));
+        // 선택한 날짜의 공연 정보
+        model.addAttribute("show", showDateService.info(params));
+        if (seatArrays != null && seatArrays.length > 0) {
+            model.addAttribute("seats", seatService.selectedSeatList(seatArrays));
+        }
         return "shows/popup/step02";
     }
 

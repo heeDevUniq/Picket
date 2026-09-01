@@ -14,7 +14,7 @@ public class SeatGradeService {
     @Autowired
     private SeatGradeMapper seatGradeRepository;
 
-    // 공연 날짜 고유번호로 등급 목록 조회
+    // 날짜별 좌석등급 목록
     public List<Map<String, Object>> list(Map<String, Object> params) {
         return seatGradeRepository.list(params);
     }

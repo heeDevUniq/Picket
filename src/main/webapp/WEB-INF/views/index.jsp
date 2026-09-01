@@ -52,29 +52,38 @@
     color: #fff;
 }
 .ranking-list {
-    display: flex;
-    gap: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 24px;
 }
 .ranking-item {
     position: relative;
-    width: 160px;
-    text-align: center;
+    width: 100%;
+    text-align: left;
 }
 .ranking-item .ranking-number {
-    font-size:42px;
-    font-weight: bold;
-    margin-bottom: 10px;
+    font-size: 42px;
+    font-weight: 800;
     position: absolute;
-    bottom: 46px;
     left: 10px;
+    bottom: 6px;
     color: #fff;
-    z-index: 111;
-    }
+    z-index: 3;
+    line-height: 1;
+    pointer-events: none;
+}
+.ranking-item .pk-poster::before {
+    content: "";
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 40%;
+    background: linear-gradient(to top, rgba(0,0,0,.6), transparent);
+    z-index: 2;
+    pointer-events: none;
+}
 .ranking-item .ranking-img {
-    width: 160px;
-    height: 240px;
-    background: #ccc;
-    margin-bottom: 10px;
+    width: 100%;
+    margin-bottom: 12px;
 }
 .ranking-item .ranking-title {
     font-weight: bold;
@@ -88,6 +97,20 @@
     font-size: 12px;
     color: #999;
     margin-top: 5px;
+}
+.ranking-item .ranking-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+}
+.ranking-item .ranking-price {
+    margin-left: auto;
+    font-size: 12px;
+    font-weight: 700;
+    color: #14161A;
+    font-variant-numeric: tabular-nums;
 }
 
 /* Event Banner */
@@ -109,18 +132,29 @@
 }
 .open-item {
     display: flex;
-    background: #f8f8f8;
-    border-radius: 8px;
+    gap: 14px;
+    background: #fff;
+    border: 1px solid #E7E9EE;
+    border-radius: 14px;
     overflow: hidden;
     width: calc(50% - 10px);
+    padding: 12px;
+    color: inherit;
 }
 .open-item .open-img {
-    width: 100px;
-    height: 100px;
-    background: #ccc;
+    width: 84px;
+    flex: 0 0 84px;
+    border-radius: 10px;
 }
 .open-item .open-info {
-    padding: 10px;
+    padding: 2px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+.open-item .pk-countdown {
+    font-size: 13px;
 }
 .open-item .badge {
     display: inline-block;
@@ -151,48 +185,150 @@
         </div>
     </section>
 
-<section class="genre-ranking">
+<section class="genre-ranking pk-reveal">
     <h2>장르별 랭킹</h2>
-    <div class="genre-tabs">
-        <button class="active">뮤지컬/연극</button>
-        <button>콘서트</button>
-        <button>클래식/무용</button>
-        <button>전시</button>
+    <div class="genre-tabs" id="genreTabs">
+        <button type="button" class="active" data-genre="">전체</button>
+        <button type="button" data-genre="musical">뮤지컬/연극</button>
+        <button type="button" data-genre="concert">콘서트</button>
+        <button type="button" data-genre="classic">클래식/무용</button>
+        <button type="button" data-genre="exhibit">전시/행사</button>
+        <button type="button" data-genre="festival">페스티벌</button>
     </div>
-    <div class="ranking-list">
+    <div class="ranking-list" id="rankingList">
         <c:forEach var="show" items="${shows}" varStatus="i">
-            <a href="/shows/view/${show.show_id}">
+            <a href="/shows/view/${show.showId}">
                 <div class="ranking-item">
-                    <span class="ranking-number">${i.count}</span>
-                    <div class="ranking-img"></div>
+                    <div class="pk-poster ranking-img">
+                        <img src="${show.posterLink}" alt="${show.title} 포스터"
+                             data-show-id="${show.showId}" loading="lazy">
+                        <span class="ranking-number">${i.count}</span>
+                    </div>
                     <div class="ranking-title">${show.title}</div>
                     <div class="ranking-location">${show.place}</div>
-                    <div class="ranking-date">2025.02.06</div>
+                    <div class="ranking-date"><fmt:formatDate value="${show.startDate}" pattern="yyyy.MM.dd" /></div>
+                    <div class="ranking-meta">
+                        <c:choose>
+                            <c:when test="${show.remainCount eq 0}"><span class="pk-badge pk-badge--done">매진</span></c:when>
+                            <c:otherwise><span class="pk-badge pk-badge--open">예매중</span></c:otherwise>
+                        </c:choose>
+                        <c:if test="${not empty show.minPrice}">
+                            <span class="ranking-price"><fmt:formatNumber value="${show.minPrice}" pattern="#,###" />원~</span>
+                        </c:if>
+                    </div>
                 </div>
             </a>
         </c:forEach>
     </div>
 </section>
 
-<section class="event-banner">
-    <a href="/notice"><img src="images/banner.png" alt="event Banner" style="display:block; margin:0 auto; width:70%;"></a>
+<section class="event-banner pk-reveal">
+    <a href="/notice"><img src="/images/banner.png" alt="event Banner" style="display:block; margin:0 auto; width:70%;"></a>
 </section>
 
-<section class="open-soon">
+<section class="open-soon pk-reveal">
     <h2>오픈예정</h2>
     <div class="open-list">
         <c:forEach var="show" items="${shows}" varStatus="i">
             <c:if test="${4 > i.index}">
-                <div class="open-item">
-                    <div class="open-img"></div>
+                <a href="/shows/view/${show.showId}" class="open-item">
+                    <div class="open-img pk-poster">
+                        <img src="${show.posterLink}" alt="${show.title} 포스터"
+                             data-show-id="${show.showId}" loading="lazy">
+                    </div>
                     <div class="open-info">
-                        <span class="badge">오픈일시</span>
-                        <span class="date"><fmt:formatDate value="${show.openDate}" pattern="yyyy-MM-dd HH:mm" /></span>
+                        <span class="pk-badge pk-badge--soon">오픈예정</span>
+                        <span class="date"><fmt:formatDate value="${show.openDate}" pattern="yyyy.MM.dd HH:mm" /></span>
+                        <div class="pk-countdown"
+                             <c:if test="${not empty show.openDate}">data-countdown="${show.openDate.time}"</c:if>>
+                        </div>
                         <p>${show.title}<br>${show.place}</p>
                     </div>
-                </div>
+                </a>
             </c:if>
         </c:forEach>
     </div>
 </section>
+
+<script>
+// 장르 탭 (새로고침 없이 교체)
+(function () {
+    const tabs = document.getElementById('genreTabs');
+    const list = document.getElementById('rankingList');
+    if (!tabs || !list) return;
+
+    function skeleton() {
+        let html = '';
+        for (let i = 0; i < 5; i++) {
+            html += '<div class="ranking-item">'
+                  + '<div class="pk-poster ranking-img pk-skeleton"></div>'
+                  + '<div class="ranking-title pk-skeleton">&nbsp;</div>'
+                  + '<div class="ranking-location pk-skeleton">&nbsp;</div>'
+                  + '</div>';
+        }
+        list.innerHTML = html;
+    }
+
+    function esc(v) {
+        return String(v == null ? '' : v)
+            .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function fmt(ts) {
+        if (!ts) return '';
+        const d = new Date(ts);
+        return d.getFullYear() + '.' + String(d.getMonth() + 1).padStart(2, '0')
+             + '.' + String(d.getDate()).padStart(2, '0');
+    }
+
+    function render(shows) {
+        if (!shows || !shows.length) {
+            list.innerHTML = '<div class="pk-empty"><b>등록된 공연이 없습니다.</b>다른 장르를 선택해보세요.</div>';
+            return;
+        }
+        list.innerHTML = shows.map(function (s, i) {
+            return '<a href="/shows/view/' + s.showId + '">'
+                 + '<div class="ranking-item">'
+                 + '<div class="pk-poster ranking-img">'
+                 + '<img src="' + esc(s.posterLink) + '" alt="' + esc(s.title) + ' 포스터"'
+                 + ' data-show-id="' + s.showId + '">'
+                 + '<span class="ranking-number">' + (i + 1) + '</span>'
+                 + '</div>'
+                 + '<div class="ranking-title">' + esc(s.title) + '</div>'
+                 + '<div class="ranking-location">' + esc(s.place) + '</div>'
+                 + '<div class="ranking-date">' + fmt(s.startDate) + '</div>'
+                 + '<div class="ranking-meta">'
+                 +   (s.remainCount === 0
+                        ? '<span class="pk-badge pk-badge--done">매진</span>'
+                        : '<span class="pk-badge pk-badge--open">예매중</span>')
+                 +   (s.minPrice ? '<span class="ranking-price">' + Number(s.minPrice).toLocaleString('ko-KR') + '원~</span>' : '')
+                 + '</div>'
+                 + '</div></a>';
+        }).join('');
+        // 새로 그린 이미지에 폴백 재적용
+        pk.initImageFallback();
+    }
+
+    tabs.addEventListener('click', function (e) {
+        const btn = e.target.closest('button[data-genre]');
+        if (!btn || btn.classList.contains('active')) return;
+
+        tabs.querySelectorAll('button').forEach(function (b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        skeleton();
+
+        fetch('/shows/api/list?genre=' + encodeURIComponent(btn.dataset.genre))
+            .then(function (r) {
+                if (!r.ok) throw new Error(r.status);
+                return r.json();
+            })
+            .then(render)
+            .catch(function () {
+                list.innerHTML = '<div class="pk-empty"><b>목록을 불러오지 못했습니다.</b>잠시 후 다시 시도해주세요.</div>';
+                pk.toast('목록을 불러오지 못했습니다.', 'err');
+            });
+    });
+})();
+</script>
 <%@include file="./com/footer.jsp"%>
