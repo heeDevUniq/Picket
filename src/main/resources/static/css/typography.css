@@ -1,10 +1,9 @@
-/* 타이포그래피 (Pretendard) */
+/* 타이포그래피 (IBM Plex Sans KR + Noto Sans KR + IBM Plex Mono) */
 
 :root {
-    --pk-font-ui:   "Pretendard Variable", Pretendard, system-ui, -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
-    --pk-font-body: var(--pk-font-ui);
-    /* 숫자 정렬용. 서체는 같고 tabular-nums 만 다르게 쓴다 */
-    --pk-font-mono: var(--pk-font-ui);
+    --pk-font-ui:   "IBM Plex Sans KR", "Noto Sans KR", system-ui, -apple-system, "Malgun Gothic", sans-serif;
+    --pk-font-body: "Noto Sans KR", "IBM Plex Sans KR", system-ui, "Malgun Gothic", sans-serif;
+    --pk-font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
     /* 타입 스케일 */
     --pk-t-display: clamp(28px, 4.4vw, 42px);
@@ -19,7 +18,7 @@
     --pk-t-label:   11px;
 }
 
-/* style.css 의 * 셀렉터보다 늦게 선언해 본문 서체를 확정한다 */
+/* style.css 의 * 셀렉터가 Montserrat 를 강제하므로 여기서 되돌린다 */
 body,
 input, textarea, select, button, table, p, li, td, th, dd, dt, span, div, a {
     font-family: var(--pk-font-body);
@@ -91,9 +90,7 @@ p { font-size: var(--pk-t-body); }
 .like-count,
 #reviewCount, #seatCount, #seatTotal,
 .pk-list-meta b,
-td:first-child,
-.bk-step i, .bk-date .value, .bk-meta .num, .bk-chip b, .bk-seat span,
-.bk-no b, .bk-pay-row b, .bk-pay-total .amt {
+td:first-child {
     font-family: var(--pk-font-mono);
     font-variant-numeric: tabular-nums;
 }

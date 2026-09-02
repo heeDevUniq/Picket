@@ -95,81 +95,11 @@ const pk = {
         return { d: d, h: h, m: m, s: sec };
     },
 
-    // 다이얼로그 (SweetAlert 대체). Promise<boolean> 반환
-    dialog(opt) {
-        return new Promise(function (resolve) {
-            const o = opt || {};
-            const isConfirm = o.type === 'confirm';
-
-            const wrap = document.createElement('div');
-            wrap.className = 'pk-dlg';
-            wrap.innerHTML =
-                '<div class="pk-dlg-dim"></div>' +
-                '<div class="pk-dlg-box" role="alertdialog" aria-modal="true">' +
-                (o.icon ? '<span class="pk-dlg-ico pk-dlg-ico--' + o.icon + '">' + pk.dialogIcon(o.icon) + '</span>' : '') +
-                (o.title ? '<h2 class="pk-dlg-title"></h2>' : '') +
-                (o.message ? '<p class="pk-dlg-msg"></p>' : '') +
-                '<div class="pk-dlg-btns">' +
-                (isConfirm ? '<button type="button" class="pk-dlg-btn pk-dlg-btn--ghost"></button>' : '') +
-                '<button type="button" class="pk-dlg-btn pk-dlg-btn--main' + (o.danger ? ' is-danger' : '') + '"></button>' +
-                '</div></div>';
-
-            // 텍스트는 textContent 로 넣어 마크업 주입을 막는다
-            if (o.title) wrap.querySelector('.pk-dlg-title').textContent = o.title;
-            if (o.message) wrap.querySelector('.pk-dlg-msg').textContent = o.message;
-            const main = wrap.querySelector('.pk-dlg-btn--main');
-            main.textContent = o.okText || '확인';
-            const ghost = wrap.querySelector('.pk-dlg-btn--ghost');
-            if (ghost) ghost.textContent = o.cancelText || '취소';
-
-            document.body.appendChild(wrap);
-            // 리플로우를 강제해야 transition 이 시작된다 (rAF 는 비활성 탭에서 안 돌 수 있다)
-            void wrap.offsetWidth;
-            wrap.classList.add('is-open');
-
-            const prevFocus = document.activeElement;
-            main.focus();
-
-            function close(result) {
-                document.removeEventListener('keydown', onKey);
-                wrap.classList.remove('is-open');
-                setTimeout(function () {
-                    wrap.remove();
-                    if (prevFocus && prevFocus.focus) prevFocus.focus();
-                    resolve(result);
-                }, 180);
-            }
-
-            function onKey(e) {
-                if (e.key === 'Escape') { e.preventDefault(); close(false); }
-                else if (e.key === 'Enter') { e.preventDefault(); close(true); }
-                else if (e.key === 'Tab') {
-                    const f = wrap.querySelectorAll('.pk-dlg-btn');
-                    const first = f[0], last = f[f.length - 1];
-                    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-                    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
-                }
-            }
-
-            main.addEventListener('click', function () { close(true); });
-            if (ghost) ghost.addEventListener('click', function () { close(false); });
-            wrap.querySelector('.pk-dlg-dim').addEventListener('click', function () { close(false); });
-            document.addEventListener('keydown', onKey);
-        });
-    },
-
-    dialogIcon(name) {
-        const s = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">';
-        if (name === 'success') return s + '<circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/></svg>';
-        if (name === 'warning') return s + '<path d="M12 3l9 16H3l9-16z"/><path d="M12 10v4M12 17h.01"/></svg>';
-        if (name === 'error')   return s + '<circle cx="12" cy="12" r="9"/><path d="M15 9l-6 6M9 9l6 6"/></svg>';
-        if (name === 'question')return s + '<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3 2.45V14"/><path d="M12 17h.01"/></svg>';
-        return s + '<circle cx="12" cy="12" r="9"/><path d="M12 8h.01M12 11v5"/></svg>';
-    },
-
     // 초기화
     init() {
         pk.initHeader();
+        pk.initRipple();
+        pk.initReveal();
         pk.initTopButton();
         pk.initCountdown();
         pk.initImageFallback();
@@ -278,7 +208,46 @@ const pk = {
         onScroll();
     },
 
+    // 클릭 리플
+    initRipple() {
+        document.addEventListener('click', function (e) {
+            const btn = e.target.closest('.main_btn, .btn, .btn-submit, .tab_btn, .genre-tabs button');
+            if (!btn) return;
+            const rect = btn.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const ripple = document.createElement('span');
+            ripple.className = 'pk-ripple';
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+            ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+            if (getComputedStyle(btn).position === 'static') {
+                btn.style.position = 'relative';
+            }
+            btn.style.overflow = 'hidden';
+            btn.appendChild(ripple);
+            setTimeout(function () { ripple.remove(); }, 600);
+        });
+    },
 
+    // 스크롤 진입 시 페이드업
+    initReveal() {
+        const targets = document.querySelectorAll('.pk-reveal');
+        if (!targets.length) return;
+        if (!('IntersectionObserver' in window)) {
+            targets.forEach(function (t) { t.classList.add('pk-in'); });
+            return;
+        }
+        const io = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry, i) {
+                if (!entry.isIntersecting) return;
+                setTimeout(function () {
+                    entry.target.classList.add('pk-in');
+                }, i * 60);
+                io.unobserve(entry.target);
+            });
+        }, { threshold: .12, rootMargin: '0px 0px -40px 0px' });
+        targets.forEach(function (t) { io.observe(t); });
+    },
 
     // 맨 위로 버튼
     initTopButton() {
