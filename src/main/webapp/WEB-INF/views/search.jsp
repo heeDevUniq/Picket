@@ -1,8 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@include file="./com/header.jsp"%>
 <style>
-.search-head { margin: 30px 0 6px; }
-.search-head h2 { font-size: 24px; font-weight: 800; letter-spacing: -.02em; }
+.search-head { margin: 16px 0 6px; }
+.search-head h2 { letter-spacing: -.025em; }
 .search-head h2 em { font-style: normal; color: #2875FF; }
 .show-list {
     display: grid;
@@ -70,7 +70,7 @@
             <c:otherwise>
                 <div class="show-list">
                     <c:forEach var="show" items="${shows}">
-                        <a href="/shows/view/${show.showId}" class="pk-reveal">
+                        <a href="/shows/view/${show.showId}">
                             <div class="show-card">
                                 <div class="poster pk-poster">
                                     <img src="${show.posterLink}" alt="${show.title} 포스터"

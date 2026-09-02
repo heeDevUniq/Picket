@@ -8,264 +8,375 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>픽켓 예매</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
 <link rel="stylesheet" href="/css/typography.css">
 <link rel="stylesheet" href="/css/interactive.css">
 <link rel="stylesheet" href="/css/responsive.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="/js/interactive.js"></script>
-<script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
+<script src="https://js.tosspayments.com/v2/standard"></script>
 <script src="/js/common.js"></script>
 <script src="/js/show.js"></script>
+<script>window.PK_STEP = 2;</script>
 <style>
+    html, body { height: 100%; }
     body {
         margin: 0;
+        display: flex;
+        flex-direction: column;
         background: #F6F7F9;
         color: #14161A;
     }
 
-    .nav-bar {
+    /* 상단 바 */
+    .bk-head {
         display: flex;
         align-items: center;
-        gap: 14px;
-        padding: 16px 28px;
+        gap: 18px;
+        flex: none;
+        padding: 16px 26px;
         background: #fff;
-        border-bottom: 1px solid #E7E9EE;
+        border-bottom: 1px solid #ECEEF2;
     }
-    .nav-bar img { height: 22px; }
-    .nav-bar .step-name { font-weight: 700; color: #2875FF; }
-    .nav-bar .show-name { color: #5A6272; font-size: 14px; }
-    .nav-bar .date-select {
-        margin-left: auto;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-size: 13px;
-        color: #6B7280;
-    }
-    .nav-bar .date-value {
-        font-family: var(--pk-font-mono);
-        font-size: 13px;
-        color: #14161A;
-        background: #F1F3F6;
-        border-radius: 8px;
-        padding: 6px 12px;
-    }
-
-    .pay-wrap {
-        max-width: 880px;
-        margin: 26px auto 40px;
-        padding: 0 24px;
-        display: grid;
-        grid-template-columns: 200px 1fr;
-        gap: 28px;
-        align-items: start;
-    }
-
-    .pay-poster {
-        width: 200px;
-        aspect-ratio: 3 / 4;
-        border-radius: 12px;
-        overflow: hidden;
-        background: #E7E9EE;
-        box-shadow: 0 6px 20px rgba(16,24,40,.10);
-    }
-    .pay-poster img { width: 100%; height: 100%; object-fit: cover; display: block; }
-
-    .pay-title { font-size: 19px; font-weight: 700; letter-spacing: -.02em; margin-bottom: 4px; }
-    .pay-place { font-size: 13px; color: #6B7280; margin-bottom: 18px; }
-
-    .card {
-        background: #fff;
-        border: 1px solid #E7E9EE;
-        border-radius: 14px;
-        padding: 18px 20px;
-        margin-bottom: 14px;
-    }
-    .card > h3 {
-        font-size: 14px;
-        font-weight: 600;
-        color: #5A6272;
-        margin: 0 0 12px;
-    }
-
-    .seat-list { display: flex; flex-wrap: wrap; gap: 8px; }
-    .seat-chip {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 7px 12px;
+    .bk-title { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .bk-genre {
+        padding: 4px 11px;
         border-radius: 999px;
         background: #EDF3FF;
         color: #1B4FD8;
-        font-size: 13px;
+        font-size: 12px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+    .bk-name {
+        font-family: var(--pk-font-ui);
+        font-size: 17px;
+        font-weight: 700;
+        letter-spacing: -.02em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .bk-steps { display: flex; align-items: center; gap: 12px; margin: 0 auto; }
+    .bk-step { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #A0A6B2; white-space: nowrap; }
+    .bk-step i {
+        width: 22px; height: 22px;
+        display: grid; place-items: center;
+        border-radius: 50%;
+        background: #EFF1F5;
+        color: #A0A6B2;
+        font-family: var(--pk-font-mono);
+        font-size: 11px;
+        font-style: normal;
         font-weight: 600;
     }
-    .seat-chip small {
-        font-family: var(--pk-font-mono);
-        font-weight: 500;
-        opacity: .75;
-    }
-    .seat-empty { font-size: 13px; color: #6B7280; }
+    .bk-step.is-on { color: #14161A; font-weight: 700; }
+    .bk-step.is-on i { background: var(--pk-accent); color: #fff; }
+    .bk-step.is-done { color: #5A6272; }
+    .bk-step.is-done i { background: #EDF3FF; color: #1B4FD8; font-size: 0; }
+    .bk-step.is-done i::after { content: "✓"; font-size: 12px; }
+    .bk-line { width: 46px; height: 1px; background: #DDE1E7; }
 
-    .pay-row {
+    .bk-date { display: flex; align-items: center; gap: 10px; margin-left: auto; }
+    .bk-date > span { font-size: 13.5px; color: #5A6272; white-space: nowrap; }
+    .bk-date .value {
+        height: 42px;
         display: flex;
-        justify-content: space-between;
+        align-items: center;
+        padding: 0 14px;
+        border-radius: 10px;
+        background: #F1F3F6;
+        font-family: var(--pk-font-mono);
+        font-size: 14px;
+        font-weight: 600;
+    }
+    .bk-x {
+        width: 40px; height: 40px;
+        display: grid; place-items: center;
+        border: 0; border-radius: 10px;
+        background: none;
+        color: #5A6272;
+        cursor: pointer;
+        transition: background .16s cubic-bezier(.2,.8,.2,1);
+    }
+    .bk-x:hover { background: #F1F3F6; }
+    .bk-x svg { width: 20px; height: 20px; }
+
+    /* 본문 */
+    .bk-body {
+        flex: 1;
+        min-height: 0;
+        display: grid;
+        grid-template-columns: 1fr 340px;
+        gap: 26px;
+        padding: 24px 26px;
+        overflow: auto;
+        align-content: start;
+    }
+
+    .bk-card {
+        padding: 22px 24px;
+        border-radius: 16px;
+        background: #fff;
+    }
+    .bk-card > h2 {
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: -.015em;
+        margin-bottom: 16px;
+    }
+
+    /* 공연 요약 */
+    .bk-summary { display: flex; gap: 20px; align-items: flex-start; }
+    .bk-poster {
+        width: 116px;
+        flex: none;
+        aspect-ratio: 3 / 4;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #F1F3F6;
+    }
+    .bk-poster img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .bk-summary-info { min-width: 0; }
+    .bk-summary-info .t {
+        font-family: var(--pk-font-ui);
+        font-size: 17px;
+        font-weight: 700;
+        letter-spacing: -.02em;
+        margin-bottom: 10px;
+    }
+    .bk-meta { display: grid; grid-template-columns: 76px 1fr; row-gap: 7px; font-size: 13.5px; }
+    .bk-meta dt { color: #A0A6B2; }
+    .bk-meta dd { margin: 0; color: #33383F; font-weight: 500; }
+    .bk-meta .num { font-family: var(--pk-font-mono); font-weight: 600; }
+
+    /* 선택 좌석 */
+    .bk-seats { margin-top: 22px; padding-top: 22px; border-top: 1px solid #F2F4F7; }
+    .bk-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .bk-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 14px;
+        border-radius: 999px;
+        background: #EDF3FF;
+        color: #1B4FD8;
+        font-size: 13.5px;
+        font-weight: 600;
+    }
+    .bk-chip b { font-family: var(--pk-font-mono); font-weight: 600; opacity: .75; }
+    .bk-empty { font-size: 13.5px; color: #A0A6B2; }
+
+    /* 결제 금액 */
+    .bk-pay-row {
+        display: flex;
         align-items: baseline;
-        padding: 7px 0;
+        justify-content: space-between;
+        padding: 8px 0;
         font-size: 14px;
         color: #5A6272;
     }
-    .pay-row b { font-family: var(--pk-font-mono); font-weight: 500; color: #14161A; }
-    .pay-row.total {
-        margin-top: 8px;
-        padding-top: 14px;
-        border-top: 1px solid #E7E9EE;
-        font-size: 15px;
-        color: #14161A;
-        font-weight: 600;
-    }
-    .pay-row.total b {
-        font-size: 21px;
-        font-weight: 600;
-        color: #1B4FD8;
-    }
-
-    .btn-box {
+    .bk-pay-row b { font-family: var(--pk-font-mono); font-weight: 500; color: #14161A; }
+    .bk-pay-total {
         display: flex;
-        gap: 10px;
-        margin-top: 18px;
+        align-items: baseline;
+        justify-content: space-between;
+        margin-top: 12px;
+        padding-top: 16px;
+        border-top: 1px solid #ECEEF2;
+        font-size: 15px;
+        font-weight: 700;
     }
-    .pk-btn {
+    .bk-pay-total .amt {
+        font-family: var(--pk-font-ui);
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--pk-accent-dark);
+        letter-spacing: -.02em;
+    }
+    .bk-pay-note { margin-top: 16px; font-size: 12.5px; color: #A0A6B2; line-height: 1.75; }
+
+    /* 하단 바 */
+    .bk-foot {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex: none;
+        padding: 16px 26px;
+        background: #fff;
+        border-top: 1px solid #ECEEF2;
+    }
+    .bk-hint { display: flex; align-items: center; gap: 8px; font-size: 13.5px; color: #A0A6B2; }
+    .bk-hint svg { width: 16px; height: 16px; flex: none; }
+    .bk-btns { margin-left: auto; display: flex; gap: 10px; }
+    .bk-btn {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        height: 48px;
-        border: 1px solid #E7E9EE;
+        gap: 8px;
+        height: 46px;
+        padding: 0 26px;
+        border: 1px solid #E4E7EC;
         border-radius: 11px;
         background: #fff;
-        color: #14161A;
+        color: #33383F;
         font-family: var(--pk-font-ui);
         font-size: 15px;
         font-weight: 600;
         cursor: pointer;
         transition: all .16s cubic-bezier(.2,.8,.2,1);
     }
-    .pk-btn:hover { border-color: #2875FF; color: #1B4FD8; }
-    .pk-btn--ghost { flex: 0 0 120px; }
-    .pk-btn--pay {
-        flex: 1;
-        background: #2875FF;
-        border-color: #2875FF;
+    .bk-btn:hover { border-color: #C7CDD6; }
+    .bk-btn--pay {
+        background: var(--pk-accent);
+        border-color: var(--pk-accent);
         color: #fff;
+        font-weight: 700;
     }
-    .pk-btn--pay:hover { color: #fff; filter: brightness(1.06); }
-    .pk-btn:disabled { background: #C9CDD4; border-color: #C9CDD4; color: #fff; cursor: not-allowed; }
+    .bk-btn--pay:hover { background: var(--pk-accent-dark); border-color: var(--pk-accent-dark); }
+    .bk-btn--pay:disabled { background: #C9CDD4; border-color: #C9CDD4; cursor: not-allowed; }
+    .bk-btn svg { width: 16px; height: 16px; }
 
-    .pay-note {
-        margin-top: 14px;
-        font-size: 12px;
-        color: #868EA0;
-        line-height: 1.7;
-    }
-
-    @media (max-width: 768px) {
-        .nav-bar { flex-wrap: wrap; padding: 12px 16px; gap: 8px; }
-        .nav-bar .date-select { width: 100%; margin-left: 0; }
-        .pay-wrap {
-            grid-template-columns: 1fr;
-            gap: 18px;
-            padding: 0 16px;
-            margin-top: 18px;
-        }
-        .pay-poster { width: 150px; margin: 0 auto; }
-        .pay-title, .pay-place { text-align: center; }
+    @media (max-width: 900px) {
+        .bk-head { flex-wrap: wrap; padding: 12px 16px; gap: 10px; }
+        .bk-steps { order: 3; width: 100%; margin: 0; justify-content: center; }
+        .bk-line { width: 22px; }
+        .bk-date > span { display: none; }
+        .bk-body { grid-template-columns: 1fr; padding: 16px; gap: 16px; }
+        .bk-summary { gap: 14px; }
+        .bk-poster { width: 92px; }
+        .bk-foot { padding: 12px 16px; flex-wrap: wrap; }
+        .bk-btns { width: 100%; margin-left: 0; }
+        .bk-btns .bk-btn { flex: 1; }
     }
 </style>
 </head>
 <body>
 
-<div class="nav-bar">
-    <img src="/images/com/logo.png" alt="PICKET">
-    <span class="step-name">좌석확인</span>
-    <span class="show-name">${show.title}</span>
-    <div class="date-select">
+<c:set var="totalAmount" value="${amount}" />
+
+<header class="bk-head">
+    <div class="bk-title">
+        <span class="bk-genre">
+            <c:choose>
+                <c:when test="${show.genre eq 'musical'}">뮤지컬·연극</c:when>
+                <c:when test="${show.genre eq 'concert'}">콘서트</c:when>
+                <c:when test="${show.genre eq 'classic'}">클래식·무용</c:when>
+                <c:when test="${show.genre eq 'exhibit'}">전시·행사</c:when>
+                <c:when test="${show.genre eq 'festival'}">페스티벌</c:when>
+                <c:otherwise>공연</c:otherwise>
+            </c:choose>
+        </span>
+        <span class="bk-name">${show.title}</span>
+    </div>
+
+    <div class="bk-steps">
+        <span class="bk-step is-done"><i>1</i>좌석선택</span>
+        <span class="bk-line"></span>
+        <span class="bk-step is-on"><i>2</i>결제</span>
+        <span class="bk-line"></span>
+        <span class="bk-step"><i>3</i>예매완료</span>
+    </div>
+
+    <div class="bk-date">
         <span>관람일자</span>
-        <span class="date-value"><fmt:formatDate value="${show.showDate}" pattern="yyyy.MM.dd(E) HH:mm" /></span>
+        <span class="value"><fmt:formatDate value="${show.showDate}" pattern="yyyy.MM.dd(E) HH:mm" /></span>
+        <button type="button" class="bk-x" onclick="show.popupClose(2);" aria-label="닫기">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
     </div>
-</div>
+</header>
 
-<div class="pk-stepper" role="list">
-    <span class="pk-step is-done" role="listitem"><i>1</i>좌석선택</span>
-    <span class="pk-step-line"></span>
-    <span class="pk-step is-on" role="listitem"><i>2</i>결제</span>
-    <span class="pk-step-line"></span>
-    <span class="pk-step" role="listitem"><i>3</i>예매완료</span>
-</div>
+<div class="bk-body">
+    <section class="bk-card">
+        <div class="bk-summary">
+            <div class="bk-poster">
+                <img src="${show.posterLink}" alt="${show.title} 포스터" data-show-id="${show.showId}">
+            </div>
+            <div class="bk-summary-info">
+                <div class="t">${show.title}</div>
+                <dl class="bk-meta">
+                    <dt>장소</dt><dd>${show.place}</dd>
+                    <dt>관람일시</dt><dd class="num"><fmt:formatDate value="${show.showDate}" pattern="yyyy.MM.dd(E) HH:mm" /></dd>
+                    <dt>관람가</dt><dd>${empty show.ageLimit ? '전체 관람가' : show.ageLimit}</dd>
+                </dl>
+            </div>
+        </div>
 
-<c:set var="totalAmount" value="0" />
-<c:forEach var="seat" items="${seats}">
-    <c:set var="totalAmount" value="${totalAmount + seat.price}" />
-</c:forEach>
-
-<div class="pay-wrap">
-    <div class="pay-poster">
-        <img src="${show.posterLink}" alt="${show.title} 포스터" data-show-id="${show.showId}">
-    </div>
-
-    <div>
-        <div class="pay-title">${show.title}</div>
-        <div class="pay-place">${show.place}</div>
-
-        <div class="card">
-            <h3>선택좌석 ${fn:length(seats)}매</h3>
-            <div class="seat-list">
+        <div class="bk-seats">
+            <h2>선택좌석 ${fn:length(seats)}매</h2>
+            <div class="bk-chips">
                 <c:forEach var="seat" items="${seats}">
-                    <span class="seat-chip">
+                    <span class="bk-chip">
                         ${seat.gradeName}석 ${seat.seatNumber}번
-                        <small><fmt:formatNumber value="${seat.price}" pattern="#,###" /></small>
+                        <b><fmt:formatNumber value="${seat.price}" pattern="#,###" /></b>
                     </span>
                 </c:forEach>
                 <c:if test="${empty seats}">
-                    <span class="seat-empty">선택한 좌석이 없습니다. 이전 단계에서 좌석을 골라주세요.</span>
+                    <span class="bk-empty">선택한 좌석이 없습니다. 이전 단계에서 좌석을 골라주세요.</span>
                 </c:if>
             </div>
         </div>
+    </section>
 
-        <div class="card">
-            <h3>결제금액</h3>
-            <div class="pay-row">
-                <span>티켓금액</span>
-                <b><fmt:formatNumber value="${totalAmount}" pattern="#,###" />원</b>
-            </div>
-            <div class="pay-row">
-                <span>수수료</span>
-                <b>0원</b>
-            </div>
-            <div class="pay-row total">
-                <span>총 결제금액</span>
-                <b><fmt:formatNumber value="${totalAmount}" pattern="#,###" />원</b>
-            </div>
-
-            <div class="btn-box">
-                <button type="button" class="pk-btn pk-btn--ghost" onclick="show.popupPre('${showDateId}');">이전</button>
-                <button type="button" class="pk-btn pk-btn--pay"
-                        <c:if test="${empty seats}">disabled</c:if>
-                        onclick="show.payment('${show.title}',${totalAmount},'${sessionScope.LOGIN_EMAIL}','${sessionScope.LOGIN_NAME}');">
-                    <fmt:formatNumber value="${totalAmount}" pattern="#,###" />원 결제하기
-                </button>
-            </div>
-
-            <p class="pay-note">
-                결제 후 예매 내역은 마이페이지 &gt; 예매/취소내역에서 확인하실 수 있습니다.<br>
-                공연 3일 전까지 취소 시 전액 환불됩니다.
-            </p>
+    <aside class="bk-card">
+        <h2>결제금액</h2>
+        <div class="bk-pay-row">
+            <span>티켓금액</span>
+            <b><fmt:formatNumber value="${totalAmount}" pattern="#,###" />원</b>
         </div>
-    </div>
+        <div class="bk-pay-row">
+            <span>매수</span>
+            <b>${fn:length(seats)}매</b>
+        </div>
+        <div class="bk-pay-row">
+            <span>수수료</span>
+            <b>0원</b>
+        </div>
+        <div class="bk-pay-total">
+            <span>총 결제금액</span>
+            <span class="amt"><fmt:formatNumber value="${totalAmount}" pattern="#,###" />원</span>
+        </div>
+        <p class="bk-pay-note">
+            결제 후 예매 내역은 마이페이지 &gt; 예매/취소내역에서 확인할 수 있어요.<br>
+            공연 3일 전까지 취소 시 전액 환불됩니다.
+        </p>
+    </aside>
 </div>
+
+<footer class="bk-foot">
+    <span class="bk-hint">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/>
+        </svg>
+        결제 수단은 토스페이먼츠 창에서 선택합니다
+    </span>
+    <div class="bk-btns">
+        <button type="button" class="bk-btn" onclick="show.popupPre('${showDateId}');">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+            이전
+        </button>
+        <button type="button" class="bk-btn bk-btn--pay" id="btnPay"
+                <c:if test="${not payReady}">disabled</c:if>
+                onclick="show.pay();">
+            <fmt:formatNumber value="${totalAmount}" pattern="#,###" />원 결제하기
+        </button>
+    </div>
+</footer>
+
+<script>
+// 서버가 발급한 주문번호와 금액. 화면에서 바꿔도 승인 단계에서 걸러진다
+window.PK_PAY = {
+    clientKey: '${tossClientKey}',
+    orderId:   '${orderId}',
+    orderName: '${fn:escapeXml(orderName)}',
+    amount:    ${empty amount ? 0 : amount},
+    email:     '${sessionScope.LOGIN_EMAIL}',
+    name:      '${fn:escapeXml(sessionScope.LOGIN_NAME)}'
+};
+</script>
 
 </body>
 </html>

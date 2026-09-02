@@ -1,18 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@include file="../com/header.jsp"%>
 <style>
-.page-title {
-    font-size: 26px;
-    font-weight: 800;
-    margin: 30px 0 6px;
-    color: #14161A;
-}
-.page-count {
-    margin-bottom: 22px;
-    font-size: 14px;
-    color: #6B7280;
-}
-.page-count b { color: #2875FF; }
+.page-title { margin: 16px 0 6px; }
 .ticket-info {
     display: flex;
     align-items: center;
@@ -121,7 +110,7 @@
             <c:otherwise>
                 <div class="show-list">
                     <c:forEach var="show" items="${shows}">
-                        <a href="/shows/view/${show.showId}" class="pk-reveal">
+                        <a href="/shows/view/${show.showId}">
                             <div class="show-card">
                                 <div class="poster pk-poster">
                                     <img src="${show.posterLink}" alt="${show.title} 포스터"

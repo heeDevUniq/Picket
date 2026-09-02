@@ -125,22 +125,52 @@
     font-size: 24px;
     margin-bottom: 20px;
 }
+.open-soon h2 { display: flex; align-items: center; }
+/* 화살표는 제목 오른쪽 끝에 */
+.open-nav { margin-left: auto; display: flex; gap: 8px; }
+.open-nav button {
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    border: 1px solid #E4E7EC;
+    border-radius: 50%;
+    background: #fff;
+    color: #5A6272;
+    cursor: pointer;
+    transition: all .16s cubic-bezier(.2,.8,.2,1);
+}
+.open-nav button:hover { border-color: var(--pk-accent); color: var(--pk-accent); }
+.open-nav button svg { width: 16px; height: 16px; }
+.open-nav[hidden] { display: none; }
+
 .open-list {
     display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
+    gap: 16px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding-bottom: 2px;
 }
+.open-list::-webkit-scrollbar { display: none; }
+
 .open-item {
     display: flex;
     gap: 14px;
+    flex: 0 0 300px;
+    box-sizing: border-box;
+    scroll-snap-align: start;
     background: #fff;
     border: 1px solid #E7E9EE;
     border-radius: 14px;
     overflow: hidden;
-    width: calc(50% - 10px);
     padding: 12px;
     color: inherit;
+    transition: border-color .16s cubic-bezier(.2,.8,.2,1);
 }
+.open-item:hover { border-color: #C7CDD6; }
 .open-item .open-img {
     width: 84px;
     flex: 0 0 84px;
@@ -174,6 +204,12 @@
     margin-top: 5px;
     color: #333;
 }
+
+@media (max-width: 768px) {
+    .open-soon { padding: 24px 16px; }
+    .open-item { flex: 0 0 82%; }
+    .open-nav { display: none; }
+}
 </style>
 <section class="main-banner">
         <div class="banner-text">
@@ -185,7 +221,7 @@
         </div>
     </section>
 
-<section class="genre-ranking pk-reveal">
+<section class="genre-ranking">
     <h2>장르별 랭킹</h2>
     <div class="genre-tabs" id="genreTabs">
         <button type="button" class="active" data-genre="">전체</button>
@@ -222,33 +258,112 @@
     </div>
 </section>
 
-<section class="event-banner pk-reveal">
+<section class="event-banner">
     <a href="/notice"><img src="/images/banner.png" alt="event Banner" style="display:block; margin:0 auto; width:70%;"></a>
 </section>
 
-<section class="open-soon pk-reveal">
-    <h2>오픈예정</h2>
-    <div class="open-list">
-        <c:forEach var="show" items="${shows}" varStatus="i">
-            <c:if test="${4 > i.index}">
-                <a href="/shows/view/${show.showId}" class="open-item">
-                    <div class="open-img pk-poster">
-                        <img src="${show.posterLink}" alt="${show.title} 포스터"
-                             data-show-id="${show.showId}" loading="lazy">
+<section class="open-soon">
+    <h2>
+        오픈예정
+        <span class="open-nav" id="openNav" hidden>
+            <button type="button" data-dir="-1" aria-label="이전">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 6l-6 6 6 6"/></svg>
+            </button>
+            <button type="button" data-dir="1" aria-label="다음">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
+            </button>
+        </span>
+    </h2>
+    <div class="open-list" id="openList">
+        <c:forEach var="show" items="${shows}">
+            <a href="/shows/view/${show.showId}" class="open-item">
+                <div class="open-img pk-poster">
+                    <img src="${show.posterLink}" alt="${show.title} 포스터"
+                         data-show-id="${show.showId}" loading="lazy">
+                </div>
+                <div class="open-info">
+                    <span class="pk-badge pk-badge--soon">오픈예정</span>
+                    <span class="date"><fmt:formatDate value="${show.openDate}" pattern="yyyy.MM.dd HH:mm" /></span>
+                    <div class="pk-countdown"
+                         <c:if test="${not empty show.openDate}">data-countdown="${show.openDate.time}"</c:if>>
                     </div>
-                    <div class="open-info">
-                        <span class="pk-badge pk-badge--soon">오픈예정</span>
-                        <span class="date"><fmt:formatDate value="${show.openDate}" pattern="yyyy.MM.dd HH:mm" /></span>
-                        <div class="pk-countdown"
-                             <c:if test="${not empty show.openDate}">data-countdown="${show.openDate.time}"</c:if>>
-                        </div>
-                        <p>${show.title}<br>${show.place}</p>
-                    </div>
-                </a>
-            </c:if>
+                    <p>${show.title}<br>${show.place}</p>
+                </div>
+            </a>
         </c:forEach>
     </div>
 </section>
+
+<script>
+// 오픈예정 가로 슬라이드 (2초 자동)
+(function () {
+    const track = document.getElementById('openList');
+    const nav   = document.getElementById('openNav');
+    if (!track) return;
+
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let timer = null;
+
+    // 카드 하나 + 간격
+    function step() {
+        const card = track.querySelector('.open-item');
+        if (!card) return 316;
+        return card.getBoundingClientRect().width + 16;
+    }
+
+    function scrollable() {
+        return track.scrollWidth - track.clientWidth > 4;
+    }
+
+    function go(dir) {
+        const max = track.scrollWidth - track.clientWidth;
+        if (dir > 0 && track.scrollLeft >= max - 4) {
+            track.scrollTo({ left: 0 });
+        } else if (dir < 0 && track.scrollLeft <= 4) {
+            track.scrollTo({ left: max });
+        } else {
+            track.scrollBy({ left: dir * step() });
+        }
+    }
+
+    function start() {
+        if (timer || reduce || !scrollable()) return;
+        timer = setInterval(function () { go(1); }, 2000);
+    }
+
+    function stop() {
+        clearInterval(timer);
+        timer = null;
+    }
+
+    if (nav) {
+        nav.hidden = !scrollable();
+        nav.addEventListener('click', function (e) {
+            const btn = e.target.closest('button[data-dir]');
+            if (!btn) return;
+            stop();
+            go(Number(btn.dataset.dir));
+            start();
+        });
+    }
+
+    // 사용자가 보고 있거나 만지는 중에는 멈춘다
+    track.addEventListener('mouseenter', stop);
+    track.addEventListener('mouseleave', start);
+    track.addEventListener('focusin', stop);
+    track.addEventListener('focusout', start);
+    track.addEventListener('touchstart', stop, { passive: true });
+    document.addEventListener('visibilitychange', function () {
+        document.hidden ? stop() : start();
+    });
+    window.addEventListener('resize', function () {
+        if (nav) nav.hidden = !scrollable();
+        scrollable() ? start() : stop();
+    });
+
+    start();
+})();
+</script>
 
 <script>
 // 장르 탭 (새로고침 없이 교체)
