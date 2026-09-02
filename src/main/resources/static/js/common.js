@@ -43,7 +43,7 @@ const com = {
 
     locateUrl(url, obj) {
         if(!url) {
-            alert("URL값은 필수입니다.");
+            com.alert('URL값은 필수입니다.');
             return false;
         }
         if(!obj) obj = {};
@@ -58,30 +58,20 @@ const com = {
     },
 
     alert(msg, callback) {
-        Swal.fire({
-            text: msg,
-            icon: "info",
-            scrollbarPadding: false
-        }).then(function() {
+        pk.dialog({ message: msg, icon: 'info' }).then(function () {
             if (callback) callback();
         });
     },
 
     confirm(title, msg, icon, callback) {
-        Swal.fire({
+        pk.dialog({
+            type: 'confirm',
             title: title,
-            text: msg,
+            message: msg,
             icon: icon,
-            confirmButtonText: '확인',
-            cancelButtonText: '취소',
-            showCancelButton: true,
-            allowOutsideClick: false,
-            allowEscapeKey: false,
-            scrollbarPadding: false
-        }).then(function(result) {
-            if (result.isConfirmed) {
-                if (callback) callback();
-            }
+            danger: icon === 'warning' || icon === 'error'
+        }).then(function (ok) {
+            if (ok && callback) callback();
         });
     },
 
