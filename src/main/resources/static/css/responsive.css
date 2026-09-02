@@ -188,7 +188,7 @@ p, li, td, th, dd, h1, h2, h3, .review-item .text, .show-detail {
 @media (max-width: 768px) {
 
     /* 헤더: 로고+아이콘 윗줄, 검색 아랫줄 */
-    header {
+    body > header {
         height: auto;
         padding-top: 0;
     }
@@ -417,7 +417,7 @@ p, li, td, th, dd, h1, h2, h3, .review-item .text, .show-detail {
     }
 
     /* 푸터 */
-    footer { height: auto; }
+    body > footer { height: auto; margin-top: 56px; }
     .footer {
         padding: 24px 16px;
         text-align: center;
@@ -567,8 +567,12 @@ p, li, td, th, dd, h1, h2, h3, .review-item .text, .show-detail {
     text-overflow: ellipsis;
 }
 
-/* 맨 위로 버튼이 하단 콘텐츠를 가리지 않게 */
-footer { padding-bottom: 12px; }
+/* 푸터: 본문과 떨어뜨리고 높이는 내용에 맞춘다 */
+body > footer {
+    height: auto;
+    margin-top: 80px;
+    padding-bottom: 12px;
+}
 
 @media (max-width: 768px) {
     .pk-top { right: 16px; bottom: 16px; width: 42px; height: 42px; }
@@ -650,4 +654,48 @@ footer { padding-bottom: 12px; }
 @media (max-width: 480px) {
     .login-box { padding: 32px 16px; }
     .login, .signup { max-width: none; }
+}
+
+
+/* 마이페이지 2단 레이아웃 */
+.left-menu {
+    flex: 0 0 200px;
+    width: 200px;
+    margin: 40px 0 0;
+    align-self: flex-start;
+    box-sizing: border-box;
+}
+
+.left-menu .user_name,
+.left-menu .my-list,
+.left-menu .my-list .line {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* 메뉴 카드가 본문 높이만큼 늘어나지 않게 */
+.left-menu .my-list {
+    height: auto;
+    padding-bottom: 18px;
+}
+
+.left-menu-list li { margin: 16px 0; }
+
+/* 좌측 메뉴가 있으면 본문이 남은 폭을 채운다 */
+.left-menu + .main-content {
+    flex: 1;
+    max-width: none;
+    margin-left: 40px;
+}
+
+/* style.css 의 form { margin: 0 auto } 가 폼을 가운데로 민다. 가로만 해제하고 상하 여백은 유지 */
+.main-content form { margin-left: 0; margin-right: 0; }
+
+@media (max-width: 768px) {
+    .left-menu {
+        flex: none;
+        width: 100%;
+        margin: 16px 0 0;
+    }
+    .left-menu + .main-content { margin-left: 0; }
 }
