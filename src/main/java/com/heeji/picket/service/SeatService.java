@@ -24,4 +24,24 @@ public class SeatService {
         return seatRepository.selectedSeatList(seatIdArray);
     }
 
+    // 좌석 선점. 반환값은 실제로 잡힌 좌석 수
+    public int book(Map<String, Object> params) {
+        return seatRepository.book(params);
+    }
+
+    // 예매번호로 좌석 되돌리기
+    public int release(String bookedNumber) {
+        return seatRepository.release(bookedNumber);
+    }
+
+    // 나의 예매/취소 내역
+    public List<Map<String, Object>> myTickets(Map<String, Object> params) {
+        return seatRepository.myTickets(params);
+    }
+
+    // 나의 예매 건수
+    public int myTicketCnt(Map<String, Object> params) {
+        return seatRepository.myTicketCnt(params);
+    }
+
 }

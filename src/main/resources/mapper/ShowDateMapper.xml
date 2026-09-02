@@ -20,6 +20,7 @@
         ,       SD.SHOW_DATE    AS showDate
         ,       S.TITLE         AS title
         ,       S.PLACE         AS place
+        ,       S.GENRE         AS genre
         ,       S.POSTER_LINK         AS posterLink
         ,       S.AGE_LIMIT     AS ageLimit
         FROM    SHOW_DATE SD

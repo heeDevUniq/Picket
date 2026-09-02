@@ -1,5 +1,6 @@
 package com.heeji.picket.controller;
 
+import com.heeji.picket.service.SeatService;
 import com.heeji.picket.service.ShowLikesService;
 import com.heeji.picket.service.UserAlarmService;
 import com.heeji.picket.service.UserService;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class UserController {
@@ -29,6 +31,9 @@ public class UserController {
 
     @Autowired
     UserAlarmService userAlarmService;
+
+    @Autowired
+    SeatService seatService;
 
     // 로그인 화면
     @GetMapping("/login")
@@ -50,12 +55,17 @@ public class UserController {
 
     // 나의 예매/취소 내역
     @GetMapping("/myTickets")
-    public String myTickets(HttpSession session, Model model) {
+    public String myTickets(HttpSession session, Model model, @RequestParam(value = "tab", required = false) String tab, @RequestParam(value = "period", required = false) String period, @RequestParam(value = "viewDate", required = false) String viewDate, @RequestParam(value = "ticketName", required = false) String ticketName) {
         logger.debug("myTickets진입");
         if (!SessionUtil.isLogin(session)) {
             return "redirect:/login";
         }
-        this.setMyCount(session, model);
+        Map<String, Object> params = this.setMyCount(session, model);
+        params.put("tab", tab);
+        params.put("period", (period == null || period.isBlank()) ? "1" : period);
+        params.put("viewDate", viewDate);
+        params.put("ticketName", ticketName);
+        model.addAttribute("tickets", seatService.myTickets(params));
         return "user/myTickets";
     }
 
@@ -102,6 +112,7 @@ public class UserController {
         params.put("userId", SessionUtil.getLoginId(session));
         model.addAttribute("myLikeCount", showLikesService.likeCnt(params));
         model.addAttribute("myAlarmCount", userAlarmService.alarmCnt(params));
+        model.addAttribute("myTicketCount", seatService.myTicketCnt(params));
         return params;
     }
 

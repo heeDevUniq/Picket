@@ -47,4 +47,81 @@
         ORDER BY SG.SEAT_GRADE_ID ASC, S.SEAT_NUMBER ASC
     </select>
 
+    <!-- 이미 예매된 좌석은 건드리지 않는다. 영향 행 수로 선점 여부를 판단한다 -->
+    <update id="book" parameterType="java.util.Map">
+        /* com.heeji.picket.mapper.SeatMapper.book */
+        UPDATE  SEAT
+        SET     SEAT_STATUS   = 'booked'
+        ,       BOOKED_ID     = #{bookedId}
+        ,       BOOKED_NUMBER = #{bookedNumber}
+        ,       BOOKED_DATE   = NOW()
+        WHERE   SEAT_STATUS = 'available'
+        AND     SEAT_ID IN
+        <foreach collection="seatArrays" item="arr" open="(" close=")" separator=",">
+            #{arr}
+        </foreach>
+    </update>
+
+    <update id="release" parameterType="java.lang.String">
+        /* com.heeji.picket.mapper.SeatMapper.release */
+        UPDATE  SEAT
+        SET     SEAT_STATUS   = 'available'
+        ,       BOOKED_ID     = NULL
+        ,       BOOKED_NUMBER = NULL
+        ,       BOOKED_DATE   = NULL
+        WHERE   BOOKED_NUMBER = #{bookedNumber}
+    </update>
+
+    <!-- 예매번호 단위 내역. 취소분은 canceled 로 구분한다 -->
+    <select id="myTickets" parameterType="java.util.Map" resultType="java.util.Map">
+        /* com.heeji.picket.mapper.SeatMapper.myTickets */
+        SELECT  S.BOOKED_NUMBER                             AS bookedNumber
+        ,       SH.SHOW_ID                                  AS showId
+        ,       SH.TITLE                                    AS title
+        ,       SH.PLACE                                    AS place
+        ,       SD.SHOW_DATE                                AS showDate
+        ,       COUNT(*)                                    AS count
+        ,       SUM(SG.PRICE)                               AS amount
+        ,       MIN(S.BOOKED_DATE)                          AS bookedDate
+        ,       DATE_SUB(SD.SHOW_DATE, INTERVAL 3 DAY)      AS cancelableDate
+        ,       GROUP_CONCAT(CONCAT(SG.GRADE_NAME, S.SEAT_NUMBER) ORDER BY S.SEAT_NUMBER SEPARATOR ', ') AS seatNames
+        FROM    SEAT S
+        INNER JOIN SHOWS SH
+        ON      SH.SHOW_ID = S.SHOW_ID
+        INNER JOIN SHOW_DATE SD
+        ON      SD.SHOW_DATE_ID = S.SHOW_DATE_ID
+        LEFT JOIN SEAT_GRADE SG
+        ON      SG.SEAT_GRADE_ID = S.SEAT_GRADE_ID
+        WHERE   S.BOOKED_ID = #{userId}
+        AND     S.BOOKED_NUMBER IS NOT NULL
+        <choose>
+            <when test="tab == 'canceled'">
+                AND S.SEAT_STATUS = 'canceled'
+            </when>
+            <otherwise>
+                AND S.SEAT_STATUS = 'booked'
+            </otherwise>
+        </choose>
+        <if test="period != null and period != ''">
+            AND S.BOOKED_DATE >= DATE_SUB(NOW(), INTERVAL #{period} MONTH)
+        </if>
+        <if test="viewDate != null and viewDate != ''">
+            AND DATE(SD.SHOW_DATE) = #{viewDate}
+        </if>
+        <if test="ticketName != null and ticketName != ''">
+            AND SH.TITLE LIKE CONCAT('%', #{ticketName}, '%')
+        </if>
+        GROUP BY S.BOOKED_NUMBER, SH.SHOW_ID, SH.TITLE, SH.PLACE, SD.SHOW_DATE
+        ORDER BY MIN(S.BOOKED_DATE) DESC
+    </select>
+
+    <select id="myTicketCnt" parameterType="java.util.Map" resultType="int">
+        /* com.heeji.picket.mapper.SeatMapper.myTicketCnt */
+        SELECT  COUNT(DISTINCT S.BOOKED_NUMBER)
+        FROM    SEAT S
+        WHERE   S.BOOKED_ID = #{userId}
+        AND     S.SEAT_STATUS = 'booked'
+        AND     S.BOOKED_NUMBER IS NOT NULL
+    </select>
+
 </mapper>
