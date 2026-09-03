@@ -95,6 +95,156 @@ const pk = {
         return { d: d, h: h, m: m, s: sec };
     },
 
+    // 카드 한 칸씩 자동으로 넘기는 가로 슬라이드
+    slider(track, nav, opt) {
+        if (!track) return null;
+        const o = opt || {};
+        const interval = o.interval || 2000;
+        const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        let timer = null;
+
+        function step() {
+            const card = track.querySelector(':scope > *');
+            if (!card) return 300;
+            const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
+            return card.getBoundingClientRect().width + gap;
+        }
+
+        // 한 칸 미만이면 덜컹거리므로 슬라이드 안 함
+        function scrollable() {
+            return track.scrollWidth - track.clientWidth >= step();
+        }
+
+        function go(dir) {
+            const max = track.scrollWidth - track.clientWidth;
+            if (dir > 0 && track.scrollLeft >= max - 4) track.scrollTo({ left: 0 });
+            else if (dir < 0 && track.scrollLeft <= 4) track.scrollTo({ left: max });
+            else track.scrollBy({ left: dir * step() });
+        }
+
+        function start() {
+            if (timer || reduce || !scrollable()) return;
+            timer = setInterval(function () { go(1); }, interval);
+        }
+
+        function stop() {
+            clearInterval(timer);
+            timer = null;
+        }
+
+        function refresh() {
+            if (nav) nav.hidden = !scrollable();
+            scrollable() ? start() : stop();
+        }
+
+        if (nav) {
+            nav.hidden = !scrollable();
+            nav.addEventListener('click', function (e) {
+                const btn = e.target.closest('button[data-dir]');
+                if (!btn) return;
+                stop();
+                go(Number(btn.dataset.dir));
+                start();
+            });
+        }
+
+        // 보거나 만지는 중에는 정지
+        track.addEventListener('mouseenter', stop);
+        track.addEventListener('mouseleave', start);
+        track.addEventListener('focusin', stop);
+        track.addEventListener('focusout', start);
+        track.addEventListener('touchstart', stop, { passive: true });
+        document.addEventListener('visibilitychange', function () {
+            document.hidden ? stop() : start();
+        });
+        window.addEventListener('resize', refresh);
+
+        start();
+        return { refresh: refresh, stop: stop, start: start };
+    },
+
+    // 축포, 기본 위치는 화면 한가운데
+    confetti(opt) {
+        const o = opt || {};
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+        if (!window.innerWidth || !window.innerHeight) {
+            requestAnimationFrame(function () { pk.confetti(o); });
+            return;
+        }
+
+        const canvas = document.createElement('canvas');
+        canvas.className = 'pk-confetti';
+        document.body.appendChild(canvas);
+        const ctx = canvas.getContext('2d');
+
+        function size() {
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = window.innerWidth * dpr;
+            canvas.height = window.innerHeight * dpr;
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
+        size();
+        window.addEventListener('resize', size);
+
+        const colors = ['#2875FF', '#1B4FD8', '#7BA7FF', '#FFC94D', '#FF7A7A', '#3ED598'];
+        const cx = o.x != null ? o.x : window.innerWidth / 2;
+        const cy = o.y != null ? o.y : window.innerHeight / 2;
+        const count = o.count || 130;
+        const parts = [];
+
+        for (let i = 0; i < count; i++) {
+            const angle = (Math.PI * 2 * i) / count + Math.random() * 0.35;
+            const speed = 5 + Math.random() * 7;
+            parts.push({
+                x: cx, y: cy,
+                vx: Math.cos(angle) * speed,
+                vy: Math.sin(angle) * speed - 4,
+                w: 6 + Math.random() * 5,
+                h: 9 + Math.random() * 6,
+                rot: Math.random() * Math.PI,
+                vr: (Math.random() - 0.5) * 0.32,
+                color: colors[i % colors.length]
+            });
+        }
+
+        const DURATION = 2800;
+        const start = performance.now();
+
+        function done() {
+            window.removeEventListener('resize', size);
+            canvas.remove();
+        }
+
+        function frame(now) {
+            const t = now - start;
+            const fade = Math.max(0, 1 - t / DURATION);
+            ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+            let alive = false;
+            for (const p of parts) {
+                p.vy += 0.22;
+                p.vx *= 0.995;
+                p.x += p.vx;
+                p.y += p.vy;
+                p.rot += p.vr;
+                if (p.y < window.innerHeight + 40) alive = true;
+
+                ctx.save();
+                ctx.globalAlpha = fade;
+                ctx.translate(p.x, p.y);
+                ctx.rotate(p.rot);
+                ctx.fillStyle = p.color;
+                ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+                ctx.restore();
+            }
+
+            if (alive && fade > 0) requestAnimationFrame(frame);
+            else done();
+        }
+        requestAnimationFrame(frame);
+    },
+
     // 다이얼로그 (SweetAlert 대체). Promise<boolean> 반환
     dialog(opt) {
         return new Promise(function (resolve) {
@@ -114,7 +264,7 @@ const pk = {
                 '<button type="button" class="pk-dlg-btn pk-dlg-btn--main' + (o.danger ? ' is-danger' : '') + '"></button>' +
                 '</div></div>';
 
-            // 텍스트는 textContent 로 넣어 마크업 주입을 막는다
+            // textContent 로 넣어 마크업 주입 차단
             if (o.title) wrap.querySelector('.pk-dlg-title').textContent = o.title;
             if (o.message) wrap.querySelector('.pk-dlg-msg').textContent = o.message;
             const main = wrap.querySelector('.pk-dlg-btn--main');
@@ -123,7 +273,7 @@ const pk = {
             if (ghost) ghost.textContent = o.cancelText || '취소';
 
             document.body.appendChild(wrap);
-            // 리플로우를 강제해야 transition 이 시작된다 (rAF 는 비활성 탭에서 안 돌 수 있다)
+            // 리플로우 강제로 transition 시작 (rAF 는 비활성 탭에서 미동작)
             void wrap.offsetWidth;
             wrap.classList.add('is-open');
 
@@ -323,7 +473,7 @@ const pk = {
         setInterval(tick, 1000);
     },
 
-    // 포스터가 깨지면 숨겨서 회색 자리표시만 남긴다
+    // 포스터 로드에 실패하면 숨겨서 회색 자리표시만 노출
     initImageFallback() {
         document.querySelectorAll('img[data-show-id]').forEach(function (img) {
             img.addEventListener('error', function handler() {
@@ -335,3 +485,6 @@ const pk = {
 };
 
 document.addEventListener('DOMContentLoaded', pk.init);
+
+// const 는 window 에 등록되지 않으므로 프레임 간 호출용으로 노출
+window.pk = pk;

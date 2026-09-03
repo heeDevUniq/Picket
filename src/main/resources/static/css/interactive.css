@@ -35,7 +35,7 @@ html {
     scroll-behavior: smooth;
 }
 
-/* body 배경 미선언 시 다크 모드에서 검은 배경이 비친다. 라이트로 고정 */
+/* body 배경을 선언하지 않으면 다크 모드에서 검은 배경이 비치므로 라이트 고정 */
 html {
     color-scheme: light;
 }
@@ -70,10 +70,12 @@ body > header.pk-stuck {
     box-shadow: 0 2px 14px rgba(16, 24, 40, .10);
 }
 
-/* nav 배경은 전체 폭, 링크만 1200px 안에 (style.css 의 max-width 로는 양옆이 비친다) */
+/* nav 배경은 전체 폭, 링크만 1200px 안 (style.css 의 max-width 로는 양옆 노출) */
 body > nav {
     position: sticky;
     top: 61px;
+    /* li 의 상하 마진 때문에 메뉴가 2px 내려앉던 것 보정 */
+    align-items: center;
     z-index: 499;
     width: 100%;
     max-width: none;
@@ -82,6 +84,17 @@ body > nav {
     box-sizing: border-box;
     background: var(--pk-surface);
     border-bottom: 1px solid var(--pk-line);
+}
+
+body > nav > ul {
+    align-items: center;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+body > nav > ul > li {
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
 /* 검색창 */
@@ -1331,4 +1344,14 @@ tbody > tr:hover {
 
 @media (max-width: 480px) {
     .pk-dlg-box { padding: 26px 20px 18px; }
+}
+
+/* 축포 */
+.pk-confetti {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 11000;
 }
