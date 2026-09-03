@@ -28,12 +28,29 @@
                 )               AS remainCount
         ,       (SELECT MIN(SD.SHOW_DATE) FROM SHOW_DATE SD WHERE SD.SHOW_ID = S.SHOW_ID) AS startDate
         ,       (SELECT MAX(SD.SHOW_DATE) FROM SHOW_DATE SD WHERE SD.SHOW_ID = S.SHOW_ID) AS endDate
+        ,       (
+                    SELECT  COUNT(*)
+                    FROM    SEAT SE
+                    WHERE   SE.SHOW_ID = S.SHOW_ID
+                    AND     SE.SEAT_STATUS = 'booked'
+                )               AS bookedCount
+        ,       (SELECT COUNT(*) FROM SHOW_LIKES L WHERE L.SHOW_ID = S.SHOW_ID) AS likeCount
         FROM    SHOWS S
         WHERE   1 = 1
         <if test="genre != null and genre != ''">
         AND     S.GENRE = #{genre}
         </if>
+        <choose>
+            <when test="orderBy == 'like'">
+        ORDER BY likeCount DESC, bookedCount DESC, S.SHOW_ID DESC
+            </when>
+            <when test="orderBy == 'book'">
+        ORDER BY bookedCount DESC, likeCount DESC, S.SHOW_ID DESC
+            </when>
+            <otherwise>
         ORDER BY S.SHOW_ID DESC
+            </otherwise>
+        </choose>
         <if test="size != null">
         LIMIT #{size} OFFSET #{offset}
         </if>
@@ -120,6 +137,23 @@
         <if test="size != null">
         LIMIT #{size}
         </if>
+    </select>
+
+    <!-- 메인 오픈예정. 아직 티켓이 안 열린 공연만 임박 순으로 -->
+    <select id="openSoon" parameterType="java.util.Map" resultType="java.util.Map">
+        /* com.heeji.picket.mapper.ShowsMapper.openSoon */
+        SELECT  S.SHOW_ID       AS showId
+        ,       S.TITLE         AS title
+        ,       S.PLACE         AS place
+        ,       S.GENRE         AS genre
+        ,       S.OPEN_DATE     AS openDate
+        ,       S.POSTER_LINK   AS posterLink
+        ,       (SELECT MIN(SG.PRICE) FROM SEAT_GRADE SG WHERE SG.SHOW_ID = S.SHOW_ID) AS minPrice
+        ,       (SELECT MIN(SD.SHOW_DATE) FROM SHOW_DATE SD WHERE SD.SHOW_ID = S.SHOW_ID) AS startDate
+        FROM    SHOWS S
+        WHERE   S.IS_DELETED IS NULL
+        AND     S.OPEN_DATE > NOW()
+        ORDER BY S.OPEN_DATE ASC
     </select>
 
 </mapper>

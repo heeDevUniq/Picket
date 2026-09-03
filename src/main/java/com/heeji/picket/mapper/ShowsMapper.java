@@ -10,6 +10,9 @@ public interface ShowsMapper {
 
     List<Map<String, Object>> list(Map<String, Object> params);
 
+    // 메인 오픈예정
+    List<Map<String, Object>> openSoon(Map<String, Object> params);
+
     int count(Map<String, Object> params);
 
     // 공연명/장소 키워드 검색

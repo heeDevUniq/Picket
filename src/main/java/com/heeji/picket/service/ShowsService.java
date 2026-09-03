@@ -45,4 +45,10 @@ public class ShowsService {
 //    public void deleteById(Long id) {
 //        showsRepository.deleteById(id);
 //    }
+
+    // 메인 오픈예정
+    public List<Map<String, Object>> openSoon(Map<String, Object> params) {
+        return showsRepository.openSoon(params);
+    }
+
 }

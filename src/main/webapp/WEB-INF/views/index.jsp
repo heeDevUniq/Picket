@@ -51,10 +51,25 @@
     background: #007bff;
     color: #fff;
 }
+.genre-ranking h2 { display: flex; align-items: center; }
+.rank-note { margin: -12px 0 16px; font-size: 13.5px; color: #8A9099; }
+
+/* 한 줄 가로 슬라이드 */
 .ranking-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 24px;
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding-bottom: 2px;
+}
+.ranking-list::-webkit-scrollbar { display: none; }
+.ranking-list > a {
+    flex: 0 0 172px;
+    scroll-snap-align: start;
+    color: inherit;
 }
 .ranking-item {
     position: relative;
@@ -222,7 +237,17 @@
     </section>
 
 <section class="genre-ranking">
-    <h2>장르별 랭킹</h2>
+    <h2>
+        관심순 랭킹
+        <span class="open-nav" id="likeNav" hidden>
+            <button type="button" data-dir="-1" aria-label="이전">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 6l-6 6 6 6"/></svg>
+            </button>
+            <button type="button" data-dir="1" aria-label="다음">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
+            </button>
+        </span>
+    </h2>
     <div class="genre-tabs" id="genreTabs">
         <button type="button" class="active" data-genre="">전체</button>
         <button type="button" data-genre="musical">뮤지컬/연극</button>
@@ -233,6 +258,46 @@
     </div>
     <div class="ranking-list" id="rankingList">
         <c:forEach var="show" items="${shows}" varStatus="i">
+            <a href="/shows/view/${show.showId}">
+                <div class="ranking-item">
+                    <div class="pk-poster ranking-img">
+                        <img src="${show.posterLink}" alt="${show.title} 포스터"
+                             data-show-id="${show.showId}" loading="lazy">
+                        <span class="ranking-number">${i.count}</span>
+                    </div>
+                    <div class="ranking-title">${show.title}</div>
+                    <div class="ranking-location">${show.place}</div>
+                    <div class="ranking-date"><fmt:formatDate value="${show.startDate}" pattern="yyyy.MM.dd" /></div>
+                    <div class="ranking-meta">
+                        <c:choose>
+                            <c:when test="${show.remainCount eq 0}"><span class="pk-badge pk-badge--done">매진</span></c:when>
+                            <c:otherwise><span class="pk-badge pk-badge--open">예매중</span></c:otherwise>
+                        </c:choose>
+                        <c:if test="${not empty show.minPrice}">
+                            <span class="ranking-price"><fmt:formatNumber value="${show.minPrice}" pattern="#,###" />원~</span>
+                        </c:if>
+                    </div>
+                </div>
+            </a>
+        </c:forEach>
+    </div>
+</section>
+
+<section class="genre-ranking">
+    <h2>
+        예매순 랭킹
+        <span class="open-nav" id="bookNav" hidden>
+            <button type="button" data-dir="-1" aria-label="이전">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 6l-6 6 6 6"/></svg>
+            </button>
+            <button type="button" data-dir="1" aria-label="다음">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
+            </button>
+        </span>
+    </h2>
+    <p class="rank-note">실제 예매가 많은 순서입니다.</p>
+    <div class="ranking-list" id="bookRankingList">
+        <c:forEach var="show" items="${bookRanking}" varStatus="i">
             <a href="/shows/view/${show.showId}">
                 <div class="ranking-item">
                     <div class="pk-poster ranking-img">
@@ -275,7 +340,7 @@
         </span>
     </h2>
     <div class="open-list" id="openList">
-        <c:forEach var="show" items="${shows}">
+        <c:forEach var="show" items="${openSoon}">
             <a href="/shows/view/${show.showId}" class="open-item">
                 <div class="open-img pk-poster">
                     <img src="${show.posterLink}" alt="${show.title} 포스터"
@@ -291,77 +356,24 @@
                 </div>
             </a>
         </c:forEach>
+        <c:if test="${empty openSoon}">
+            <div class="pk-empty-box">
+                <b>오픈 예정인 공연이 없어요</b>
+                <p>새 티켓이 열리면 이곳에서 가장 먼저 알려드릴게요.</p>
+            </div>
+        </c:if>
     </div>
 </section>
 
 <script>
-// 오픈예정 가로 슬라이드 (2초 자동)
+// 가로 슬라이드 3종 (2초 자동)
+const pkSliders = {};
 (function () {
-    const track = document.getElementById('openList');
-    const nav   = document.getElementById('openNav');
-    if (!track) return;
-
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    let timer = null;
-
-    // 카드 하나 + 간격
-    function step() {
-        const card = track.querySelector('.open-item');
-        if (!card) return 316;
-        return card.getBoundingClientRect().width + 16;
-    }
-
-    function scrollable() {
-        return track.scrollWidth - track.clientWidth > 4;
-    }
-
-    function go(dir) {
-        const max = track.scrollWidth - track.clientWidth;
-        if (dir > 0 && track.scrollLeft >= max - 4) {
-            track.scrollTo({ left: 0 });
-        } else if (dir < 0 && track.scrollLeft <= 4) {
-            track.scrollTo({ left: max });
-        } else {
-            track.scrollBy({ left: dir * step() });
-        }
-    }
-
-    function start() {
-        if (timer || reduce || !scrollable()) return;
-        timer = setInterval(function () { go(1); }, 2000);
-    }
-
-    function stop() {
-        clearInterval(timer);
-        timer = null;
-    }
-
-    if (nav) {
-        nav.hidden = !scrollable();
-        nav.addEventListener('click', function (e) {
-            const btn = e.target.closest('button[data-dir]');
-            if (!btn) return;
-            stop();
-            go(Number(btn.dataset.dir));
-            start();
-        });
-    }
-
-    // 사용자가 보고 있거나 만지는 중에는 멈춘다
-    track.addEventListener('mouseenter', stop);
-    track.addEventListener('mouseleave', start);
-    track.addEventListener('focusin', stop);
-    track.addEventListener('focusout', start);
-    track.addEventListener('touchstart', stop, { passive: true });
-    document.addEventListener('visibilitychange', function () {
-        document.hidden ? stop() : start();
+    [['openList','openNav'], ['rankingList','likeNav'], ['bookRankingList','bookNav']].forEach(function (pair) {
+        const track = document.getElementById(pair[0]);
+        const nav   = document.getElementById(pair[1]);
+        if (track) pkSliders[pair[0]] = pk.slider(track, nav);
     });
-    window.addEventListener('resize', function () {
-        if (nav) nav.hidden = !scrollable();
-        scrollable() ? start() : stop();
-    });
-
-    start();
 })();
 </script>
 
@@ -423,6 +435,9 @@
         }).join('');
         // 새로 그린 이미지에 폴백 재적용
         pk.initImageFallback();
+        // 카드 수가 달라졌으니 슬라이드 가능 여부를 다시 계산한다
+        list.scrollTo({ left: 0, behavior: 'instant' });
+        if (pkSliders.rankingList) pkSliders.rankingList.refresh();
     }
 
     tabs.addEventListener('click', function (e) {

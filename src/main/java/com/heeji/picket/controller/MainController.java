@@ -34,8 +34,13 @@ public class MainController {
     public String index(Model model) {
         logger.debug("index진입");
         Map<String, Object> params = new HashMap<String, Object>();
-        List<Map<String, Object>> shows = showsService.list(params);
-        model.addAttribute("shows", shows);
+        params.put("orderBy", "like");
+        model.addAttribute("shows", showsService.list(params));
+
+        Map<String, Object> bookParams = new HashMap<String, Object>();
+        bookParams.put("orderBy", "book");
+        model.addAttribute("bookRanking", showsService.list(bookParams));
+        model.addAttribute("openSoon", showsService.openSoon(new HashMap<String, Object>()));
         model.addAttribute("nowMillis", System.currentTimeMillis());
         return "index";
     }
