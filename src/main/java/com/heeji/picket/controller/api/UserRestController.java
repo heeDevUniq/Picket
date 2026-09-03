@@ -40,10 +40,11 @@ public class UserRestController {
         Map<String, Object> result = new HashMap<>();
         try {
             Map<String, Object> info = userService.login(params);
+            String returnUrl = SessionUtil.popReturnUrl(session);
             SessionUtil.setLoginUser(session, info);
             logger.info("로그인 성공, email : {}", params.get("email"));
             result.put("success", true);
-            result.put("returnUrl", "/index");
+            result.put("returnUrl", returnUrl);
         } catch (IllegalArgumentException e) {
             logger.error("로그인 실패, email : {}, msg : {}", params.get("email"), e.getMessage());
             result.put("success", false);

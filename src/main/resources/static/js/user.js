@@ -17,8 +17,7 @@ const user = {
     login() {
         com.ajaxForm('POST','/user/api/sign-in','loginForm',function(result) {
             if (result && result.success) {
-                const back = new URLSearchParams(location.search).get('returnUrl');
-                location.href = back || result.returnUrl;
+                location.href = result.returnUrl || '/index';
             } else {
                 com.alert((result && result.message) ? result.message : '로그인에 실패하였습니다.');
             }

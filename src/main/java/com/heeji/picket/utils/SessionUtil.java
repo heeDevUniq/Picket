@@ -8,9 +8,9 @@ import java.util.Map;
 
 public class SessionUtil {
 
-    private SessionUtil() {
-        // Prevent instantiation
-    }
+    private static final String RETURN_URL = "RETURN_URL";
+
+    private SessionUtil() {}
 
     public static Map<String, Object> getLoginUser(HttpSession session) {
         Map<String, Object> sessionMap = new HashMap<String, Object>();
@@ -36,6 +36,24 @@ public class SessionUtil {
     public static String getLoginEmail(HttpSession session) {
         Object email = session.getAttribute("LOGIN_EMAIL");
         return email == null ? null : email.toString();
+    }
+
+    // 로그인 후 돌아갈 주소
+    public static void setReturnUrl(HttpSession session, String returnUrl) {
+        if (returnUrl == null || returnUrl.isBlank()) {
+            return;
+        }
+        if (!returnUrl.startsWith("/") || returnUrl.startsWith("//") || returnUrl.contains("\\")) {
+            return;
+        }
+        session.setAttribute(RETURN_URL, returnUrl);
+    }
+
+    // 한 번 사용 후 remove
+    public static String popReturnUrl(HttpSession session) {
+        Object url = session.getAttribute(RETURN_URL);
+        session.removeAttribute(RETURN_URL);
+        return url == null ? "/index" : url.toString();
     }
 
     public static boolean isLogin(HttpSession session) {

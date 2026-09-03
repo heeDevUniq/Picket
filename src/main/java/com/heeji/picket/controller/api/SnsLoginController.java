@@ -103,8 +103,9 @@ public class SnsLoginController {
         // 가입 이력 있으면 로그인, 없으면 회원가입으로
         Map<String, Object> info = userService.info(map);
         if (info != null) {
+            String returnUrl = SessionUtil.popReturnUrl(session);
             SessionUtil.setLoginUser(session, info);
-            return "redirect:/index";
+            return "redirect:" + returnUrl;
         }
 
         redirectAttributes.addFlashAttribute("email", email);
@@ -151,8 +152,9 @@ public class SnsLoginController {
         // 가입 이력 있으면 로그인, 없으면 회원가입으로
         Map<String, Object> info = userService.info(map);
         if (info != null) {
+            String returnUrl = SessionUtil.popReturnUrl(session);
             SessionUtil.setLoginUser(session, info);
-            returnMap.put("returnUrl", "/index");
+            returnMap.put("returnUrl", returnUrl);
         } else {
             returnMap.put("email", email);
             returnMap.put("providerType", "google");
