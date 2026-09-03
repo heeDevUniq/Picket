@@ -16,6 +16,9 @@
         FROM    POST
         WHERE   1 = 1
         AND     TYPE = #{postType}
+        <if test="keyword != null and keyword != ''">
+        AND     TITLE LIKE CONCAT('%', #{keyword}, '%')
+        </if>
         ORDER BY POST_ID DESC
         <if test="size != null">
         LIMIT #{size} OFFSET #{offset}
@@ -28,6 +31,9 @@
         FROM    POST
         WHERE   1 = 1
         AND     TYPE = #{postType}
+        <if test="keyword != null and keyword != ''">
+        AND     TITLE LIKE CONCAT('%', #{keyword}, '%')
+        </if>
     </select>
 
     <select id="info" parameterType="java.util.Map" resultType="java.util.Map">

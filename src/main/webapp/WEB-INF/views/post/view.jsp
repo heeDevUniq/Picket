@@ -184,10 +184,12 @@
 
                     <div class="post-foot">
                         <a href="/${postType}" class="pk-btn">목록</a>
-                        <div class="right">
-                            <a href="/${postType}/write/${post.postId}" class="pk-btn">수정</a>
-                            <button type="button" class="pk-btn pk-btn--quiet" onclick="post.delete('${postType}');">삭제</button>
-                        </div>
+                        <c:if test="${canEdit}">
+                            <div class="right">
+                                <a href="/${postType}/write/${post.postId}" class="pk-btn">수정</a>
+                                <button type="button" class="pk-btn pk-btn--quiet" onclick="post.delete('${postType}');">삭제</button>
+                            </div>
+                        </c:if>
                     </div>
                 </c:otherwise>
             </c:choose>
