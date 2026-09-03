@@ -43,6 +43,8 @@ public class ShowRestController {
     public List<Map<String, Object>> list(@RequestParam(value = "genre", required = false) String genre) {
         Map<String, Object> params = new HashMap<>();
         params.put("genre", genre);
+        // 관심순 랭킹 탭에서 호출
+        params.put("orderBy", "like");
         return showsService.list(params);
     }
 
