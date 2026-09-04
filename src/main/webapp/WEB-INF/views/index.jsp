@@ -66,6 +66,8 @@
     padding-bottom: 2px;
 }
 .ranking-list::-webkit-scrollbar { display: none; }
+/* flex 자식이라 그냥 두면 내용 폭만큼만 차지해 왼쪽에 붙는다 */
+.ranking-list > .pk-empty { flex: 1 1 100%; }
 .ranking-list > a {
     flex: 0 0 172px;
     scroll-snap-align: start;
@@ -255,18 +257,19 @@
         <button type="button" data-genre="classic">클래식/무용</button>
         <button type="button" data-genre="exhibit">전시/행사</button>
         <button type="button" data-genre="festival">페스티벌</button>
+        <button type="button" data-genre="etc">기타</button>
     </div>
     <div class="ranking-list" id="rankingList">
         <c:forEach var="show" items="${shows}" varStatus="i">
             <a href="/shows/view/${show.showId}">
                 <div class="ranking-item">
                     <div class="pk-poster ranking-img">
-                        <img src="${show.posterLink}" alt="${show.title} 포스터"
+                        <img src="${fn:escapeXml(show.posterLink)}" alt="${fn:escapeXml(show.title)} 포스터"
                              data-show-id="${show.showId}" loading="lazy">
                         <span class="ranking-number">${i.count}</span>
                     </div>
-                    <div class="ranking-title">${show.title}</div>
-                    <div class="ranking-location">${show.place}</div>
+                    <div class="ranking-title">${fn:escapeXml(show.title)}</div>
+                    <div class="ranking-location">${fn:escapeXml(show.place)}</div>
                     <div class="ranking-date"><fmt:formatDate value="${show.startDate}" pattern="yyyy.MM.dd" /></div>
                     <div class="ranking-meta">
                         <c:choose>
@@ -301,12 +304,12 @@
             <a href="/shows/view/${show.showId}">
                 <div class="ranking-item">
                     <div class="pk-poster ranking-img">
-                        <img src="${show.posterLink}" alt="${show.title} 포스터"
+                        <img src="${fn:escapeXml(show.posterLink)}" alt="${fn:escapeXml(show.title)} 포스터"
                              data-show-id="${show.showId}" loading="lazy">
                         <span class="ranking-number">${i.count}</span>
                     </div>
-                    <div class="ranking-title">${show.title}</div>
-                    <div class="ranking-location">${show.place}</div>
+                    <div class="ranking-title">${fn:escapeXml(show.title)}</div>
+                    <div class="ranking-location">${fn:escapeXml(show.place)}</div>
                     <div class="ranking-date"><fmt:formatDate value="${show.startDate}" pattern="yyyy.MM.dd" /></div>
                     <div class="ranking-meta">
                         <c:choose>
@@ -343,7 +346,7 @@
         <c:forEach var="show" items="${openSoon}">
             <a href="/shows/view/${show.showId}" class="open-item">
                 <div class="open-img pk-poster">
-                    <img src="${show.posterLink}" alt="${show.title} 포스터"
+                    <img src="${fn:escapeXml(show.posterLink)}" alt="${fn:escapeXml(show.title)} 포스터"
                          data-show-id="${show.showId}" loading="lazy">
                 </div>
                 <div class="open-info">
@@ -352,7 +355,7 @@
                     <div class="pk-countdown"
                          <c:if test="${not empty show.openDate}">data-countdown="${show.openDate.time}"</c:if>>
                     </div>
-                    <p>${show.title}<br>${show.place}</p>
+                    <p>${fn:escapeXml(show.title)}<br>${fn:escapeXml(show.place)}</p>
                 </div>
             </a>
         </c:forEach>
@@ -435,7 +438,7 @@ const pkSliders = {};
         }).join('');
         // 새로 그린 이미지에 폴백 재적용
         pk.initImageFallback();
-        // 카드 수가 달라졌으니 슬라이드 가능 여부를 다시 계산한다
+        // 카드 수가 달라졌으니 슬라이드 가능 여부 재계산
         list.scrollTo({ left: 0, behavior: 'instant' });
         if (pkSliders.rankingList) pkSliders.rankingList.refresh();
     }

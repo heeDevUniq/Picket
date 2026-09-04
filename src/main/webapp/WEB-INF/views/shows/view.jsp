@@ -140,6 +140,8 @@
     transition: background .16s cubic-bezier(.2,.8,.2,1);
 }
 .sv-book:hover { background: var(--pk-accent-dark); }
+.sv-book:disabled { background: #C9CDD4; cursor: not-allowed; }
+.sv-book:disabled:hover { background: #C9CDD4; }
 
 .sv-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .sv-action {
@@ -257,19 +259,20 @@
                         <c:when test="${show.genre eq 'classic'}">클래식·무용</c:when>
                         <c:when test="${show.genre eq 'exhibit'}">전시·행사</c:when>
                         <c:when test="${show.genre eq 'festival'}">페스티벌</c:when>
+                        <c:when test="${show.genre eq 'etc'}">기타</c:when>
                         <c:otherwise>공연</c:otherwise>
                     </c:choose>
                 </span>
-                <span>${show.place}</span>
+                <span>${fn:escapeXml(show.place)}</span>
             </div>
 
-            <h1 class="sv-title">${show.title}</h1>
+            <h1 class="sv-title">${fn:escapeXml(show.title)}</h1>
 
             <div class="sv-top">
                 <c:choose>
                     <c:when test="${not empty show.posterLink}">
                         <div class="sv-poster">
-                            <img src="${show.posterLink}" alt="${show.title} 포스터" data-show-id="${show.showId}">
+                            <img src="${fn:escapeXml(show.posterLink)}" alt="${fn:escapeXml(show.title)} 포스터" data-show-id="${show.showId}">
                         </div>
                     </c:when>
                     <c:otherwise>
@@ -286,7 +289,7 @@
 
                 <div>
                     <dl class="sv-facts">
-                        <div class="sv-fact"><dt>장소</dt><dd>${show.place}</dd></div>
+                        <div class="sv-fact"><dt>장소</dt><dd>${fn:escapeXml(show.place)}</dd></div>
                         <div class="sv-fact">
                             <dt>공연 일자</dt>
                             <dd class="num">
@@ -296,7 +299,7 @@
                         </div>
                         <div class="sv-fact">
                             <dt>관람가</dt>
-                            <dd>${empty show.ageLimit ? '전체 관람가' : show.ageLimit}</dd>
+                            <dd>${empty show.ageLimit ? '전체 관람가' : fn:escapeXml(show.ageLimit)}</dd>
                         </div>
                         <div class="sv-fact">
                             <dt>티켓 오픈</dt>
@@ -326,7 +329,19 @@
                         </c:if>
                     </div>
 
-                    <button type="button" class="sv-book" onclick="show.book();">예매하기</button>
+                    <c:choose>
+                        <c:when test="${not isOpen}">
+                            <button type="button" class="sv-book" disabled>
+                                <fmt:formatDate value="${show.openDate}" pattern="M월 d일 HH:mm" /> 티켓 오픈
+                            </button>
+                        </c:when>
+                        <c:when test="${empty sessionScope.LOGIN_EMAIL}">
+                            <button type="button" class="sv-book" onclick="show.goLogin();">로그인하고 예매하기</button>
+                        </c:when>
+                        <c:otherwise>
+                            <button type="button" class="sv-book" onclick="show.book();">예매하기</button>
+                        </c:otherwise>
+                    </c:choose>
 
                     <div class="sv-actions">
                         <button type="button" class="sv-action" onclick="show.like();"
@@ -363,10 +378,10 @@
                     <div class="sv-desc">${show.info}</div>
                     <aside class="sv-side">
                         <dl>
-                            <dt>장소</dt><dd>${show.place}</dd>
-                            <dt>주최·주관</dt><dd>${empty show.host ? '-' : show.host}</dd>
-                            <dt>문의</dt><dd>${empty show.contact ? '-' : show.contact}</dd>
-                            <dt>관람 연령</dt><dd>${empty show.ageLimit ? '전체 관람가' : show.ageLimit}</dd>
+                            <dt>장소</dt><dd>${fn:escapeXml(show.place)}</dd>
+                            <dt>주최·주관</dt><dd>${empty show.host ? '-' : fn:escapeXml(show.host)}</dd>
+                            <dt>문의</dt><dd>${empty show.contact ? '-' : fn:escapeXml(show.contact)}</dd>
+                            <dt>관람 연령</dt><dd>${empty show.ageLimit ? '전체 관람가' : fn:escapeXml(show.ageLimit)}</dd>
                         </dl>
                     </aside>
                 </div>
@@ -381,10 +396,10 @@
                         <a href="#" onclick="show.saveReview(); return false;" class="btn-submit">글쓰기</a>
                     </div>
 
-                    <div id="reviewList" data-user-name="${sessionScope.LOGIN_NAME}">
+                    <div id="reviewList" data-user-name="${fn:escapeXml(sessionScope.LOGIN_NAME)}">
                         <c:forEach var="review" items="${reviews}">
                             <div class="review-item" data-review-id="${review.reviewId}">
-                                <div class="nickname">${review.userName}</div>
+                                <div class="nickname">${fn:escapeXml(review.userName)}</div>
                                 <div class="text"><c:out value="${review.content}" /></div>
                                 <c:if test="${sessionScope.LOGIN_ID != null && review.insertId eq sessionScope.LOGIN_ID}">
                                     <a href="#" onclick="show.delReview('${review.reviewId}'); return false;" class="btn-delete"

@@ -32,6 +32,11 @@
     .search-head h2 { font-size: 19px; }
     .show-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
 }
+/* 그리드 칸은 a, 안쪽 카드까지 늘려야 아래줄이 어긋나지 않는다 */
+.show-list > a { display: flex; height: 100%; }
+.show-card { display: flex; flex-direction: column; width: 100%; }
+.show-card .show-info { display: flex; flex-direction: column; flex: 1; }
+.show-card .ticket-info { margin-top: auto; }
 </style>
 
 <div class="container">
@@ -42,7 +47,7 @@
                     <h2>공연 검색</h2>
                 </c:when>
                 <c:otherwise>
-                    <h2><em>&lsquo;<c:out value="${keyword}" />&rsquo;</em> 검색 결과</h2>
+                    <h2><em>&lsquo;<c:out value="${fn:escapeXml(keyword)}" />&rsquo;</em> 검색 결과</h2>
                 </c:otherwise>
             </c:choose>
         </div>
@@ -60,7 +65,7 @@
             </c:when>
             <c:when test="${empty shows}">
                 <div class="pk-empty">
-                    <b>&lsquo;<c:out value="${keyword}" />&rsquo;에 대한 결과가 없습니다.</b>
+                    <b>&lsquo;<c:out value="${fn:escapeXml(keyword)}" />&rsquo;에 대한 결과가 없습니다.</b>
                     <span class="search-tip">
                         단어를 줄이거나 <b>공연장 이름</b>으로 다시 검색해보세요.
                     </span>
@@ -73,15 +78,15 @@
                         <a href="/shows/view/${show.showId}">
                             <div class="show-card">
                                 <div class="poster pk-poster">
-                                    <img src="${show.posterLink}" alt="${show.title} 포스터"
+                                    <img src="${fn:escapeXml(show.posterLink)}" alt="${fn:escapeXml(show.title)} 포스터"
                                          data-show-id="${show.showId}" loading="lazy">
                                     <c:if test="${show.matchType eq 'place'}">
                                         <span class="pk-poster-flag">장소 일치</span>
                                     </c:if>
                                 </div>
                                 <div class="show-info">
-                                    <h3 class="title">${show.title}</h3>
-                                    <p class="venue">${show.place}</p>
+                                    <h3 class="title">${fn:escapeXml(show.title)}</h3>
+                                    <p class="venue">${fn:escapeXml(show.place)}</p>
                                     <p class="date">
                                         <fmt:formatDate value="${show.startDate}" pattern="yyyy.MM.dd" />
                                     </p>

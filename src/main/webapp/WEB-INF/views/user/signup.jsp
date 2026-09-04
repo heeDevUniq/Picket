@@ -1,10 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ include file="../com/noheader.jsp" %>
+<div id="snsData" hidden
+     data-email="${fn:escapeXml(email)}"
+     data-provider-type="${fn:escapeXml(providerType)}"
+     data-alert-msg="${fn:escapeXml(alertMsg)}"></div>
 <script>
     window.onload = function () {
         // 카카오는 flash attribute, 구글은 sessionStorage 로 전달
-        const email = '${email}' || sessionStorage.getItem('email');
-        const providerType = '${providerType}' || sessionStorage.getItem('providerType');
+        const sns = document.getElementById('snsData').dataset;
+        const email = sns.email || sessionStorage.getItem('email');
+        const providerType = sns.providerType || sessionStorage.getItem('providerType');
         if (email) {
             $('#email').val(email);
             $('#email').attr('readonly', true);
@@ -15,7 +20,7 @@
         sessionStorage.removeItem('email');
         sessionStorage.removeItem('providerType');
 
-        const alertMsg = '${alertMsg}';
+        const alertMsg = sns.alertMsg;
         if (alertMsg) {
             com.alert(alertMsg);
         }
@@ -25,7 +30,7 @@
     <div class="signup">
         <!-- 로고 -->
         <div class="logo">
-          <a href="index.jsp"><img src="/images/com/logo.png" alt="PICKET 로고"></a>
+          <a href="/index"><img src="/images/com/logo.png" alt="PICKET 로고"></a>
         </div>
         <!-- 회원가입 폼 -->
         <form name="signupForm" id="signupForm">
@@ -51,7 +56,7 @@
             <div class="input-group">
                 <input type="email" name="email" id="email"
                        placeholder="이메일"
-                       value="${email}"
+                       value="${fn:escapeXml(email)}"
                        ${email != null ? 'readonly' : ''} />
                 <span id="duplText"></span>
                 <a href="#" onclick="user.fnChkDupl();" class="duplbtn">중복체크</a>
@@ -63,7 +68,6 @@
                 <input type="password" name="password" id="password"
                        placeholder="비밀번호"
                        oninput="user.fnChkPw();" />
-                <span class="icon lock2"></span>
                 <div class="pk-meter" id="pwMeter" aria-hidden="true"><i></i></div>
             </div>
 
@@ -90,6 +94,4 @@
         </form>
     </div>
 </div>
-
-
-
+<%@include file="../com/nofooter.jsp"%>

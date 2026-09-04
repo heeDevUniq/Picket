@@ -8,12 +8,12 @@
 			<input type="hidden" name="postId" value="${post.postId}"> <input type="hidden" name="postType" value="${postType}">
 
 			<div class="form-group">
-				<label for="title">제목</label> <input type="text" id="title" name="title" placeholder="제목을 입력하세요." value="${post.title}">
+				<label for="title">제목</label> <input type="text" id="title" name="title" placeholder="제목을 입력하세요." value="${fn:escapeXml(post.title)}">
 			</div>
 
 			<div class="form-group">
 				<label for="content">내용</label>
-				<textarea id="summernote" name="content" placeholder="내용을 입력하세요.">${post.content}</textarea>
+				<textarea id="summernote" name="content" placeholder="내용을 입력하세요.">${fn:escapeXml(post.content)}</textarea>
 			</div>
 
 			<div class="form-btns">

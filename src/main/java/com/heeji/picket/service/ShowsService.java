@@ -22,6 +22,7 @@ public class ShowsService {
     public Map<String, Object> pagedList(Map<String, Object> params, Integer page, Integer size) {
         int[] ps = Paging.apply(params, page, size);
         int total = showsRepository.count(params);
+        ps[0] = Paging.clamp(params, ps[0], ps[1], total);
         List<Map<String, Object>> list = showsRepository.list(params);
         return Paging.wrap(list, total, ps[0], ps[1]);
     }

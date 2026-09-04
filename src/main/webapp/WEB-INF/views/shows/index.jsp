@@ -87,10 +87,15 @@
     border-radius: 3px;
     margin-top: 5px;
 }
+/* 그리드 칸은 a, 안쪽 카드까지 늘려야 아래줄이 어긋나지 않는다 */
+.show-list > a { display: flex; height: 100%; }
+.show-card { display: flex; flex-direction: column; width: 100%; }
+.show-card .show-info { display: flex; flex-direction: column; flex: 1; }
+.show-card .ticket-info { margin-top: auto; }
 </style>
 <div class="container">
     <main class="main-content">
-        <h2 class="page-title">${genreLabel}</h2>
+        <h2 class="page-title">${fn:escapeXml(genreLabel)}</h2>
 
         <div class="pk-list-meta">
             <span>전체 <b>${paging.totalCount}</b>개의 공연</span>
@@ -102,7 +107,7 @@
         <c:choose>
             <c:when test="${paging.noData}">
                 <div class="pk-empty">
-                    <b>${genreLabel} 공연이 아직 없습니다.</b>
+                    <b>${fn:escapeXml(genreLabel)} 공연이 아직 없습니다.</b>
                     다른 장르를 둘러보시거나 잠시 후 다시 확인해주세요.
                     <div style="margin-top:14px"><a href="/index" class="pk-btn-sm">메인으로</a></div>
                 </div>
@@ -113,7 +118,7 @@
                         <a href="/shows/view/${show.showId}">
                             <div class="show-card">
                                 <div class="poster pk-poster">
-                                    <img src="${show.posterLink}" alt="${show.title} 포스터"
+                                    <img src="${fn:escapeXml(show.posterLink)}" alt="${fn:escapeXml(show.title)} 포스터"
                                          data-show-id="${show.showId}" loading="lazy">
                                     <c:if test="${not empty show.openDate and show.openDate.time > nowMillis}">
                                         <span class="pk-poster-flag">오픈예정</span>
@@ -123,8 +128,8 @@
                                     </c:if>
                                 </div>
                                 <div class="show-info">
-                                    <h3 class="title">${show.title}</h3>
-                                    <p class="venue">${show.place}</p>
+                                    <h3 class="title">${fn:escapeXml(show.title)}</h3>
+                                    <p class="venue">${fn:escapeXml(show.place)}</p>
                                     <p class="date">
                                         <fmt:formatDate value="${show.startDate}" pattern="yyyy.MM.dd" /> ~
                                         <fmt:formatDate value="${show.endDate}" pattern="MM.dd" />

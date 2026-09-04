@@ -164,7 +164,7 @@
                 <c:otherwise>
                     <header class="post-head">
                         <span class="post-kicker">${postType eq 'notice' ? 'NOTICE' : 'TICKET OPEN'}</span>
-                        <h1><c:out value="${post.title}" /></h1>
+                        <h1><c:out value="${fn:escapeXml(post.title)}" /></h1>
                         <div class="post-meta">
                             <dl><dd><fmt:formatDate value="${post.insertDate}" pattern="yyyy.MM.dd" /></dd></dl>
                             <span class="sep"></span>

@@ -9,7 +9,11 @@
         <%@ include file="/WEB-INF/views/com/mystats.jsp" %>
 
         <h2 class="pk-page-title">나의 관심공연</h2>
-        <table>
+        <div class="pk-scroll-x">
+        <table class="pk-table pk-table--3col">
+            <colgroup>
+                <col class="c-name"><col class="c-place"><col class="c-date">
+            </colgroup>
             <thead>
                 <tr>
                     <th>공연명</th>
@@ -22,20 +26,21 @@
                     <c:when test="${not empty likes}">
                         <c:forEach var="like" items="${likes}">
                             <tr>
-                                <td><a href="/shows/view/${like.showId}">${like.title}</a></td>
-                                <td>${like.place}</td>
+                                <td><a href="/shows/view/${like.showId}">${fn:escapeXml(like.title)}</a></td>
+                                <td>${fn:escapeXml(like.place)}</td>
                                 <td><fmt:formatDate value="${like.insertDate}" pattern="yyyy-MM-dd" /></td>
                             </tr>
                         </c:forEach>
                     </c:when>
                     <c:otherwise>
                         <tr>
-                            <td colspan="3">관심 공연이 없습니다.</td>
+                            <td colspan="3" class="pk-nodata">관심 공연이 없습니다.</td>
                         </tr>
                     </c:otherwise>
                 </c:choose>
             </tbody>
         </table>
+        </div>
     </main>
 </div>
 <%@include file="../com/footer.jsp"%>

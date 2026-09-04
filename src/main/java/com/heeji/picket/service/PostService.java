@@ -19,6 +19,7 @@ public class PostService {
     public Map<String, Object> list(Map<String, Object> params, Integer page, Integer size) {
         int[] ps = Paging.apply(params, page, size);
         int total = postRepository.count(params);
+        ps[0] = Paging.clamp(params, ps[0], ps[1], total);
         List<Map<String, Object>> list = postRepository.list(params);
         return Paging.wrap(list, total, ps[0], ps[1]);
     }

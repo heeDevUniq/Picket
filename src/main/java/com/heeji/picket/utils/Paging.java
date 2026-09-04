@@ -25,6 +25,14 @@ public class Paging {
         return new int[] { p, s };
     }
 
+    // count 와 list 조회 사이에 호출, 마지막 페이지를 넘긴 요청의 offset 을 다시 잡는다
+    public static int clamp(Map<String, Object> params, int page, int size, int totalCount) {
+        int totalPages = Math.max(1, (totalCount + size - 1) / size);
+        int p = Math.min(Math.max(page, 1), totalPages);
+        params.put("offset", (p - 1) * size);
+        return p;
+    }
+
     // 조회 결과 + 전체 건수 -> 화면용 페이징 정보
     public static Map<String, Object> wrap(List<Map<String, Object>> list, int totalCount, int page, int size) {
         int totalPages = (totalCount + size - 1) / size;

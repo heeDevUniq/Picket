@@ -208,7 +208,7 @@
                                         </c:choose>
                                     </td>
                                     <td class="bd-title">
-                                        <a href="/${postType}/view/${post.postId}"><c:out value="${post.title}" /></a>
+                                        <a href="/${postType}/view/${post.postId}"><c:out value="${fn:escapeXml(post.title)}" /></a>
                                         <c:if test="${isNew}"><span class="bd-new">NEW</span></c:if>
                                     </td>
                                     <td class="bd-date"><fmt:formatDate value="${post.insertDate}" pattern="yyyy-MM-dd" /></td>
