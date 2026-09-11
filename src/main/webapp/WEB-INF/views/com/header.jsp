@@ -26,6 +26,7 @@
     <script src="/js/common.js"></script>
     <script src="/js/interactive.js"></script>
     <script src="/js/user.js"></script>
+    <script>window.PK_LOGIN = ${not empty sessionScope.LOGIN_EMAIL};</script>
 </head>
 <body>
 <header>
@@ -82,6 +83,7 @@
         <li><a href="/shows/list/classic">클래식/무용</a></li>
         <li><a href="/shows/list/exhibit">전시/행사</a></li>
         <li><a href="/shows/list/festival">페스티벌</a></li>
+        <li><a href="/shows/list/etc">기타</a></li>
     </ul>
     <ul>
     <li><a href="/notice">공지사항</a></li>

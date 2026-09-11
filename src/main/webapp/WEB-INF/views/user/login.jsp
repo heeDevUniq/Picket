@@ -53,3 +53,5 @@
             </div>
         </div>
     </div>
+</div>
+<%@include file="../com/nofooter.jsp"%>

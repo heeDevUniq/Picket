@@ -162,12 +162,12 @@
 
                 <div class="field">
                     <label>이메일</label>
-                    <div class="readonly">${user.email}<span class="lock">변경 불가</span></div>
+                    <div class="readonly">${fn:escapeXml(user.email)}<span class="lock">변경 불가</span></div>
                 </div>
 
                 <div class="field">
                     <label for="name">이름</label>
-                    <input type="text" id="name" name="name" value="${user.name}" placeholder="이름을 입력하세요">
+                    <input type="text" id="name" name="name" value="${fn:escapeXml(user.name)}" placeholder="이름을 입력하세요">
                 </div>
 
                 <div class="field">
@@ -204,14 +204,14 @@
                 <div class="field">
                     <label for="address">주소</label>
                     <div class="field-row">
-                        <input type="text" id="address" name="address" value="${user.address}" placeholder="주소 검색을 눌러주세요" readonly>
+                        <input type="text" id="address" name="address" value="${fn:escapeXml(user.address)}" placeholder="주소 검색을 눌러주세요" readonly>
                         <button type="button" class="pk-btn" onclick="myInfo.searchAddress();">주소검색</button>
                     </div>
                 </div>
 
                 <div class="field">
                     <label for="detailAddress">상세주소</label>
-                    <input type="text" id="detailAddress" name="detailAddress" value="${user.detailAddress}" placeholder="동·호수 등 상세주소">
+                    <input type="text" id="detailAddress" name="detailAddress" value="${fn:escapeXml(user.detailAddress)}" placeholder="동·호수 등 상세주소">
                 </div>
             </div>
 
@@ -280,7 +280,6 @@ const myInfo = {
                 }
                 document.getElementById('address').value = '[' + data.zonecode + '] ' + addr;
                 document.getElementById('detailAddress').focus();
-                pk.toast('주소가 입력되었습니다.', 'ok');
             }
         }).open();
     },

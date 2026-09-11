@@ -187,7 +187,7 @@ const pk = {
         size();
         window.addEventListener('resize', size);
 
-        const colors = ['#2875FF', '#1B4FD8', '#7BA7FF', '#FFC94D', '#FF7A7A', '#3ED598'];
+        const colors = ['#FFB2F5', '#1B4FD8', '#7BA7FF', '#FFC94D', '#FF7A7A', '#3ED598'];
         const cx = o.x != null ? o.x : window.innerWidth / 2;
         const cy = o.y != null ? o.y : window.innerHeight / 2;
         const count = o.count || 130;
@@ -245,7 +245,7 @@ const pk = {
         requestAnimationFrame(frame);
     },
 
-    // 다이얼로그 (SweetAlert 대체). Promise<boolean> 반환
+    // 다이얼로그 Promise<boolean> 반환
     dialog(opt) {
         return new Promise(function (resolve) {
             const o = opt || {};
@@ -264,7 +264,6 @@ const pk = {
                 '<button type="button" class="pk-dlg-btn pk-dlg-btn--main' + (o.danger ? ' is-danger' : '') + '"></button>' +
                 '</div></div>';
 
-            // textContent 로 넣어 마크업 주입 차단
             if (o.title) wrap.querySelector('.pk-dlg-title').textContent = o.title;
             if (o.message) wrap.querySelector('.pk-dlg-msg').textContent = o.message;
             const main = wrap.querySelector('.pk-dlg-btn--main');
@@ -273,7 +272,7 @@ const pk = {
             if (ghost) ghost.textContent = o.cancelText || '취소';
 
             document.body.appendChild(wrap);
-            // 리플로우 강제로 transition 시작 (rAF 는 비활성 탭에서 미동작)
+            
             void wrap.offsetWidth;
             wrap.classList.add('is-open');
 

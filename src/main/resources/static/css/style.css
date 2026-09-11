@@ -318,9 +318,6 @@ input::placeholder {
 		background-image: url('/images/user/pw.svg');
 }
 
-.icon.lock2 {
-		background-image: url('/images/user/pw_gray.svg');
-}
 
 /* 체크박스 */
 input[type="checkbox"] {
@@ -760,20 +757,23 @@ nav ul li {
 }
 
 .duplbtn {
+		position: relative;
+		padding-left: 15px;
 		font-size: 14px;
 		line-height: 32px;
 		color: #2875FF;
 }
 
+/* 구분선, 버튼 자신을 기준으로 잡아야 호버 filter 가 걸려도 자리가 안 바뀐다 */
 .duplbtn:after {
 		content: '';
 		position: absolute;
-		width: 70px;
-		height: 59px;
+		left: 0;
+		top: 50%;
+		width: 0;
+		height: 22px;
+		margin-top: -11px;
 		border-left: 1px solid #DEDEDE;
-		right: 0;
-		top: 0;
-		transition: 0.5s;
 }
 
 .checkbox {
