@@ -2,6 +2,10 @@ const show = {
 
     // 예매 모달 열기
     book() {
+        if (!window.PK_LOGIN) {
+            show.goLogin();
+            return;
+        }
         const showDateId = $("[name='showDateId']:checked").val();
         if (showDateId === undefined) {
             pk.toast('관람일자를 선택해주세요.', 'err');
@@ -20,19 +24,31 @@ const show = {
             wrap.innerHTML =
                 '<div class="pk-modal-dim"></div>' +
                 '<div class="pk-modal-box" role="dialog" aria-modal="true" aria-label="예매하기">' +
-                '  <button type="button" class="pk-modal-x" aria-label="닫기">×</button>' +
                 '  <iframe id="bookFrame" title="예매하기"></iframe>' +
                 '</div>';
             document.body.appendChild(wrap);
-            wrap.querySelector('.pk-modal-dim').addEventListener('click', show.closeModal);
-            wrap.querySelector('.pk-modal-x').addEventListener('click', show.closeModal);
+            wrap.querySelector('.pk-modal-dim').addEventListener('click', show.requestClose);
             document.addEventListener('keydown', function (e) {
-                if (e.key === 'Escape') show.closeModal();
+                if (e.key === 'Escape' && wrap.classList.contains('is-open')) show.requestClose();
             });
         }
         document.getElementById('bookFrame').src = url;
         document.body.style.overflow = 'hidden';
-        requestAnimationFrame(function () { wrap.classList.add('is-open'); });
+        void wrap.offsetWidth;
+        wrap.classList.add('is-open');
+    },
+
+    // 딤/ESC 로 닫을 때도 단계별 확인
+    requestClose() {
+        const frame = document.getElementById('bookFrame');
+        try {
+            const w = frame && frame.contentWindow;
+            if (w && w.show && w.PK_STEP) {
+                w.show.popupClose(w.PK_STEP);
+                return;
+            }
+        } catch (e) {}
+        show.closeModal();
     },
 
     closeModal() {
@@ -161,13 +177,61 @@ const show = {
         form.submit();
     },
 
-    // 이전 단계
+    // 좌석·결제 정보가 초기화되는 이전 단계
     popupPre(showDateId) {
-        window.location = "/shows/getTickets?showDateId=" + showDateId;
+        if (document.querySelector('.pk-dlg')) return;
+
+        pk.dialog({
+            type: 'confirm',
+            icon: 'warning',
+            danger: true,
+            title: '결제를 그만둘까요?',
+            message: '이전 단계로 돌아가면 선택한 좌석과 결제 정보가 초기화되며\n좌석을 처음부터 다시 골라야 합니다.',
+            okText: '이전으로 돌아가기',
+            cancelText: '계속하기'
+        }).then(function (ok) {
+            if (ok) window.location = "/shows/getTickets?showDateId=" + showDateId;
+        });
     },
 
-    // 닫기 (모달 안이면 부모에게 알린다)
-    popupClose() {
+    // 닫기, 단계별로 잃는 항목을 먼저 안내
+    popupClose(step) {
+        // 확인창 중복 표시 방지
+        if (document.querySelector('.pk-dlg')) return;
+
+        const guide = {
+            1: {
+                title: '예매를 그만둘까요?',
+                message: '지금 닫으면 선택한 좌석이 모두 해제되며\n예매가 진행되지 않습니다.',
+                okText: '좌석 취소하고 닫기'
+            },
+            2: {
+                title: '결제를 그만둘까요?',
+                message: '지금 닫으면 선택한 좌석과 결제 정보가 사라지며\n처음부터 다시 예매해야 합니다.',
+                okText: '결제 취소하고 닫기'
+            }
+        }[step];
+
+        if (!guide) {
+            show.popupCloseNow();
+            return;
+        }
+
+        pk.dialog({
+            type: 'confirm',
+            icon: 'warning',
+            danger: true,
+            title: guide.title,
+            message: guide.message,
+            okText: guide.okText,
+            cancelText: '계속하기'
+        }).then(function (ok) {
+            if (ok) show.popupCloseNow();
+        });
+    },
+
+    // 확인 없이 즉시 닫기 (모달 안이면 부모에 통보)
+    popupCloseNow() {
         if (window.parent !== window && window.parent.show) {
             window.parent.show.closeModal();
         } else {
@@ -175,52 +239,72 @@ const show = {
         }
     },
 
-    // 결제 (아임포트)
-    payment(title, amount, email, name) {
-        if (typeof window.IMP === 'undefined') {
-            com.alert('결제 모듈을 불러오지 못했습니다. 잠시 후 다시 시도해주세요.');
+    // 결제 (토스페이먼츠)
+    async pay() {
+        const cfg = window.PK_PAY;
+        if (!cfg || !cfg.clientKey) {
+            com.alert('결제 설정이 없습니다.\n관리자에게 문의해주세요.');
             return;
         }
-        if (!amount || amount <= 0) {
+        if (typeof TossPayments === 'undefined') {
+            com.alert('결제 모듈을 불러오지 못했습니다.\n잠시 후 다시 시도해주세요.');
+            return;
+        }
+        if (!cfg.amount || cfg.amount <= 0) {
             com.alert('결제 금액이 올바르지 않습니다.');
             return;
         }
-        window.IMP.request_pay({
-            pg: "html5_inicis",
-            pay_method: "card",
-            merchant_uid: "ORD20180131-0000011",   // 주문번호
-            name: title,
-            amount: amount,                         // 숫자 타입
-            buyer_email: email,
-            buyer_name: name
-        }, function (rsp) { // callback
-            if (rsp.success) {
-                // 결제 성공
-                console.log("결제 성공", rsp);
-                // 결제검증
-                $.ajax({
-                type: 'POST',
-                url: '/verify/' + rsp.imp_uid
-                }).done(function(data) {
-                    if(rsp.paid_amount === data.response.amount){
-                        alert("결제 성공");
-                    } else {
-                        alert("결제 실패");
-                    }
-                });
-            } else {
-                // 결제 실패
-                console.log("결제 실패", rsp);
-                alert("결제에 실패하였습니다. 에러내용: " + rsp.error_msg);
-            }
-        });
+
+        const btn = document.getElementById('btnPay');
+        pk.busy(btn, true);
+
+        // 토스 복귀 주소, 터널을 쓰면 서버 설정값이 우선
+        const origin = cfg.baseUrl || location.origin;
+
+        try {
+            const toss = TossPayments(cfg.clientKey);
+            const payment = toss.payment({ customerKey: TossPayments.ANONYMOUS });
+
+            // 성공·실패 모두 토스가 이 URL 로 리다이렉트
+            // 기본값은 결제창을 iframe 으로 덧씌우는데, 예매 모달이 이미 iframe 이라
+            // 이중 중첩되면 리다이렉트가 멈추므로 self 로 창 자체를 넘김
+            await payment.requestPayment({
+                method: 'CARD',
+                amount: { currency: 'KRW', value: cfg.amount },
+                orderId: cfg.orderId,
+                orderName: cfg.orderName,
+                successUrl: origin + '/shows/payment/success',
+                failUrl: origin + '/shows/payment/fail',
+                customerEmail: cfg.email || undefined,
+                customerName: cfg.name || undefined,
+                windowTarget: 'self',
+                card: { useEscrow: false, flowMode: 'DEFAULT', useCardPoint: false, useAppCardOnly: false }
+            });
+        } catch (e) {
+            pk.busy(btn, false);
+            const msg = e && e.code === 'USER_CANCEL' ? '사용자가 결제를 취소하셨습니다.' : (e && e.message ? e.message : '알 수 없는 오류');
+            // 확인을 누르면 예매창 닫기
+            com.alert('결제에 실패하였습니다.\n' + msg, show.popupCloseNow);
+        }
+    },
+
+    // 로그인 화면으로 (모달 안이면 부모 창 이동)
+    goLogin() {
+        const target = (window.parent !== window && window.parent.show) ? window.parent : window;
+        const back = target.location.pathname + target.location.search;
+        target.location.href = '/login?returnUrl=' + encodeURIComponent(back);
+    },
+
+    // 예매내역으로 (모달 안이면 부모 창 이동)
+    goMyTickets() {
+        if (window.parent !== window && window.parent.show) {
+            window.parent.location.href = '/myTickets';
+        } else {
+            window.location.href = '/myTickets';
+        }
     }
 
 }
 
- $(document).ready(function() {
-    // 결제 화면에서만 초기화
-    if (typeof window.IMP !== 'undefined') {
-        window.IMP.init("imp00040455");
-    }
-});
+// const 는 window 에 등록되지 않으므로 예매 모달(iframe)의 부모 호출용으로 노출
+window.show = show;

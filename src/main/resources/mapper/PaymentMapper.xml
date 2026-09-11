@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.heeji.picket.mapper.PaymentMapper">
+
+    <!-- 결제창 진입 전에 주문을 만들어 두고, 승인 콜백은 세션 없이 이 행으로 검증 -->
+    <insert id="ready" parameterType="java.util.Map">
+        /* com.heeji.picket.mapper.PaymentMapper.ready */
+        INSERT INTO PAYMENT
+        (
+            PAID_ID,
+            ORDER_ID,
+            BOOKED_NUMBER,
+            AMOUNT,
+            STATUS,
+            SHOW_ID,
+            SHOW_DATE_ID,
+            SEAT_COUNT,
+            SEAT_NAMES,
+            SEAT_IDS
+        )
+        VALUES
+        (
+            #{paidId},
+            #{orderId},
+            #{orderId},
+            #{amount},
+            'READY',
+            #{showId},
+            #{showDateId},
+            #{seatCount},
+            #{seatNames},
+            #{seatIds}
+        )
+    </insert>
+
+    <!-- READY 주문만 승인 처리해 콜백이 중복돼도 1회만 반영 -->
+    <update id="done" parameterType="java.util.Map">
+        /* com.heeji.picket.mapper.PaymentMapper.done */
+        UPDATE  PAYMENT
+        SET     STATUS      = 'DONE'
+        ,       PAYMENT_KEY = #{paymentKey}
+        ,       PAID_DATE   = NOW()
+        ,       METHOD      = #{method}
+        ,       PG_CODE     = #{pgCode}
+        WHERE   ORDER_ID = #{orderId}
+        AND     STATUS = 'READY'
+    </update>
+
+    <delete id="deleteReady" parameterType="java.lang.String">
+        /* com.heeji.picket.mapper.PaymentMapper.deleteReady */
+        DELETE FROM PAYMENT
+        WHERE   ORDER_ID = #{orderId}
+        AND     STATUS = 'READY'
+    </delete>
+
+    <select id="infoByOrderId" parameterType="java.lang.String" resultType="java.util.Map">
+        /* com.heeji.picket.mapper.PaymentMapper.infoByOrderId */
+        SELECT  PAYMENT_ID    AS paymentId
+        ,       PAID_ID       AS paidId
+        ,       ORDER_ID      AS orderId
+        ,       PAYMENT_KEY   AS paymentKey
+        ,       BOOKED_NUMBER AS bookedNumber
+        ,       AMOUNT        AS amount
+        ,       STATUS        AS status
+        ,       SHOW_ID       AS showId
+        ,       SHOW_DATE_ID  AS showDateId
+        ,       SEAT_COUNT    AS seatCount
+        ,       SEAT_NAMES    AS seatNames
+        ,       SEAT_IDS      AS seatIds
+        ,       PAID_DATE     AS paidDate
+        ,       CANCELED_DATE AS canceledDate
+        ,       CANCEL_REASON AS cancelReason
+        ,       METHOD        AS method
+        ,       PG_CODE       AS pgCode
+        FROM    PAYMENT
+        WHERE   ORDER_ID = #{orderId}
+    </select>
+
+    <!-- 본인 예매만 취소 가능하도록 결제자 조건 포함 -->
+    <select id="infoForCancel" parameterType="java.util.Map" resultType="java.util.Map">
+        /* com.heeji.picket.mapper.PaymentMapper.infoForCancel */
+        SELECT  P.PAYMENT_ID    AS paymentId
+        ,       P.PAID_ID       AS paidId
+        ,       P.ORDER_ID      AS orderId
+        ,       P.PAYMENT_KEY   AS paymentKey
+        ,       P.BOOKED_NUMBER AS bookedNumber
+        ,       P.AMOUNT        AS amount
+        ,       P.STATUS        AS status
+        ,       P.CANCELED_DATE AS canceledDate
+        ,       SH.TITLE        AS title
+        ,       SD.SHOW_DATE    AS showDate
+        ,       DATE_SUB(SD.SHOW_DATE, INTERVAL 3 DAY) AS cancelableDate
+        ,       CASE WHEN NOW() &lt; DATE_SUB(SD.SHOW_DATE, INTERVAL 3 DAY) THEN 'Y' ELSE 'N' END AS cancelable
+        FROM    PAYMENT P
+        LEFT JOIN SHOWS SH
+        ON      SH.SHOW_ID = P.SHOW_ID
+        LEFT JOIN SHOW_DATE SD
+        ON      SD.SHOW_DATE_ID = P.SHOW_DATE_ID
+        WHERE   P.BOOKED_NUMBER = #{bookedNumber}
+        AND     P.PAID_ID = #{userId}
+    </select>
+
+    <update id="cancel" parameterType="java.util.Map">
+        /* com.heeji.picket.mapper.PaymentMapper.cancel */
+        UPDATE  PAYMENT
+        SET     STATUS        = 'CANCELED'
+        ,       CANCELED_DATE = NOW()
+        ,       CANCEL_REASON = #{cancelReason}
+        WHERE   BOOKED_NUMBER = #{bookedNumber}
+        AND     PAID_ID = #{userId}
+        AND     CANCELED_DATE IS NULL
+    </update>
+
+    <!-- 좌석 재판매에 대비해 결제 테이블 스냅샷으로 만든 취소내역 -->
+    <select id="myCanceled" parameterType="java.util.Map" resultType="java.util.Map">
+        /* com.heeji.picket.mapper.PaymentMapper.myCanceled */
+        SELECT  P.BOOKED_NUMBER AS bookedNumber
+        ,       P.SHOW_ID       AS showId
+        ,       SH.TITLE        AS title
+        ,       SH.PLACE        AS place
+        ,       SD.SHOW_DATE    AS showDate
+        ,       P.SEAT_COUNT    AS count
+        ,       P.SEAT_NAMES    AS seatNames
+        ,       P.AMOUNT        AS amount
+        ,       P.CANCELED_DATE AS canceledDate
+        FROM    PAYMENT P
+        LEFT JOIN SHOWS SH
+        ON      SH.SHOW_ID = P.SHOW_ID
+        LEFT JOIN SHOW_DATE SD
+        ON      SD.SHOW_DATE_ID = P.SHOW_DATE_ID
+        WHERE   P.PAID_ID = #{userId}
+        AND     P.CANCELED_DATE IS NOT NULL
+        <if test="viewDate != null and viewDate != ''">
+            AND DATE(SD.SHOW_DATE) = #{viewDate}
+        </if>
+        <if test="ticketName != null and ticketName != ''">
+            AND SH.TITLE LIKE CONCAT('%', #{ticketName}, '%')
+        </if>
+        ORDER BY P.CANCELED_DATE DESC
+    </select>
+
+</mapper>

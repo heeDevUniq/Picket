@@ -15,10 +15,9 @@
 <link rel="stylesheet" href="/css/responsive.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="/js/interactive.js"></script>
-<script src="https://js.tosspayments.com/v2/standard"></script>
 <script src="/js/common.js"></script>
 <script src="/js/show.js"></script>
-<script>window.PK_STEP = 2;</script>
+<script>window.PK_STEP = 3;</script>
 <style>
     html, body { height: 100%; }
     body {
@@ -128,6 +127,57 @@
         margin-bottom: 16px;
     }
 
+    /* 완료 배너 */
+    .bk-done {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        padding: 22px 24px;
+        margin-bottom: 18px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, #EDF3FF 0%, #F7FAFF 100%);
+    }
+    .bk-done-ico {
+        width: 56px; height: 56px;
+        flex: none;
+        display: grid; place-items: center;
+        border-radius: 50%;
+        background: var(--pk-accent);
+        color: #fff;
+        animation: bkPop .42s cubic-bezier(.2,1.2,.4,1) both;
+    }
+    .bk-done-ico svg { width: 30px; height: 30px; stroke-linecap: round; stroke-linejoin: round; }
+    @keyframes bkPop { from { transform: scale(.5); opacity: 0; } to { transform: none; opacity: 1; } }
+    .bk-done-txt h1 {
+        margin: 0 0 6px;
+        font-family: var(--pk-font-ui);
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: -.025em;
+    }
+    .bk-done-txt p { margin: 0; font-size: 14px; color: #5A6272; line-height: 1.6; }
+
+    /* 예매번호 */
+    .bk-no {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 18px;
+        padding: 14px 20px;
+        border: 1px dashed #C7D5F0;
+        border-radius: 12px;
+        background: #FBFCFE;
+    }
+    .bk-no span { font-size: 13.5px; color: #5A6272; }
+    .bk-no b {
+        font-family: var(--pk-font-mono);
+        font-size: 17px;
+        font-weight: 600;
+        letter-spacing: .02em;
+        color: var(--pk-accent-dark);
+    }
+
     /* 공연 요약 */
     .bk-summary { display: flex; gap: 20px; align-items: flex-start; }
     .bk-poster {
@@ -152,8 +202,8 @@
     .bk-meta dd { margin: 0; color: #33383F; font-weight: 500; }
     .bk-meta .num { font-family: var(--pk-font-mono); font-weight: 600; }
 
-    /* 선택 좌석 */
-    .bk-seats { margin-top: 22px; padding-top: 22px; border-top: 1px solid #F2F4F7; }
+    /* 예매 좌석 */
+    .bk-seats { margin-top: 18px; padding-top: 18px; border-top: 1px solid #F2F4F7; }
     .bk-chips { display: flex; flex-wrap: wrap; gap: 8px; }
     .bk-chip {
         display: inline-flex;
@@ -169,7 +219,7 @@
     .bk-chip b { font-family: var(--pk-font-mono); font-weight: 600; opacity: .75; }
     .bk-empty { font-size: 13.5px; color: #A0A6B2; }
 
-    /* 결제 금액 */
+    /* 결제 내역 */
     .bk-pay-row {
         display: flex;
         align-items: baseline;
@@ -196,7 +246,26 @@
         color: var(--pk-accent-dark);
         letter-spacing: -.02em;
     }
-    .bk-pay-note { margin-top: 16px; font-size: 12.5px; color: #A0A6B2; line-height: 1.75; }
+
+    /* 안내 */
+    .bk-guide { margin-top: 20px; padding-top: 18px; border-top: 1px solid #F2F4F7; }
+    .bk-guide ul { margin: 0; padding: 0; list-style: none; }
+    .bk-guide li {
+        position: relative;
+        padding-left: 13px;
+        margin-bottom: 8px;
+        font-size: 12.5px;
+        color: #8A9099;
+        line-height: 1.7;
+    }
+    .bk-guide li::before {
+        content: "";
+        position: absolute;
+        left: 2px; top: 9px;
+        width: 3px; height: 3px;
+        border-radius: 50%;
+        background: #C7CDD6;
+    }
 
     /* 하단 바 */
     .bk-foot {
@@ -229,14 +298,13 @@
         transition: all .16s cubic-bezier(.2,.8,.2,1);
     }
     .bk-btn:hover { border-color: #C7CDD6; }
-    .bk-btn--pay {
+    .bk-btn--next {
         background: var(--pk-accent);
         border-color: var(--pk-accent);
         color: #fff;
         font-weight: 700;
     }
-    .bk-btn--pay:hover { background: var(--pk-accent-dark); border-color: var(--pk-accent-dark); }
-    .bk-btn--pay:disabled { background: #C9CDD4; border-color: #C9CDD4; cursor: not-allowed; }
+    .bk-btn--next:hover { background: var(--pk-accent-dark); border-color: var(--pk-accent-dark); }
     .bk-btn svg { width: 16px; height: 16px; }
 
     @media (max-width: 900px) {
@@ -245,6 +313,7 @@
         .bk-line { width: 22px; }
         .bk-date > span { display: none; }
         .bk-body { grid-template-columns: 1fr; padding: 16px; gap: 16px; }
+        .bk-done { flex-direction: column; text-align: center; gap: 12px; padding: 22px 18px; }
         .bk-summary { gap: 14px; }
         .bk-poster { width: 92px; }
         .bk-foot { padding: 12px 16px; flex-wrap: wrap; }
@@ -255,7 +324,10 @@
 </head>
 <body>
 
-<c:set var="totalAmount" value="${amount}" />
+<c:set var="totalAmount" value="0" />
+<c:forEach var="seat" items="${seats}">
+    <c:set var="totalAmount" value="${totalAmount + seat.price}" />
+</c:forEach>
 
 <header class="bk-head">
     <div class="bk-title">
@@ -276,54 +348,73 @@
     <div class="bk-steps">
         <span class="bk-step is-done"><i>1</i>좌석선택</span>
         <span class="bk-line"></span>
-        <span class="bk-step is-on"><i>2</i>결제</span>
+        <span class="bk-step is-done"><i>2</i>결제</span>
         <span class="bk-line"></span>
-        <span class="bk-step"><i>3</i>예매완료</span>
+        <span class="bk-step is-on"><i>3</i>예매완료</span>
     </div>
 
     <div class="bk-date">
         <span>관람일자</span>
         <span class="value"><fmt:formatDate value="${show.showDate}" pattern="yyyy.MM.dd(E) HH:mm" /></span>
-        <button type="button" class="bk-x" onclick="show.popupClose(2);" aria-label="닫기">
+        <button type="button" class="bk-x" onclick="show.popupClose(3);" aria-label="닫기">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
         </button>
     </div>
 </header>
 
 <div class="bk-body">
-    <section class="bk-card">
-        <div class="bk-summary">
-            <div class="bk-poster">
-                <img src="${fn:escapeXml(show.posterLink)}" alt="${fn:escapeXml(show.title)} 포스터" data-show-id="${show.showId}">
-            </div>
-            <div class="bk-summary-info">
-                <div class="t">${fn:escapeXml(show.title)}</div>
-                <dl class="bk-meta">
-                    <dt>장소</dt><dd>${fn:escapeXml(show.place)}</dd>
-                    <dt>관람일시</dt><dd class="num"><fmt:formatDate value="${show.showDate}" pattern="yyyy.MM.dd(E) HH:mm" /></dd>
-                    <dt>관람가</dt><dd>${empty show.ageLimit ? '전체 관람가' : fn:escapeXml(show.ageLimit)}</dd>
-                </dl>
+    <section>
+        <div class="bk-done">
+            <span class="bk-done-ico">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <path d="M5 12.5l4.5 4.5L19 7.5"/>
+                </svg>
+            </span>
+            <div class="bk-done-txt">
+                <h1>예매가 완료되었어요</h1>
+                <p>예매 내역은 마이페이지 &gt; 예매/취소내역에서 확인할 수 있습니다.</p>
             </div>
         </div>
 
-        <div class="bk-seats">
-            <h2>선택좌석 ${fn:length(seats)}매</h2>
-            <div class="bk-chips">
-                <c:forEach var="seat" items="${seats}">
-                    <span class="bk-chip">
-                        ${fn:escapeXml(seat.gradeName)}석 ${seat.seatNumber}번
-                        <b><fmt:formatNumber value="${seat.price}" pattern="#,###" /></b>
-                    </span>
-                </c:forEach>
-                <c:if test="${empty seats}">
-                    <span class="bk-empty">선택한 좌석이 없습니다. 이전 단계에서 좌석을 골라주세요.</span>
-                </c:if>
+        <div class="bk-card">
+            <div class="bk-no">
+                <span>예매번호</span>
+                <b>${bookedNumber}</b>
+            </div>
+
+            <div class="bk-summary">
+                <div class="bk-poster">
+                    <img src="${fn:escapeXml(show.posterLink)}" alt="${fn:escapeXml(show.title)} 포스터" data-show-id="${show.showId}">
+                </div>
+                <div class="bk-summary-info">
+                    <div class="t">${fn:escapeXml(show.title)}</div>
+                    <dl class="bk-meta">
+                        <dt>장소</dt><dd>${fn:escapeXml(show.place)}</dd>
+                        <dt>관람일시</dt><dd class="num"><fmt:formatDate value="${show.showDate}" pattern="yyyy.MM.dd(E) HH:mm" /></dd>
+                        <dt>관람가</dt><dd>${empty show.ageLimit ? '전체 관람가' : fn:escapeXml(show.ageLimit)}</dd>
+                    </dl>
+                </div>
+            </div>
+
+            <div class="bk-seats">
+                <h2>예매좌석 ${fn:length(seats)}매</h2>
+                <div class="bk-chips">
+                    <c:forEach var="seat" items="${seats}">
+                        <span class="bk-chip">
+                            ${fn:escapeXml(seat.gradeName)}석 ${seat.seatNumber}번
+                            <b><fmt:formatNumber value="${seat.price}" pattern="#,###" /></b>
+                        </span>
+                    </c:forEach>
+                    <c:if test="${empty seats}">
+                        <span class="bk-empty">좌석 정보를 불러오지 못했습니다.</span>
+                    </c:if>
+                </div>
             </div>
         </div>
     </section>
 
     <aside class="bk-card">
-        <h2>결제금액</h2>
+        <h2>결제내역</h2>
         <div class="bk-pay-row">
             <span>티켓금액</span>
             <b><fmt:formatNumber value="${totalAmount}" pattern="#,###" />원</b>
@@ -336,14 +427,24 @@
             <span>수수료</span>
             <b>0원</b>
         </div>
+        <c:if test="${not empty payMethod}">
+            <div class="bk-pay-row">
+                <span>결제수단</span>
+                <b>${payMethod}</b>
+            </div>
+        </c:if>
         <div class="bk-pay-total">
-            <span>총 결제금액</span>
+            <span>결제완료 금액</span>
             <span class="amt"><fmt:formatNumber value="${totalAmount}" pattern="#,###" />원</span>
         </div>
-        <p class="bk-pay-note">
-            결제 후 예매 내역은 마이페이지 &gt; 예매/취소내역에서 확인할 수 있어요.<br>
-            공연 3일 전까지 취소 시 전액 환불됩니다.
-        </p>
+
+        <div class="bk-guide">
+            <ul>
+                <li>공연 3일 전까지 취소 시 전액 환불됩니다</li>
+                <li>티켓은 공연 당일 현장 매표소에서 예매번호로 수령합니다</li>
+                <li>예매자 본인 확인을 위해 신분증을 지참해주세요</li>
+            </ul>
+        </div>
     </aside>
 </div>
 
@@ -352,44 +453,25 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
             <circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/>
         </svg>
-        결제 수단은 토스페이먼츠 창에서 선택합니다
+        예매번호는 마이페이지에서 다시 확인할 수 있어요
     </span>
     <div class="bk-btns">
-        <button type="button" class="bk-btn" onclick="show.popupPre('${showDateId}');">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
-            이전
-        </button>
-        <button type="button" class="bk-btn bk-btn--pay" id="btnPay"
-                <c:if test="${not payReady}">disabled</c:if>
-                onclick="show.pay();">
-            <fmt:formatNumber value="${totalAmount}" pattern="#,###" />원 결제하기
+        <button type="button" class="bk-btn" onclick="show.popupClose(3);">닫기</button>
+        <button type="button" class="bk-btn bk-btn--next" onclick="show.goMyTickets();">
+            예매내역 보기
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
         </button>
     </div>
 </footer>
 
-<!-- 값은 속성으로 넘긴다, 스크립트 안에 직접 찍으면 따옴표 하나로 문맥이 깨진다 -->
-<div id="payData" hidden
-     data-client-key="${fn:escapeXml(tossClientKey)}"
-     data-base-url="${fn:escapeXml(appBaseUrl)}"
-     data-order-id="${fn:escapeXml(orderId)}"
-     data-order-name="${fn:escapeXml(orderName)}"
-     data-amount="${empty amount ? 0 : amount}"
-     data-email="${fn:escapeXml(sessionScope.LOGIN_EMAIL)}"
-     data-name="${fn:escapeXml(sessionScope.LOGIN_NAME)}"></div>
 <script>
-// 서버가 발급한 주문번호와 금액이라 화면에서 바꿔도 승인 단계에서 걸러짐
-(function () {
-    const d = document.getElementById('payData').dataset;
-    window.PK_PAY = {
-        clientKey: d.clientKey,
-        baseUrl:   d.baseUrl,
-        orderId:   d.orderId,
-        orderName: d.orderName,
-        amount:    Number(d.amount) || 0,
-        email:     d.email,
-        name:      d.name
-    };
-})();
+// 완료 후 뒤로가기로 결제 화면 복귀 차단
+history.replaceState(null, '', location.href);
+
+// 완료 화면 한가운데서 축포
+window.addEventListener('load', function () {
+    setTimeout(function () { pk.confetti(); }, 200);
+});
 </script>
 
 </body>
