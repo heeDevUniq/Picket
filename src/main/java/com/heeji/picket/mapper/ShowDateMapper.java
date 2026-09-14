@@ -12,4 +12,9 @@ public interface ShowDateMapper  {
 
     Map<String, Object> info(Map<String, Object> params);
 
+
+    int insert(Map<String, Object> params);
+
+    int deleteByShowId(Long showId);
+
 }

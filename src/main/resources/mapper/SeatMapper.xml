@@ -47,7 +47,7 @@
         ORDER BY SG.SEAT_GRADE_ID ASC, S.SEAT_NUMBER ASC
     </select>
 
-    <!-- 이미 예매된 좌석은 건드리지 않는다. 영향 행 수로 선점 여부를 판단한다 -->
+    <!-- 예매 가능 좌석만 갱신하고, 영향 행 수로 선점 여부 판단 -->
     <update id="book" parameterType="java.util.Map">
         /* com.heeji.picket.mapper.SeatMapper.book */
         UPDATE  SEAT
@@ -72,7 +72,7 @@
         WHERE   BOOKED_NUMBER = #{bookedNumber}
     </update>
 
-    <!-- 예매번호 단위 내역. 취소분은 canceled 로 구분한다 -->
+    <!-- 취소분을 canceled 로 구분한 예매번호 단위 내역 -->
     <select id="myTickets" parameterType="java.util.Map" resultType="java.util.Map">
         /* com.heeji.picket.mapper.SeatMapper.myTickets */
         SELECT  S.BOOKED_NUMBER                             AS bookedNumber
@@ -84,6 +84,8 @@
         ,       SUM(SG.PRICE)                               AS amount
         ,       MIN(S.BOOKED_DATE)                          AS bookedDate
         ,       DATE_SUB(SD.SHOW_DATE, INTERVAL 3 DAY)      AS cancelableDate
+        ,       CASE WHEN NOW() &lt; DATE_SUB(SD.SHOW_DATE, INTERVAL 3 DAY) THEN 'Y' ELSE 'N' END AS cancelable
+        ,       CASE WHEN MAX(P.PAYMENT_ID) IS NULL THEN 'N' ELSE 'Y' END AS refundable
         ,       GROUP_CONCAT(CONCAT(SG.GRADE_NAME, S.SEAT_NUMBER) ORDER BY S.SEAT_NUMBER SEPARATOR ', ') AS seatNames
         FROM    SEAT S
         INNER JOIN SHOWS SH
@@ -92,6 +94,10 @@
         ON      SD.SHOW_DATE_ID = S.SHOW_DATE_ID
         LEFT JOIN SEAT_GRADE SG
         ON      SG.SEAT_GRADE_ID = S.SEAT_GRADE_ID
+        LEFT JOIN PAYMENT P
+        ON      P.BOOKED_NUMBER = S.BOOKED_NUMBER
+        AND     P.STATUS = 'DONE'
+        AND     P.CANCELED_DATE IS NULL
         WHERE   S.BOOKED_ID = #{userId}
         AND     S.BOOKED_NUMBER IS NOT NULL
         <choose>
@@ -122,6 +128,30 @@
         WHERE   S.BOOKED_ID = #{userId}
         AND     S.SEAT_STATUS = 'booked'
         AND     S.BOOKED_NUMBER IS NOT NULL
+    </select>
+
+    <!-- 등급 하나에 좌석 1..seatCount 를 한 번에 생성 -->
+    <insert id="insertBulk" parameterType="java.util.Map">
+        /* com.heeji.picket.mapper.SeatMapper.insertBulk */
+        INSERT INTO SEAT (SHOW_ID, SHOW_DATE_ID, SEAT_GRADE_ID, SEAT_NUMBER, SEAT_STATUS)
+        VALUES
+        <foreach collection="numbers" item="no" separator=",">
+            (#{showId}, #{showDateId}, #{seatGradeId}, #{no}, 'available')
+        </foreach>
+    </insert>
+
+    <delete id="deleteByShowId" parameterType="java.lang.Long">
+        /* com.heeji.picket.mapper.SeatMapper.deleteByShowId */
+        DELETE FROM SEAT
+        WHERE   SHOW_ID = #{showId}
+    </delete>
+
+    <select id="bookedCountByShowId" parameterType="java.lang.Long" resultType="int">
+        /* com.heeji.picket.mapper.SeatMapper.bookedCountByShowId */
+        SELECT  COUNT(*)
+        FROM    SEAT
+        WHERE   SHOW_ID = #{showId}
+        AND     SEAT_STATUS = 'booked'
     </select>
 
 </mapper>

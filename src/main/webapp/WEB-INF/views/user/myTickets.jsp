@@ -3,6 +3,37 @@
 <style>
 /* mytickets-space */
 .pk-page-title { margin: 0 0 4px; }
+
+.pk-btn-cancel {
+    height: 32px;
+    padding: 0 14px;
+    border: 1px solid #F3C9C9;
+    border-radius: 8px;
+    background: #FEF4F4;
+    color: #D64545;
+    font-family: var(--pk-font-ui);
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all .16s cubic-bezier(.2,.8,.2,1);
+}
+.pk-btn-cancel:hover { background: #E14B4B; border-color: #E14B4B; color: #fff; }
+.pk-btn-cancel:disabled { opacity: .5; cursor: not-allowed; }
+.pk-cancel-off { font-size: 12.5px; color: #B4BAC4; white-space: nowrap; }
+
+/* 폭에 맞춰 접히는 칸과 붙여 두는 칸 구분 */
+.ticket-table .col-no {
+    font-size: 12px;
+    color: #5A6272;
+    letter-spacing: -.02em;
+    word-break: break-all;
+}
+.ticket-table .col-title { word-break: keep-all; }
+.ticket-table .col-seat { word-break: keep-all; }
+.ticket-table .nowrap { white-space: nowrap; }
+.ticket-table .num { font-variant-numeric: tabular-nums; }
+.ticket-table .col-act { width: 92px; text-align: right; }
 </style>
 
 <div class="container">
@@ -65,7 +96,7 @@
             </c:when>
             <c:otherwise>
                 <div class="pk-scroll-x">
-                    <table>
+                    <table class="pk-table ticket-table">
                         <thead>
                             <tr>
                                 <th>예매번호</th>
@@ -74,19 +105,45 @@
                                 <th>좌석</th>
                                 <th>매수</th>
                                 <th>결제금액</th>
-                                <th>취소가능일</th>
+                                <c:choose>
+                                    <c:when test="${param.tab eq 'canceled'}"><th>취소일시</th></c:when>
+                                    <c:otherwise><th>취소가능일</th><th class="col-act"></th></c:otherwise>
+                                </c:choose>
                             </tr>
                         </thead>
                         <tbody>
                             <c:forEach var="t" items="${tickets}">
                                 <tr>
-                                    <td>${t.bookedNumber}</td>
-                                    <td><a href="/shows/view/${t.showId}">${t.title}</a></td>
-                                    <td><fmt:formatDate value="${t.showDate}" pattern="yyyy-MM-dd HH:mm" /></td>
-                                    <td>${t.seatNames}</td>
-                                    <td>${t.count}매</td>
-                                    <td><fmt:formatNumber value="${t.amount}" pattern="#,###" />원</td>
-                                    <td><fmt:formatDate value="${t.cancelableDate}" pattern="yyyy-MM-dd" /></td>
+                                    <td class="col-no num">${t.bookedNumber}</td>
+                                    <td class="col-title"><a href="/shows/view/${t.showId}">${fn:escapeXml(t.title)}</a></td>
+                                    <td class="nowrap num"><fmt:formatDate value="${t.showDate}" pattern="yyyy-MM-dd HH:mm" /></td>
+                                    <td class="col-seat">${fn:escapeXml(t.seatNames)}</td>
+                                    <td class="nowrap num">${t.count}매</td>
+                                    <td class="nowrap num"><fmt:formatNumber value="${t.amount}" pattern="#,###" />원</td>
+                                    <c:choose>
+                                        <c:when test="${param.tab eq 'canceled'}">
+                                            <td class="nowrap num"><fmt:formatDate value="${t.canceledDate}" pattern="yyyy-MM-dd HH:mm" /></td>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <td class="nowrap num"><fmt:formatDate value="${t.cancelableDate}" pattern="yyyy-MM-dd" /></td>
+                                            <td class="col-act">
+                                                <c:choose>
+                                                    <c:when test="${t.cancelable ne 'Y'}">
+                                                        <span class="pk-cancel-off">취소기한 종료</span>
+                                                    </c:when>
+                                                    <c:when test="${t.refundable ne 'Y'}">
+                                                        <span class="pk-cancel-off" title="결제 기록이 없어 온라인 취소를 할 수 없습니다.">고객센터 문의</span>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <button type="button" class="pk-btn-cancel"
+                                                                data-booked-number="${t.bookedNumber}"
+                                                                data-title="${fn:escapeXml(t.title)}"
+                                                                data-amount="${t.amount}">예매취소</button>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </td>
+                                        </c:otherwise>
+                                    </c:choose>
                                 </tr>
                             </c:forEach>
                         </tbody>
@@ -97,4 +154,54 @@
     </main>
 </div>
 
+<script>
+// 기간·관람일시를 고르면 바로 조회
+(function () {
+    const form = document.querySelector('.pk-filter');
+    if (!form) return;
+    form.querySelectorAll("input[name='period'], input[name='viewDate']").forEach(function (el) {
+        el.addEventListener('change', function () { form.submit(); });
+    });
+})();
+
+// 예매 취소
+(function () {
+    document.addEventListener('click', function (e) {
+        const btn = e.target.closest('.pk-btn-cancel');
+        if (!btn) return;
+
+        const won = Number(btn.dataset.amount || 0).toLocaleString('ko-KR');
+        pk.dialog({
+            type: 'confirm',
+            icon: 'warning',
+            danger: true,
+            title: '예매를 취소할까요?',
+            message: btn.dataset.title + '\n결제하신 ' + won + '원이 전액 환불되며\n좌석은 다시 판매됩니다.',
+            okText: '예매 취소하기',
+            cancelText: '돌아가기'
+        }).then(function (ok) {
+            if (!ok) return;
+            btn.disabled = true;
+            pk.busy(btn, true);
+            $.ajax({
+                url: '/booking/api/cancel',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ bookedNumber: btn.dataset.bookedNumber }),
+                success(res) {
+                    com.alert('예매가 취소되었습니다.\n환불은 카드사 정책에 따라 3~5영업일이 소요됩니다.', function () {
+                        location.reload();
+                    });
+                },
+                error(xhr) {
+                    btn.disabled = false;
+                    pk.busy(btn, false);
+                    const msg = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : '취소에 실패하였습니다.';
+                    com.alert(msg);
+                }
+            });
+        });
+    });
+})();
+</script>
 <%@include file="../com/footer.jsp"%>

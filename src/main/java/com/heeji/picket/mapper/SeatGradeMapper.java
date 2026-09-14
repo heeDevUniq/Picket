@@ -10,4 +10,13 @@ public interface SeatGradeMapper {
 
     List<Map<String, Object>> list(Map<String, Object> params);
 
+
+    int insert(Map<String, Object> params);
+
+    int deleteByShowId(Long showId);
+
+
+    // 수정 화면용 등급 구성
+    List<Map<String, Object>> listByShowId(Long showId);
+
 }

@@ -22,4 +22,28 @@
         ORDER BY SG.SEAT_GRADE_ID ASC
     </select>
 
+    <insert id="insert" parameterType="java.util.Map" useGeneratedKeys="true" keyProperty="seatGradeId">
+        /* com.heeji.picket.mapper.SeatGradeMapper.insert */
+        INSERT INTO SEAT_GRADE (SHOW_ID, SHOW_DATE_ID, GRADE_NAME, PRICE, SEAT_COUNT)
+        VALUES (#{showId}, #{showDateId}, #{gradeName}, #{price}, #{seatCount})
+    </insert>
+
+    <delete id="deleteByShowId" parameterType="java.lang.Long">
+        /* com.heeji.picket.mapper.SeatGradeMapper.deleteByShowId */
+        DELETE FROM SEAT_GRADE
+        WHERE   SHOW_ID = #{showId}
+    </delete>
+
+    <!-- 수정 화면용, 회차마다 같은 구성이라 이름·가격·좌석수로 묶어 한 벌만 반환 -->
+    <select id="listByShowId" parameterType="java.lang.Long" resultType="java.util.Map">
+        /* com.heeji.picket.mapper.SeatGradeMapper.listByShowId */
+        SELECT  SG.GRADE_NAME   AS gradeName
+        ,       SG.PRICE        AS price
+        ,       SG.SEAT_COUNT   AS seatCount
+        FROM    SEAT_GRADE SG
+        WHERE   SG.SHOW_ID = #{showId}
+        GROUP BY SG.GRADE_NAME, SG.PRICE, SG.SEAT_COUNT
+        ORDER BY MIN(SG.SEAT_GRADE_ID) ASC
+    </select>
+
 </mapper>

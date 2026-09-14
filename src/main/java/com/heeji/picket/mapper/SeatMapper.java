@@ -13,7 +13,7 @@ public interface SeatMapper {
     // 선택 좌석 목록
     List<Map<String, Object>> selectedSeatList(Long[] seatIdArray);
 
-    // 좌석 선점. 반환값은 실제로 잡힌 좌석 수
+    // 좌석 선점, 반환값은 실제로 잡힌 좌석 수
     int book(Map<String, Object> params);
 
     // 예매번호로 좌석 되돌리기
@@ -24,5 +24,13 @@ public interface SeatMapper {
 
     // 나의 예매 건수
     int myTicketCnt(Map<String, Object> params);
+
+
+    int insertBulk(Map<String, Object> params);
+
+    int deleteByShowId(Long showId);
+
+    // 예매가 있으면 회차·좌석 구성 변경 불가
+    int bookedCountByShowId(Long showId);
 
 }

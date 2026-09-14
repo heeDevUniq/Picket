@@ -10,6 +10,10 @@
         FROM    SHOW_DATE
         WHERE   1 = 1
         AND     SHOW_ID = #{showId}
+        <!-- 지난 회차는 예매 대상에서 제외 -->
+        <if test="includePast == null">
+        AND     SHOW_DATE &gt; NOW()
+        </if>
         ORDER BY SHOW_DATE ASC
     </select>
 
@@ -23,11 +27,24 @@
         ,       S.GENRE         AS genre
         ,       S.POSTER_LINK         AS posterLink
         ,       S.AGE_LIMIT     AS ageLimit
+        ,       S.OPEN_DATE     AS openDate
         FROM    SHOW_DATE SD
         LEFT JOIN SHOWS S
         ON      SD.SHOW_ID = S.SHOW_ID
         WHERE   1 = 1
         AND     SD.SHOW_DATE_ID = #{showDateId}
     </select>
+
+    <insert id="insert" parameterType="java.util.Map" useGeneratedKeys="true" keyProperty="showDateId">
+        /* com.heeji.picket.mapper.ShowDateMapper.insert */
+        INSERT INTO SHOW_DATE (SHOW_ID, SHOW_DATE)
+        VALUES (#{showId}, #{showDate})
+    </insert>
+
+    <delete id="deleteByShowId" parameterType="java.lang.Long">
+        /* com.heeji.picket.mapper.ShowDateMapper.deleteByShowId */
+        DELETE FROM SHOW_DATE
+        WHERE   SHOW_ID = #{showId}
+    </delete>
 
 </mapper>

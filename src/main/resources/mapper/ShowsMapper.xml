@@ -7,6 +7,7 @@
         SELECT  S.SHOW_ID       AS showId
         ,       S.TITLE         AS title
         ,       S.PLACE         AS place
+        ,       S.PLACE_ADDRESS AS placeAddress
         ,       S.GENRE         AS genre
         ,       S.HOST          AS host
         ,       S.CONTACT       AS contact
@@ -36,7 +37,7 @@
                 )               AS bookedCount
         ,       (SELECT COUNT(*) FROM SHOW_LIKES L WHERE L.SHOW_ID = S.SHOW_ID) AS likeCount
         FROM    SHOWS S
-        WHERE   1 = 1
+        WHERE   S.IS_DELETED IS NULL
         <if test="genre != null and genre != ''">
         AND     S.GENRE = #{genre}
         </if>
@@ -60,7 +61,7 @@
         /* com.heeji.picket.mapper.ShowsMapper.count */
         SELECT  COUNT(*)
         FROM    SHOWS S
-        WHERE   1 = 1
+        WHERE   S.IS_DELETED IS NULL
         <if test="genre != null and genre != ''">
         AND     S.GENRE = #{genre}
         </if>
@@ -71,6 +72,7 @@
         SELECT  S.SHOW_ID       AS showId
         ,       S.TITLE         AS title
         ,       S.PLACE         AS place
+        ,       S.PLACE_ADDRESS AS placeAddress
         ,       S.GENRE         AS genre
         ,       S.HOST          AS host
         ,       S.CONTACT       AS contact
@@ -93,8 +95,7 @@
         ,       (SELECT MIN(SD.SHOW_DATE) FROM SHOW_DATE SD WHERE SD.SHOW_ID = S.SHOW_ID) AS startDate
         ,       (SELECT MAX(SD.SHOW_DATE) FROM SHOW_DATE SD WHERE SD.SHOW_ID = S.SHOW_ID) AS endDate
         FROM    SHOWS S
-        WHERE   1 = 1
-        AND     S.SHOW_ID = #{showId}
+        WHERE   S.SHOW_ID = #{showId}
     </select>
 
     <select id="search" parameterType="java.util.Map" resultType="java.util.Map">
@@ -102,6 +103,7 @@
         SELECT  S.SHOW_ID       AS showId
         ,       S.TITLE         AS title
         ,       S.PLACE         AS place
+        ,       S.PLACE_ADDRESS AS placeAddress
         ,       S.GENRE         AS genre
         ,       S.HOST          AS host
         ,       S.CONTACT       AS contact
@@ -124,7 +126,7 @@
         ,       (SELECT MIN(SD.SHOW_DATE) FROM SHOW_DATE SD WHERE SD.SHOW_ID = S.SHOW_ID) AS startDate
         ,       CASE WHEN S.TITLE LIKE CONCAT('%', #{keyword}, '%') ESCAPE '!' THEN 'show' ELSE 'place' END AS matchType
         FROM    SHOWS S
-        WHERE   1 = 1
+        WHERE   S.IS_DELETED IS NULL
         AND     (
                     S.TITLE LIKE CONCAT('%', #{keyword}, '%') ESCAPE '!'
                  OR S.PLACE LIKE CONCAT('%', #{keyword}, '%') ESCAPE '!'
@@ -139,7 +141,7 @@
         </if>
     </select>
 
-    <!-- 메인 오픈예정. 아직 티켓이 안 열린 공연만 임박 순으로 -->
+    <!-- 메인 오픈예정, 아직 티켓이 안 열린 공연만 임박 순으로 -->
     <select id="openSoon" parameterType="java.util.Map" resultType="java.util.Map">
         /* com.heeji.picket.mapper.ShowsMapper.openSoon */
         SELECT  S.SHOW_ID       AS showId
@@ -154,6 +156,118 @@
         WHERE   S.IS_DELETED IS NULL
         AND     S.OPEN_DATE > NOW()
         ORDER BY S.OPEN_DATE ASC
+    </select>
+
+    <!-- 티켓셀러 본인이 등록한 공연 목록 -->
+    <select id="mine" parameterType="java.util.Map" resultType="java.util.Map">
+        /* com.heeji.picket.mapper.ShowsMapper.mine */
+        SELECT  S.SHOW_ID       AS showId
+        ,       S.TITLE         AS title
+        ,       S.GENRE         AS genre
+        ,       S.PLACE         AS place
+        ,       S.OPEN_DATE     AS openDate
+        ,       S.POSTER_LINK   AS posterLink
+        ,       S.INSERT_DATE   AS insertDate
+        ,       (SELECT COUNT(*) FROM SHOW_DATE SD WHERE SD.SHOW_ID = S.SHOW_ID)  AS dateCount
+        ,       (SELECT COUNT(*) FROM SEAT SE WHERE SE.SHOW_ID = S.SHOW_ID)       AS seatCount
+        ,       (
+                    SELECT  COUNT(*)
+                    FROM    SEAT SE
+                    WHERE   SE.SHOW_ID = S.SHOW_ID
+                    AND     SE.SEAT_STATUS = 'booked'
+                )               AS bookedCount
+        ,       (SELECT MIN(SD.SHOW_DATE) FROM SHOW_DATE SD WHERE SD.SHOW_ID = S.SHOW_ID) AS startDate
+        ,       (SELECT MAX(SD.SHOW_DATE) FROM SHOW_DATE SD WHERE SD.SHOW_ID = S.SHOW_ID) AS endDate
+        FROM    SHOWS S
+        WHERE   S.IS_DELETED IS NULL
+        AND     S.INSERT_ID = #{userId}
+        ORDER BY S.SHOW_ID DESC
+        <if test="size != null">
+        LIMIT #{size} OFFSET #{offset}
+        </if>
+    </select>
+
+    <select id="mineCount" parameterType="java.util.Map" resultType="int">
+        /* com.heeji.picket.mapper.ShowsMapper.mineCount */
+        SELECT  COUNT(*)
+        FROM    SHOWS S
+        WHERE   S.IS_DELETED IS NULL
+        AND     S.INSERT_ID = #{userId}
+    </select>
+
+    <insert id="insert" parameterType="java.util.Map" useGeneratedKeys="true" keyProperty="showId">
+        /* com.heeji.picket.mapper.ShowsMapper.insert */
+        INSERT INTO SHOWS
+        (
+            TITLE,
+            GENRE,
+            PLACE,
+            PLACE_ADDRESS,
+            HOST,
+            CONTACT,
+            AGE_LIMIT,
+            POSTER_LINK,
+            INFO,
+            OPEN_DATE,
+            INSERT_DATE,
+            INSERT_ID
+        )
+        VALUES
+        (
+            #{title},
+            #{genre},
+            #{place},
+            #{placeAddress},
+            #{host},
+            #{contact},
+            #{ageLimit},
+            #{posterLink},
+            #{info},
+            #{openDate},
+            NOW(),
+            #{loginId}
+        )
+    </insert>
+
+    <update id="update" parameterType="java.util.Map">
+        /* com.heeji.picket.mapper.ShowsMapper.update */
+        UPDATE  SHOWS
+        SET     TITLE       = #{title}
+        ,       GENRE       = #{genre}
+        ,       PLACE         = #{place}
+        ,       PLACE_ADDRESS = #{placeAddress}
+        ,       HOST          = #{host}
+        ,       CONTACT     = #{contact}
+        ,       AGE_LIMIT   = #{ageLimit}
+        ,       POSTER_LINK = #{posterLink}
+        ,       INFO        = #{info}
+        ,       OPEN_DATE   = #{openDate}
+        ,       UPDATE_DATE = NOW()
+        ,       UPDATE_ID   = #{loginId}
+        WHERE   SHOW_ID = #{showId}
+        AND     INSERT_ID = #{loginId}
+        AND     IS_DELETED IS NULL
+    </update>
+
+    <!-- 예매 이력을 남겨야 하므로 실제로 지우지 않고 표시만 -->
+    <update id="softDelete" parameterType="java.util.Map">
+        /* com.heeji.picket.mapper.ShowsMapper.softDelete */
+        UPDATE  SHOWS
+        SET     IS_DELETED  = NOW()
+        ,       UPDATE_DATE = NOW()
+        ,       UPDATE_ID   = #{loginId}
+        WHERE   SHOW_ID = #{showId}
+        AND     INSERT_ID = #{loginId}
+        AND     IS_DELETED IS NULL
+    </update>
+
+    <!-- 고아 파일 판별용, 삭제된 공연의 포스터는 참조에서 제외 -->
+    <select id="allPosterLinks" resultType="java.lang.String">
+        /* com.heeji.picket.mapper.ShowsMapper.allPosterLinks */
+        SELECT  POSTER_LINK
+        FROM    SHOWS
+        WHERE   POSTER_LINK IS NOT NULL
+        AND     IS_DELETED IS NULL
     </select>
 
 </mapper>

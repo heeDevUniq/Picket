@@ -19,4 +19,10 @@ public class SeatGradeService {
         return seatGradeRepository.list(params);
     }
 
+
+    // 수정 화면용 등급 구성
+    public List<Map<String, Object>> listByShowId(Long showId) {
+        return seatGradeRepository.listByShowId(showId);
+    }
+
 }

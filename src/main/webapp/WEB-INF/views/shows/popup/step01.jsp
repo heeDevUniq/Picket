@@ -432,10 +432,11 @@
                 <c:when test="${show.genre eq 'classic'}">클래식·무용</c:when>
                 <c:when test="${show.genre eq 'exhibit'}">전시·행사</c:when>
                 <c:when test="${show.genre eq 'festival'}">페스티벌</c:when>
+                        <c:when test="${show.genre eq 'etc'}">기타</c:when>
                 <c:otherwise>공연</c:otherwise>
             </c:choose>
         </span>
-        <span class="bk-name">${show.title}</span>
+        <span class="bk-name">${fn:escapeXml(show.title)}</span>
     </div>
 
     <div class="bk-steps">
@@ -468,7 +469,7 @@
         <c:forEach var="grade" items="${grades}" varStatus="gi">
             <c:if test="${fn:length(grades) > 1}">
                 <div class="bk-grade-label">
-                    <i class="bk-dot color-${fn:toLowerCase(grade.gradeName)}"></i>${grade.gradeName}석
+                    <i class="bk-dot color-${fn:toLowerCase(grade.gradeName)}"></i>${fn:escapeXml(grade.gradeName)}석
                 </div>
             </c:if>
             <div class="bk-rows">
@@ -477,7 +478,7 @@
                         <c:set var="isSold" value="${not empty seat.seatStatus and seat.seatStatus ne 'available'}" />
                         <label class="bk-seat${isSold ? ' is-sold' : ''}">
                             <input type="checkbox" name="seat" value="${seat.seatId}"
-                                   data-grade="${seat.gradeName}" data-seat-number="${seat.seatNumber}"
+                                   data-grade="${fn:escapeXml(seat.gradeName)}" data-seat-number="${seat.seatNumber}"
                                    data-price="${seat.price}"
                                    ${isSold ? 'disabled' : ''}
                                    onchange="toggleSeat(this)">
@@ -505,7 +506,7 @@
                     <div class="bk-grade">
                         <div class="bk-grade-row">
                             <i class="bk-dot color-${fn:toLowerCase(grade.gradeName)}"></i>
-                            <span class="nm">${grade.gradeName}석</span>
+                            <span class="nm">${fn:escapeXml(grade.gradeName)}석</span>
                             <span class="rest">${grade.remainCount} / ${grade.seatCount}석</span>
                             <span class="price"><fmt:formatNumber value="${grade.price}" pattern="#,###" />원</span>
                         </div>
