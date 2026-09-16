@@ -23,7 +23,8 @@ public class QueueAdmitter {
         this.redis = redis;
     }
 
-    @Scheduled(fixedDelay = 5000)   // 5초마다
+    // 5초 마다 입장권 발급
+    @Scheduled(fixedDelay = 5000)
     public void admit() {
         String waitKey = "picket:q:wait:" + SHOW_ID;
 
