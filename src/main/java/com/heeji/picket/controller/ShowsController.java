@@ -20,6 +20,7 @@ import com.heeji.picket.utils.TossPaymentException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -34,10 +35,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 
 @Controller
 @RequestMapping("/shows")
@@ -81,6 +84,9 @@ public class ShowsController {
 
     @Autowired
     FileStorageService fileStorageService;
+
+    @Autowired
+    StringRedisTemplate redis;
 
     @Value("${picket.app.base-url:}")
     private String appBaseUrl;
@@ -462,6 +468,32 @@ public class ShowsController {
         }
         return result;
     }
+
+    // 대기열 입장용 토큰 발급
+    @GetMapping("/queue/token")
+    @ResponseBody 
+    public Map<String, Object> queueToken(HttpSession session, @RequestParam("showId") Long showId) {
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        Long userId = SessionUtil.getLoginId(session);
+
+        if (userId == null) {
+            result.put("success", false);
+            result.put("message", "로그인이 필요합니다.");
+            return result;
+        }
+
+        String token = UUID.randomUUID().toString().replace("-", "");
+        redis.opsForValue().set("picket:q:auth:" + token, String.valueOf(userId), Duration.ofMinutes(30));
+        
+        logger.debug("대기열 입장용 토큰 발급, userId : {}, showId : {}", userId, showId);
+
+        result.put("success", true);
+        result.put("token", token);
+        result.put("showId", showId);
+        return result;
+    }
+    
 
     private boolean isSeller(HttpSession session) {
         return SessionUtil.isLogin(session) && "seller".equals(session.getAttribute("LOGIN_ROLE"));

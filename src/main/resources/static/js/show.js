@@ -12,7 +12,150 @@ const show = {
             pk.shake(document.querySelector('.datacheck'));
             return;
         }
-        show.openModal('/shows/getTickets?showDateId=' + showDateId);
+       show.enterQueue(showDateId);
+    },
+
+    // 대기열 서버 주소
+    queueBase: 'http://localhost:3001',
+
+    // 대기열에 줄서기
+    async enterQueue(showDateId) {
+        const showId = $("[name='showId']").val();
+
+        // 입장 토큰 발급
+        const issued = await fetch('/shows/queue/token?showId=' + showId).then(r => r.json());
+        if (!issued.success) {
+            pk.toast(issued.message, 'err');
+            return;
+        }
+
+        let status;
+        try {
+            status = await fetch(show.queueBase + '/queue/enter?showId=' + showId + '&token=' + issued.token,
+                { method: 'POST' }).then(r => r.json());
+        } catch (e) {
+            pk.toast('대기열에 연결하지 못했습니다. 잠시 후 다시 시도해주세요.', 'err');
+            return;
+        }
+
+        // 기다릴 필요 없이 바로 입장
+        if (status.allowed) {
+            show.openModal('/shows/getTickets?showDateId=' + showDateId);
+            return;
+        }
+
+        show.openQueue(showId, issued.token, showDateId, status);
+    },
+
+    // 대기 화면 띄우기
+    openQueue(showId, token, showDateId, first) {
+        let wrap = document.getElementById('queueModal');
+        if (!wrap) {
+            wrap = document.createElement('div');
+            wrap.id = 'queueModal';
+            wrap.className = 'pk-queue';
+            wrap.innerHTML =
+                '<div class="pk-queue-dim"></div>' +
+                '<div class="pk-queue-box" role="dialog" aria-modal="true" aria-label="대기열">' +
+                '  <h3 class="pk-queue-title">예매 대기 중이에요.</h3>' +
+                '  <p class="pk-queue-sub">순서가 되면 예매창이 자동으로 열립니다.</p>' +
+                '  <p class="pk-queue-rank"><b id="qRank">-</b><small>번째</small></p>' +
+                '  <p class="pk-queue-total">총 <b id="qTotal">-</b>명 대기 중</p>' +
+                '  <div class="pk-queue-bar"><i id="qBar"></i></div>' +
+                '  <p class="pk-queue-note">창을 닫거나 새로고침하면 대기 순서가 사라집니다.</p>' +
+                '  <button type="button" class="pk-queue-x" id="qLeave" aria-label="대기 취소">' +
+                '    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>' +
+                '  </button>' +
+                '</div>';
+            document.body.appendChild(wrap);
+        }
+
+        show.queueStart = first.total || 1;
+        show.queueDateId = showDateId;
+        document.getElementById('qLeave').onclick = show.leaveQueue;
+
+        show.paintQueue(first);
+        document.body.style.overflow = 'hidden';
+        void wrap.offsetWidth;
+        wrap.classList.add('is-open');
+
+        // 서버가 밀어주는 순번을 받는다
+        show.queueSse = new EventSource(show.queueBase + '/queue/stream?showId=' + showId + '&token=' + token);
+        show.queueSse.onmessage = function (e) {
+            const st = JSON.parse(e.data);
+            show.paintQueue(st);
+            if (st.allowed) {
+                show.queueDone();
+            }
+        };
+        show.queueSse.onerror = function () {
+            // 입장해서 서버가 끊은 경우가 아니면 안내
+            if (show.queueSse && show.queueSse.readyState === EventSource.CLOSED) {
+                return;
+            }
+        };
+    },
+
+    // 순번 그리기
+    paintQueue(st) {
+        const rank = st.rank > 0 ? st.rank : 0;
+        document.getElementById('qRank').textContent = rank > 0 ? rank.toLocaleString() : '곧';
+        document.getElementById('qTotal').textContent = (st.total || 0).toLocaleString();
+
+        // 처음 순번 대비 얼마나 왔는지
+        const start = show.queueStart || 1;
+        const done = Math.max(0, start - rank);
+        document.getElementById('qBar').style.width = Math.min(100, (done / start) * 100) + '%';
+    },
+
+    // 입장 확정
+    queueDone() {
+        const box = document.querySelector('#queueModal .pk-queue-box');
+        if (box) {
+            box.classList.add('is-ready');
+            box.querySelector('.pk-queue-title').textContent = '입장했어요.';
+            box.querySelector('.pk-queue-sub').textContent = '잠시 후 예매창이 열립니다.';
+            document.getElementById('qRank').textContent = '입장';
+            document.querySelector('.pk-queue-rank small').textContent = '';
+        }
+        show.closeSse();
+        setTimeout(function () {
+            show.closeQueue();
+            show.openModal('/shows/getTickets?showDateId=' + show.queueDateId);
+        }, 900);
+    },
+
+    // 사용자가 대기 포기
+    leaveQueue() {
+        pk.dialog({
+            type: 'confirm',
+            icon: 'warning',
+            title: '대기를 그만둘까요?',
+            message: '지금 나가면 순서가 사라지고\n다시 줄을 서야 합니다.',
+            okText: '나가기',
+            cancelText: '계속 기다리기',
+            danger: true
+        }).then(function (ok) {
+            if (ok) {
+                show.closeSse();
+                show.closeQueue();
+            }
+        });
+    },
+
+    closeSse() {
+        if (show.queueSse) {
+            show.queueSse.close();
+            show.queueSse = null;
+        }
+    },
+
+    closeQueue() {
+        const wrap = document.getElementById('queueModal');
+        if (wrap) {
+            wrap.classList.remove('is-open');
+        }
+        document.body.style.overflow = '';
     },
 
     openModal(url) {

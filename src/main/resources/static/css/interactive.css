@@ -1381,3 +1381,47 @@ tbody > tr:hover {
 .pk-table--3col .c-place { width: 32%; }
 .pk-table--3col .c-date  { width: 28%; }
 .pk-table--3col td { overflow: hidden; text-overflow: ellipsis; }
+
+/* ── 대기열 화면 ── */
+.pk-queue { position: fixed; inset: 0; z-index: 2100; display: flex; align-items: center; justify-content: center;
+    opacity: 0; visibility: hidden; transition: opacity var(--pk-base) var(--pk-ease), visibility var(--pk-base); }
+.pk-queue.is-open { opacity: 1; visibility: visible; }
+
+.pk-queue-dim { position: absolute; inset: 0; background: rgba(16, 20, 28, .62); backdrop-filter: blur(3px); }
+
+.pk-queue-box { position: relative; width: min(420px, calc(100vw - 40px)); padding: 40px 32px 28px;
+    background: var(--pk-surface); border-radius: 18px; box-shadow: var(--pk-shadow-3); text-align: center;
+    transform: translateY(14px) scale(.985); transition: transform var(--pk-base) var(--pk-ease); }
+.pk-queue.is-open .pk-queue-box { transform: none; }
+
+.pk-queue-title { margin: 0; font-family: var(--pk-font-ui); font-size: 19px; font-weight: 700;
+    letter-spacing: -.02em; color: var(--pk-ink); }
+.pk-queue-sub { margin: 8px 0 0; font-size: 13.5px; color: var(--pk-muted); }
+
+.pk-queue-rank { margin: 26px 0 4px; font-family: var(--pk-font-ui); font-weight: 800; letter-spacing: -.04em;
+    line-height: 1; color: var(--pk-accent); font-size: 64px; font-variant-numeric: tabular-nums; }
+.pk-queue-rank small { font-size: 22px; font-weight: 700; margin-left: 4px; }
+.pk-queue-total { margin: 0; font-size: 13.5px; color: #98A0AD; font-variant-numeric: tabular-nums; }
+
+.pk-queue-bar { height: 6px; margin: 24px 0 6px; border-radius: 999px; background: var(--pk-bg-soft); overflow: hidden; }
+.pk-queue-bar i { display: block; height: 100%; width: 0; border-radius: 999px; background: var(--pk-accent);
+    transition: width var(--pk-base) var(--pk-ease); }
+
+.pk-queue-note { margin: 18px 0 0; padding: 12px 14px; border-radius: 10px; background: var(--pk-bg-soft);
+    font-size: 12.5px; line-height: 1.6; color: #7C8494; }
+
+.pk-queue-x { position: absolute; top: 14px; right: 14px; width: 40px; height: 40px;
+    display: grid; place-items: center; border: 0; border-radius: 10px; background: none;
+    color: #5A6272; cursor: pointer; transition: background var(--pk-fast) var(--pk-ease); }
+.pk-queue-x:hover { background: var(--pk-bg-soft); }
+.pk-queue-x svg { width: 20px; height: 20px; }
+
+/* 입장 순간 */
+.pk-queue-box.is-ready .pk-queue-x { display: none; }
+.pk-queue-box.is-ready .pk-queue-rank { font-size: 40px; }
+.pk-queue-box.is-ready .pk-queue-bar i { width: 100% !important; }
+
+@media (max-width: 768px) {
+    .pk-queue-box { padding: 34px 22px 24px; }
+    .pk-queue-rank { font-size: 52px; }
+}
